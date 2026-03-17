@@ -1,0 +1,78 @@
+html,
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f8f7fa;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+/* color code */
+.blue {
+  color: #405189;
+}
+
+.darkgreycolor {
+  color: #495057;
+}
+
+
+/* .mdc-text-field--outlined:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-floating-label {
+      font-size: 14px;
+    letter-spacing: 0.5px;
+
+}
+.mat-mdc-form-field.mat-form-field-animations-enabled .mdc-text-field__input {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    font-family: 'Inter';
+}
+
+.mat-mdc-select-value-text {
+    font-size: 14px;
+    letter-spacing: 0.5px;
+} */
+
+/******************** TOSTER ********************************/
+
+.success-snackbar {
+  background: #4caf50;
+  color: white;
+}
+
+.error-snackbar {
+  background: #f44336;
+  color: white;
+}
+
+.warning-snackbar {
+  background: #ff9800;
+  color: white;
+}
+
+.info-snackbar {
+  background: #2196f3;
+  color: white;
+}
+
+.delete-dialog-animation .mat-mdc-dialog-container{
+
+animation: dialogFadeIn 250ms ease;
+}
+
+@keyframes dialogFadeIn{
+
+from{
+opacity:0;
+transform:scale(0.9);
+}
+
+to{
+opacity:1;
+transform:scale(1);
+}
+
+}.cdk-overlay-backdrop {
+
+  transition: opacity 200ms ease !important;
+
+}

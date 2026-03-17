@@ -1,0 +1,57 @@
+<!-- src/app/risk-dialog/risk-dialog.component.html -->
+<h2 mat-dialog-title class="dialog-title">
+  <mat-icon class="risk-icon">error_outline</mat-icon>
+  Report Risk / Blocker
+</h2>
+
+<mat-dialog-content class="dialog-content">
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Describe the risk or blocker</mat-label>
+    <textarea matInput [(ngModel)]="riskText" rows="3"
+      placeholder="e.g. API endpoints not ready, blocking integration..."></textarea>
+    <mat-icon matPrefix>warning_amber</mat-icon>
+  </mat-form-field>
+
+  <button mat-raised-button class="report-btn"
+    (click)="addRisk()"
+    [disabled]="!riskText.trim()">
+    <mat-icon>add_alert</mat-icon>
+    Add Risk
+  </button>
+
+  <!-- Risk Items -->
+  @if (risks.length > 0) {
+    <mat-divider style="margin: 16px 0;"></mat-divider>
+    <p class="risk-list-title">Reported Risks for Today:</p>
+
+    <mat-list>
+      @for (risk of risks; track risk.id) {
+        <mat-list-item class="risk-item">
+          <mat-icon matListItemIcon class="risk-item-icon">warning</mat-icon>
+          <span matListItemTitle class="risk-text">{{ risk.text }}</span>
+          <button mat-icon-button matListItemMeta
+            (click)="removeRisk(risk.id)"
+            matTooltip="Remove"
+            class="remove-btn">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-list-item>
+      }
+    </mat-list>
+  }
+
+  @if (risks.length === 0) {
+    <div class="no-risks">
+      <mat-icon>check_circle_outline</mat-icon>
+      <p>No risks reported for today.</p>
+    </div>
+  }
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-raised-button (click)="close()" class="close-btn">
+    Close
+  </button>
+</mat-dialog-actions>

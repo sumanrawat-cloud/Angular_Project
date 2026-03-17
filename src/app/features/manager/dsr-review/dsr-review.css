@@ -1,0 +1,1009 @@
+/* ════════════════════════════════════════════════════════
+   DSR REVIEW PAGE — Manager Review Module
+════════════════════════════════════════════════════════ */
+:host {
+  display: block;
+}
+
+.review-wrapper {
+  max-width: 1100px;
+  margin: 28px auto;
+  padding: 0 24px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+/* ════════════════════════════════════════════════════════
+   HEADER ROW
+════════════════════════════════════════════════════════ */
+.rv-header-row {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rv-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px 6px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background: #f8fafc;
+  color: #405189;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.18s, box-shadow 0.18s, transform 0.15s;
+  align-self: flex-start;
+}
+
+.rv-back-btn mat-icon {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.rv-back-btn:hover {
+  background: #405189;
+  color: #ffffff;
+  border-color: #405189;
+  box-shadow: 0 4px 12px rgba(64, 81, 137, .22);
+  transform: translateX(-2px);
+}
+
+.rv-title-block {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.rv-avatar {
+     width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .15);
+}
+
+.rv-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rv-name {
+      font-size: 20px;
+    font-weight: 800;
+    color: #111827;
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+.rv-role {
+  font-size: 13px;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.rv-week-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #2563eb;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.rv-week-badge mat-icon {
+  font-size: 13px !important;
+  width: 13px !important;
+  height: 13px !important;
+}
+
+/* ════════════════════════════════════════════════════════
+   FILTER BAR
+════════════════════════════════════════════════════════ */
+.rv-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 16px 20px;
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
+}
+
+.rv-date-field,
+.rv-week-field {
+  flex-shrink: 0;
+}
+
+.rv-date-field {
+  width: 210px;
+}
+
+.rv-week-field {
+  width: 230px;
+}
+
+.rv-filter-bar .mat-mdc-form-field-subscript-wrapper {
+  display: none !important;
+}
+
+.rv-filter-bar .mat-mdc-form-field-infix {
+  padding-top: 7px !important;
+  padding-bottom: 7px !important;
+  min-height: unset !important;
+}
+
+.rv-filter-bar .mat-mdc-text-field-wrapper {
+  background: #fafbff !important;
+}
+
+.rv-filter-bar .mdc-notched-outline__leading,
+.rv-filter-bar .mdc-notched-outline__notch,
+.rv-filter-bar .mdc-notched-outline__trailing {
+  border-color: #e2e8f0 !important;
+}
+
+.rv-filter-bar .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.rv-filter-bar .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+.rv-filter-bar .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: #405189 !important;
+}
+
+.rv-clear-btn {
+  border-radius: 8px !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  color: #ef4444 !important;
+  border-color: #fca5a5 !important;
+  height: 36px !important;
+  padding: 0 12px !important;
+  white-space: nowrap;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  transition: all 0.15s;
+}
+
+.rv-clear-btn:hover {
+  background: #fef2f2 !important;
+}
+
+.rv-clear-btn mat-icon {
+  font-size: 14px !important;
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.rv-count-badge {
+  margin-left: auto;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 20px;
+  padding: 4px 12px;
+  white-space: nowrap;
+}
+
+/* ════════════════════════════════════════════════════════
+   LOADING + EMPTY STATE
+════════════════════════════════════════════════════════ */
+.rv-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 60px 20px;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.rv-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #e9ecef;
+  border-top-color: #405189;
+  border-radius: 50%;
+  animation: rvSpin .7s linear infinite;
+}
+
+@keyframes rvSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rv-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 60px 20px;
+  color: #9ca3af;
+}
+
+.rv-empty mat-icon {
+  font-size: 52px !important;
+  width: 52px !important;
+  height: 52px !important;
+  color: #d1d5db;
+}
+
+.rv-empty p {
+  font-size: 14px;
+  margin: 0;
+  color: #6b7280;
+}
+
+/* ════════════════════════════════════════════════════════
+   DSR CARDS GRID
+════════════════════════════════════════════════════════ */
+@keyframes rvCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.rv-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+  gap: 18px;
+}
+
+.rv-dsr-card {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 18px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .055);
+  overflow: hidden;
+  animation: rvCardIn 0.38s cubic-bezier(.34, 1.2, .64, 1) both;
+  animation-delay: var(--delay, 0ms);
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.25s;
+}
+
+.rv-dsr-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .09);
+  transform: translateY(-2px);
+}
+
+/* Card approved / cancelled visual states */
+.rv-dsr-card--approved {
+  border-color: #86efac !important;
+  box-shadow: 0 2px 10px rgba(34, 197, 94, .12) !important;
+}
+
+.rv-dsr-card--approved .rv-card-head {
+  background: linear-gradient(90deg, #f0fdf4 0%, #fafbff 100%);
+  border-bottom-color: #bbf7d0;
+}
+
+.rv-dsr-card--cancelled {
+  border-color: #d1d5db !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .04) !important;
+  opacity: 0.82;
+}
+
+.rv-dsr-card--cancelled .rv-card-head {
+  background: #f9fafb;
+  border-bottom-color: #e5e7eb;
+}
+
+/* Card Head */
+.rv-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px 10px;
+  border-bottom: 1px solid #f1f5f9;
+  background: #fafbff;
+  transition: background 0.25s, border-color 0.25s;
+}
+
+.rv-card-date {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #374151;
+}
+
+.rv-card-date mat-icon {
+  font-size: 15px !important;
+  width: 15px !important;
+  height: 15px !important;
+  color: #405189;
+}
+
+.rv-card-proj-chip {
+  font-size: 11px;
+  font-weight: 700;
+  background: #eef0f7;
+  color: #405189;
+  border-radius: 20px;
+  padding: 3px 10px;
+}
+
+/* Card Meta Row */
+.rv-card-meta-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  padding: 14px 20px 10px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.rv-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.rv-meta-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.rv-meta-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.rv-hours-val {
+  color: #405189;
+}
+
+.rv-status-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.rvs-on_track {
+    background: #f0fdf4;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+    width: 70px;
+}
+
+.rvs-at_risk {
+     background: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #fed7aa;
+    width: 55px;
+}
+
+/* Section label */
+.rv-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: 12px 20px 6px;
+}
+
+/* Category chips */
+.rv-cat-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 20px 14px;
+}
+
+.rv-cat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.rv-cat-chip mat-icon {
+  font-size: 14px !important;
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.rv-cat-name {
+  font-weight: 600;
+}
+
+.rv-cat-hours {
+  font-weight: 700;
+  color: #374151;
+  margin-left: 2px;
+}
+
+/* Blocker block */
+.rv-blocker-block,
+.rv-risk-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 20px 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 12.5px;
+}
+
+.rv-blocker-block {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+}
+
+.rv-blocker-block mat-icon {
+  color: #f59e0b;
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.rv-blocker-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #92400e;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.rv-blocker-text {
+  font-size: 12.5px;
+  color: #78350f;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.rv-risk-block {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.rv-risk-block mat-icon {
+  color: #ef4444;
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.rv-risk-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #991b1b;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.rv-risk-text {
+  font-size: 12.5px;
+  color: #7f1d1d;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ════════════════════════════════════════════════════════
+   PER-CARD DECISION BAR
+════════════════════════════════════════════════════════ */
+.rv-card-decision-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 20px;
+  border-top: 1px solid #f1f5f9;
+  background: #fafbff;
+}
+
+/* ── Decision status pill ── */
+.rv-decision-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.rv-decision-pill mat-icon {
+  font-size: 14px !important;
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.rv-decision-pill--pending {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.rv-decision-pill--approved {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.rv-decision-pill--cancelled {
+  background: #f9fafb;
+  color: #9ca3af;
+  border: 1px solid #e5e7eb;
+}
+
+/* Final decision pill — slightly larger, bolder when standing alone */
+.rv-decision-pill--final {
+  font-size: 13px;
+  padding: 7px 18px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.rv-decision-pill--approved.rv-decision-pill--final {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1.5px solid #86efac;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, .15);
+}
+
+.rv-decision-pill--cancelled.rv-decision-pill--final {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1.5px solid #d1d5db;
+}
+
+/* ── Card action buttons ── */
+.rv-card-decision-btns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.rv-card-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  border: 1.5px solid transparent;
+  outline: none;
+  transition: background 0.18s, box-shadow 0.18s, transform 0.15s, border-color 0.18s, opacity 0.18s;
+}
+
+.rv-card-btn mat-icon {
+  font-size: 15px !important;
+  width: 15px !important;
+  height: 15px !important;
+}
+
+.rv-card-btn:active {
+  transform: scale(.96);
+}
+
+/* Cancel button */
+.rv-card-btn--cancel {
+  background: transparent;
+  color: #ef4444;
+  border-color: #fca5a5;
+}
+
+.rv-card-btn--cancel:hover {
+  background: #fef2f2;
+  border-color: #ef4444;
+  box-shadow: 0 3px 10px rgba(239, 68, 68, .16);
+}
+
+/* Approve button */
+.rv-card-btn--approve {
+  background: #22c55e;
+  color: #ffffff;
+  border-color: #22c55e;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, .25);
+}
+
+.rv-card-btn--approve:hover {
+  background: #16a34a;
+  border-color: #16a34a;
+  box-shadow: 0 6px 16px rgba(34, 197, 94, .35);
+  transform: translateY(-1px);
+}
+
+/* ════════════════════════════════════════════════════════
+   CONFIRMATION MODAL
+   Uses position:fixed so it overlays the entire viewport
+   regardless of any parent overflow or z-index stacking.
+════════════════════════════════════════════════════════ */
+.rv-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  /* well above Angular Material overlays (1000) */
+  padding: 20px;
+}
+
+.rv-modal {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 32px 80px rgba(15, 23, 42, 0.28),
+    0 8px 24px rgba(15, 23, 42, 0.12);
+  padding: 40px 40px 32px;
+  text-align: center;
+  width: 100%;
+  max-width: 350px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  /* isolate stacking context */
+  z-index: 10001;
+  animation: rvModalPop 0.28s cubic-bezier(.34, 1.28, .64, 1) both;
+}
+
+@keyframes rvModalPop {
+  from {
+    opacity: 0;
+    transform: scale(0.82) translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ── Icon ring ── */
+.rv-modal-icon-ring {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  flex-shrink: 0;
+}
+
+.rv-modal-icon-ring mat-icon {
+  font-size: 34px !important;
+  width: 34px !important;
+  height: 34px !important;
+}
+
+.rv-modal-icon-ring.icon-green {
+  background: rgba(34, 197, 94, 0.12);
+  box-shadow: 0 0 0 8px rgba(34, 197, 94, 0.07);
+}
+
+.rv-modal-icon-ring.icon-green mat-icon {
+  color: #22c55e;
+}
+
+.rv-modal-icon-ring.icon-red {
+  background: rgba(239, 68, 68, 0.12);
+  box-shadow: 0 0 0 8px rgba(239, 68, 68, 0.07);
+}
+
+.rv-modal-icon-ring.icon-red mat-icon {
+  color: #ef4444;
+}
+
+/* ── Title ── */
+.rv-modal-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #111827;
+    margin: 0 0 10px;
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+}
+
+/* ── Body text ── */
+.rv-modal-body {
+     font-size: 12px;
+    color: #374151;
+    line-height: 1.65;
+    margin: 0 0 8px;
+    max-width: 320px;
+    letter-spacing: 0.2px;
+}
+
+/* ── Sub / detail text ── */
+.rv-modal-sub {
+     font-size: 11px;
+    color: #6b7280;
+    line-height: 1.6;
+    margin: 0 0 32px;
+    max-width: 360px;
+    width: 100%;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.rv-modal-sub strong {
+  color: #111827;
+  font-weight: 700;
+}
+
+/* ── Action buttons row ── */
+.rv-modal-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+/* Base modal button */
+.rv-modal-btn {
+      display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inter;
+    border: none;
+    outline: none;
+    transition: background 0.18s, box-shadow 0.18s, transform 0.14s;
+    flex: 1;
+    max-width: 130px;
+    letter-spacing: 0.5px;
+}
+
+.rv-modal-btn mat-icon {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.rv-modal-btn:active {
+  transform: scale(0.97);
+}
+
+/* No / Cancel */
+.rv-modal-btn--cancel {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1.5px solid #e2e8f0;
+}
+
+.rv-modal-btn--cancel:hover {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+}
+
+/* Yes Approve (green) */
+.rv-modal-btn--confirm-green {
+  background: #22c55e;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.32);
+}
+
+.rv-modal-btn--confirm-green:hover {
+  background: #16a34a;
+  box-shadow: 0 6px 18px rgba(34, 197, 94, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Yes Cancel (red) */
+.rv-modal-btn--confirm-red {
+  background: #ef4444;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.32);
+}
+
+.rv-modal-btn--confirm-red:hover {
+  background: #dc2626;
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ════════════════════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .review-wrapper {
+    padding: 0 14px 40px;
+    margin: 16px auto;
+  }
+
+  .rv-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rv-card-meta-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .rv-card-decision-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .rv-card-decision-btns {
+    justify-content: flex-end;
+    width: 100%;
+  }
+
+  .rv-date-field,
+  .rv-week-field {
+    width: 100%;
+  }
+
+  .rv-modal {
+    padding: 32px 24px 28px;
+  }
+
+  .rv-modal-sub {
+    font-size: 12px;
+  }
+
+  .rv-week-badge {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .rv-card-decision-btns {
+    flex-direction: column-reverse;
+  }
+
+  .rv-card-btn {
+    justify-content: center;
+  }
+
+  .rv-modal-actions {
+    flex-direction: column;
+  }
+
+  .rv-modal-btn {
+    max-width: 100%;
+  }
+}
+/* ════════════════════════════════════════════════════════
+   APPROVE MODAL — PORTAL ANIMATION CLASSES
+   These are injected into document.body by _injectPortal()
+   and controlled via JS in _animateConfirmThenClose().
+════════════════════════════════════════════════════════ */
+
+/* Icon spring-pop with overshoot on approve */
+@keyframes rvCheckPop {
+  0%   { transform: scale(0.3) rotate(-20deg); opacity: 0; }
+  55%  { transform: scale(1.22) rotate(5deg);  opacity: 1; }
+  75%  { transform: scale(0.92) rotate(-3deg);             }
+  90%  { transform: scale(1.05) rotate(1deg);              }
+  100% { transform: scale(1)    rotate(0deg);  opacity: 1; }
+}
+
+/* Concentric pulse rings expand outward and fade */
+@keyframes rvRingOut {
+  0%   { transform: scale(1);   opacity: 0.6; }
+  100% { transform: scale(2.8); opacity: 0;   }
+}
+
+/* Card glow breathes in then out once */
+@keyframes rvGlowPulse {
+  0%   { box-shadow: 0 0 0 0px  rgba(34, 197, 94, 0.00), 0 32px 80px rgba(15, 23, 42, .18); }
+  45%  { box-shadow: 0 0 0 22px rgba(34, 197, 94, 0.13), 0 32px 80px rgba(15, 23, 42, .18); }
+  100% { box-shadow: 0 0 0 0px  rgba(34, 197, 94, 0.00), 0 32px 80px rgba(15, 23, 42, .18); }
+}
+
+/* Success message slides up and fades in */
+@keyframes rvSubIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+/* ── Applied by JS when approve fires ── */
+
+/* ✏️ You can increase animation timing from here → card glow pulse duration (760ms) */
+#_rv_card_.--approving {
+  animation: rvGlowPulse 760ms cubic-bezier(.4, 0, .2, 1) both;
+}
+
+/* ✏️ You can increase animation timing from here → icon spring-pop duration (520ms) */
+._rv_icon_.--approving {
+  background: rgba(34, 197, 94, .15) !important;
+  box-shadow: 0 0 0 14px rgba(34, 197, 94, .09) !important;
+  animation: rvCheckPop 520ms cubic-bezier(.34, 1.36, .64, 1) both;
+}
+
+/* Ripple rings — 3 siblings injected inside the icon element by JS */
+/* ✏️ You can increase animation timing from here → ripple ring expansion duration (680ms) */
+._rv_ripple_ring_ {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid rgba(34, 197, 94, .5);
+  pointer-events: none;
+  animation: rvRingOut 680ms cubic-bezier(.15, 0, .55, 1) both;
+}
+._rv_ripple_ring_:nth-child(2) { animation-delay: 130ms; }
+._rv_ripple_ring_:nth-child(3) { animation-delay: 260ms; }
+
+/* Success message injected after the title on approve */
+/* ✏️ You can increase animation timing from here → success message slide-in duration (320ms) + delay (300ms) */
+._rv_success_msg_ {
+  font-size: 13px;
+  color: #16a34a;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  margin: 6px 0 0;
+  opacity: 0;
+  animation: rvSubIn 320ms 300ms cubic-bezier(.4, 0, .2, 1) forwards;
+}
+
+._rv_success_msg_ {
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    font-family: inter;
+}
+

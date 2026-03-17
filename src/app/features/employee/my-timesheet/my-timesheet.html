@@ -1,0 +1,363 @@
+<!-- employee-dsr.html -->
+<div class="edsr-root" [@pageIn]>
+
+  <!-- ══════════════════════════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════════════════════════ -->
+  <div class="edsr-header">
+    <!-- Row 1: back button -->
+    <div class="edsr-header__nav">
+      <button class="edsr-back-btn" (click)="goToDashboard()">
+        <mat-icon>arrow_back</mat-icon>
+        <span>Dashboard</span>
+      </button>
+    </div>
+    <!-- Row 2: title + user chip -->
+    <div class="edsr-header__main">
+      <div class="edsr-header__title-block">
+        <h1 class="edsr-page-title">My DSR Records</h1>
+        <p class="edsr-page-sub">Daily Status Reports — review your submission history and approvals</p>
+      </div>
+      <div class="edsr-user-chip">
+        <div class="edsr-user-chip__avatar">{{ employeeName.charAt(0) }}</div>
+        <div class="edsr-user-chip__info">
+          <span class="edsr-user-chip__name">{{ employeeName }}</span>
+          <span class="edsr-user-chip__role">{{ employeeRole }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       STAT CARDS
+  ══════════════════════════════════════════════════════════ -->
+  <div class="edsr-stats-row">
+    <!-- Total -->
+    <button class="edsr-stat-card"
+      [class.edsr-stat-card--active]="filterStatus === ''"
+      (click)="setFilter('')">
+      <div class="edsr-stat-card__icon edsr-stat-icon--total">
+        <mat-icon>description</mat-icon>
+      </div>
+      <div class="edsr-stat-card__body">
+        <span class="edsr-stat-card__val">{{ stats.total }}</span>
+        <span class="edsr-stat-card__lbl">Total DSRs</span>
+      </div>
+      <div class="edsr-stat-card__indicator"></div>
+    </button>
+
+    <!-- Approved -->
+    <button class="edsr-stat-card"
+      [class.edsr-stat-card--active]="filterStatus === 'approved'"
+      (click)="setFilter('approved')">
+      <div class="edsr-stat-card__icon edsr-stat-icon--approved">
+        <mat-icon>check_circle</mat-icon>
+      </div>
+      <div class="edsr-stat-card__body">
+        <span class="edsr-stat-card__val edsr-val--approved">{{ stats.approved }}</span>
+        <span class="edsr-stat-card__lbl">Approved</span>
+      </div>
+      <div class="edsr-stat-card__indicator edsr-ind--approved"></div>
+    </button>
+
+    <!-- Pending -->
+    <button class="edsr-stat-card"
+      [class.edsr-stat-card--active]="filterStatus === 'pending'"
+      (click)="setFilter('pending')">
+      <div class="edsr-stat-card__icon edsr-stat-icon--pending">
+        <mat-icon>hourglass_top</mat-icon>
+      </div>
+      <div class="edsr-stat-card__body">
+        <span class="edsr-stat-card__val edsr-val--pending">{{ stats.pending }}</span>
+        <span class="edsr-stat-card__lbl">Pending</span>
+      </div>
+      <div class="edsr-stat-card__indicator edsr-ind--pending"></div>
+    </button>
+
+    <!-- Cancelled -->
+    <button class="edsr-stat-card"
+      [class.edsr-stat-card--active]="filterStatus === 'cancelled'"
+      (click)="setFilter('cancelled')">
+      <div class="edsr-stat-card__icon edsr-stat-icon--cancelled">
+        <mat-icon>cancel</mat-icon>
+      </div>
+      <div class="edsr-stat-card__body">
+        <span class="edsr-stat-card__val edsr-val--cancelled">{{ stats.cancelled }}</span>
+        <span class="edsr-stat-card__lbl">Cancelled</span>
+      </div>
+      <div class="edsr-stat-card__indicator edsr-ind--cancelled"></div>
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       FILTER BAR
+  ══════════════════════════════════════════════════════════ -->
+  <div class="edsr-filter-bar" *ngIf="!isLoading">
+    <span class="edsr-filter-label">
+      <mat-icon>filter_list</mat-icon>
+      Showing:
+      <strong>{{ filterStatus ? (filterStatus | titlecase) : 'All DSRs' }}</strong>
+    </span>
+    <span class="edsr-count-pill">{{ filteredEntries.length }} records</span>
+    <button class="edsr-clear-filter" *ngIf="hasActiveFilter" (click)="clearFilter()">
+      <mat-icon>close</mat-icon> Clear filter
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       LOADING
+  ══════════════════════════════════════════════════════════ -->
+  <div class="edsr-loading" *ngIf="isLoading">
+    <div class="edsr-loading__ring">
+      <div></div><div></div><div></div><div></div>
+    </div>
+    <span>Loading your DSR history…</span>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       EMPTY STATE
+  ══════════════════════════════════════════════════════════ -->
+  <div class="edsr-empty" *ngIf="!isLoading && filteredEntries.length === 0">
+    <mat-icon>inbox</mat-icon>
+    <h3>No records found</h3>
+    <p>{{ hasActiveFilter ? 'No DSRs match the selected filter.' : 'You have no DSR submissions yet.' }}</p>
+    <button class="edsr-empty-btn" *ngIf="hasActiveFilter" (click)="clearFilter()">
+      Show all records
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       DSR CARDS LIST
+  ══════════════════════════════════════════════════════════ -->
+  <div class="edsr-cards-list"
+    *ngIf="!isLoading && filteredEntries.length > 0"
+    [@listStagger]="filteredEntries.length">
+
+    <div class="edsr-card"
+      *ngFor="let entry of filteredEntries; trackBy: trackById; let i = index"
+      [ngClass]="getCardClass(entry.approvalStatus)"
+      [style.--card-delay]="i * 55 + 'ms'">
+
+      <!-- ── Card Top Bar ── -->
+      <div class="edsr-card__topbar" (click)="toggleExpand(entry.id)">
+
+        <!-- Left: Date + Project -->
+        <div class="edsr-card__left">
+          <div class="edsr-card__date-badge">
+            <span class="edsr-card__day">{{ entry.date | date:'d' }}</span>
+            <span class="edsr-card__month">{{ entry.date | date:'MMM' }}</span>
+          </div>
+          <div class="edsr-card__title-group">
+            <span class="edsr-card__project">{{ entry.project }}</span>
+            <span class="edsr-card__client">
+              <mat-icon>business</mat-icon>
+              {{ entry.client }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Right: Status + Hours + Expand -->
+        <div class="edsr-card__right">
+          <span class="edsr-hours-chip">
+            <mat-icon>schedule</mat-icon>
+            {{ entry.totalHours }}h
+          </span>
+
+          <!-- Approval Status Badge -->
+          <span class="edsr-status-badge"
+            [ngClass]="getStatusConfig(entry.approvalStatus).cssClass">
+            <mat-icon>{{ getStatusConfig(entry.approvalStatus).icon }}</mat-icon>
+            {{ getStatusConfig(entry.approvalStatus).label }}
+          </span>
+
+          <!-- Expand chevron -->
+          <span class="edsr-card__chevron" [class.edsr-card__chevron--open]="isExpanded(entry.id)">
+            <mat-icon>expand_more</mat-icon>
+          </span>
+        </div>
+      </div>
+
+      <!-- ── Employee Comment Banner (if exists) ── -->
+      <div class="edsr-comment-banner" *ngIf="entry.employeeComment" [@slideDown]>
+        <mat-icon>chat_bubble</mat-icon>
+        <div class="edsr-comment-banner__body">
+          <span class="edsr-comment-banner__lbl">Your comment</span>
+          <p class="edsr-comment-banner__text">{{ entry.employeeComment }}</p>
+        </div>
+        <button class="edsr-comment-edit-btn"
+          *ngIf="entry.approvalStatus === 'cancelled'"
+          (click)="openCommentModal(entry)"
+          matTooltip="Edit comment">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </div>
+
+      <!-- ── Raise Comment CTA for Cancelled DSRs ── -->
+      <div class="edsr-cancelled-cta"
+        *ngIf="entry.approvalStatus === 'cancelled' && !entry.employeeComment">
+        <div class="edsr-cancelled-cta__left">
+          <mat-icon>error_outline</mat-icon>
+          <div>
+            <span class="edsr-cancelled-cta__title">This DSR was cancelled</span>
+            <span class="edsr-cancelled-cta__sub">Add a comment or clarification for your manager</span>
+          </div>
+        </div>
+        <button class="edsr-raise-comment-btn" (click)="openCommentModal(entry)">
+          <mat-icon>add_comment</mat-icon>
+          Raise Comment
+        </button>
+      </div>
+
+      <!-- ── Expanded Detail ── -->
+      <div class="edsr-card__detail" *ngIf="isExpanded(entry.id)" [@slideDown]>
+
+        <!-- Meta row -->
+        <div class="edsr-detail-meta">
+          <div class="edsr-detail-meta__item">
+            <span class="edsr-detail-meta__label">Date</span>
+            <span class="edsr-detail-meta__val">{{ entry.date | date:'EEE, MMM d, yyyy' }}</span>
+          </div>
+          <div class="edsr-detail-meta__item">
+            <span class="edsr-detail-meta__label">Task Status</span>
+            <span class="edsr-task-chip"
+              [class.edsr-task-chip--on-track]="entry.taskStatus === 'on_track'"
+              [class.edsr-task-chip--at-risk]="entry.taskStatus === 'at_risk'">
+              {{ entry.taskStatus === 'on_track' ? 'On Track' : 'At Risk' }}
+            </span>
+          </div>
+          <div class="edsr-detail-meta__item">
+            <span class="edsr-detail-meta__label">Total Hours</span>
+            <span class="edsr-detail-meta__val edsr-detail-meta__val--accent">{{ entry.totalHours }}h</span>
+          </div>
+          <div class="edsr-detail-meta__item">
+            <span class="edsr-detail-meta__label">Submitted</span>
+            <span class="edsr-detail-meta__val">{{ entry.submittedAt | date:'MMM d, h:mm a' }}</span>
+          </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="edsr-cat-section">
+          <span class="edsr-section-lbl">Time by Category</span>
+          <div class="edsr-cat-row">
+            <div class="edsr-cat-chip"
+              *ngFor="let cat of getCategoryEntries(entry)"
+              [ngStyle]="{'border-color': cat.color + '40', 'background': cat.color + '12'}">
+              <mat-icon [ngStyle]="{'color': cat.color}">{{ cat.icon }}</mat-icon>
+              <span class="edsr-cat-name" [ngStyle]="{'color': cat.color}">{{ cat.label }}</span>
+              <span class="edsr-cat-hours">{{ cat.hours }}h</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Blockers -->
+        <div class="edsr-blocker" *ngIf="entry.blockers">
+          <mat-icon>warning_amber</mat-icon>
+          <div>
+            <span class="edsr-blocker__lbl">Blocker / Risk</span>
+            <p class="edsr-blocker__text">{{ entry.blockers }}</p>
+          </div>
+        </div>
+
+        <!-- At Risk -->
+        <div class="edsr-at-risk" *ngIf="entry.atRiskDescription">
+          <mat-icon>report_problem</mat-icon>
+          <div>
+            <span class="edsr-at-risk__lbl">At Risk Detail</span>
+            <p class="edsr-at-risk__text">{{ entry.atRiskDescription }}</p>
+          </div>
+        </div>
+
+        <!-- Comment action in expanded (for cancelled with no comment) -->
+        <div class="edsr-detail-actions" *ngIf="entry.approvalStatus === 'cancelled'">
+          <button class="edsr-comment-action-btn"
+            (click)="openCommentModal(entry)">
+            <mat-icon>{{ entry.employeeComment ? 'edit_note' : 'add_comment' }}</mat-icon>
+            {{ entry.employeeComment ? 'Update Comment' : 'Raise Comment' }}
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+</div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       COMMENT MODAL TEMPLATE
+       Rendered by Angular CDK Overlay (openCommentModal in TS).
+       The CDK places this inside .cdk-overlay-container which is
+       a direct child of <body> — completely outside mat-sidenav,
+       mat-toolbar, and every other stacking context.
+  ══════════════════════════════════════════════════════════ -->
+  <ng-template #commentModalTpl>
+    <div class="dsr-modal">
+
+      <!-- Header -->
+      <div class="dsr-modal__header">
+        <div class="dsr-modal__icon">
+          <mat-icon>add_comment</mat-icon>
+        </div>
+        <div class="dsr-modal__titles">
+          <h2 class="dsr-modal__title">
+            {{ existingComment ? 'Update Comment' : 'Raise a Comment' }}
+          </h2>
+          <p class="dsr-modal__subtitle">
+            For DSR dated <strong>{{ commentEntry?.date | date:'EEE, MMM d, yyyy' }}</strong>
+          </p>
+        </div>
+        <button class="dsr-modal__close" (click)="closeCommentModal()" aria-label="Close">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <!-- Context strip: project / client / status -->
+      <div class="dsr-modal__meta">
+        <div class="dsr-modal__meta-cell">
+          <span class="dsr-modal__meta-label">Project</span>
+          <span class="dsr-modal__meta-value">{{ commentEntry?.project }}</span>
+        </div>
+        <div class="dsr-modal__meta-cell">
+          <span class="dsr-modal__meta-label">Client</span>
+          <span class="dsr-modal__meta-value">{{ commentEntry?.client }}</span>
+        </div>
+        <div class="dsr-modal__meta-cell">
+          <span class="dsr-modal__meta-label">Status</span>
+          <span class="dsr-modal__status-badge">
+            <mat-icon>cancel</mat-icon>
+            Cancelled
+          </span>
+        </div>
+      </div>
+
+      <!-- Textarea -->
+      <div class="dsr-modal__body">
+        <label class="dsr-modal__field-label">
+          Your clarification or comment
+          <span class="dsr-modal__required" aria-hidden="true">*</span>
+        </label>
+        <textarea
+          class="dsr-modal__textarea"
+          [(ngModel)]="commentText"
+          placeholder="Explain why this DSR was submitted as-is, or provide any additional context for your manager…"
+          maxlength="500">
+        </textarea>
+        <span class="dsr-modal__char-count">{{ commentText.length }} / 500</span>
+      </div>
+
+      <!-- Actions -->
+      <div class="dsr-modal__footer">
+        <button class="dsr-btn dsr-btn--cancel" (click)="closeCommentModal()">
+          <mat-icon>close</mat-icon>
+          Cancel
+        </button>
+        <button
+          class="dsr-btn dsr-btn--submit"
+          [disabled]="!commentText.trim()"
+          (click)="submitComment()">
+          <mat-icon>send</mat-icon>
+          {{ existingComment ? 'Update' : 'Submit Comment' }}
+        </button>
+      </div>
+
+    </div>
+  </ng-template>

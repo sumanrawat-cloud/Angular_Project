@@ -1,0 +1,25 @@
+<div class="delete-container">
+
+  <div class="icon-wrapper">
+    <mat-icon>delete</mat-icon>
+  </div>
+
+  <h2>Delete Task?</h2>
+
+  <p>
+    Are you sure you want to delete this task?
+  </p>
+
+  <mat-dialog-actions align="center">
+
+    <button mat-stroked-button (click)="close()">
+      Cancel
+    </button>
+
+    <button mat-raised-button color="warn" (click)="confirmDelete()">
+      Delete
+    </button>
+
+  </mat-dialog-actions>
+
+</div>

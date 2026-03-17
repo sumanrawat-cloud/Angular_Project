@@ -1,0 +1,100 @@
+<div class="velzon-sidebar" [class.sidebar-open]="sidebarOpen">
+
+  <!-- ── Logo ── -->
+  <div class="sidebar-logo">
+    <span class="logo-text">Timesheet Tracker</span>
+    <!-- Close button: only visible on mobile when sidebar overlay is open -->
+    <button
+      *ngIf="isMobile"
+      class="sidebar-close-btn"
+      (click)="closeSidebar.emit()"
+      aria-label="Close sidebar"
+    >
+      <span class="sc-l1"></span>
+      <span class="sc-l2"></span>
+    </button>
+  </div>
+
+  <!-- ── Menu Groups ── -->
+  <div class="sidebar-scroll">
+    <nav class="sidebar-nav">
+
+      <div class="menu-group" *ngFor="let group of menuGroups">
+
+        <div class="group-title">{{ group.title }}</div>
+
+        <ul class="menu-list">
+          <li *ngFor="let item of group.items" class="menu-item-wrap">
+
+            <!-- ════════════════════════════════════
+                 CASE 1: Single Link (no dropdown)
+                 Clicks → router.navigate directly
+            ════════════════════════════════════ -->
+            <!-- <a
+              *ngIf="!item.hasChildren"
+              class="menu-item"
+              [class.menu-active]="isActive(item.link)"
+              (click)="toggleItem(item)"
+              href="javascript:void(0)"
+            > -->
+            <a
+              *ngIf="!item.hasChildren"
+              class="menu-item"
+              [class.menu-disabled]="item.disabled"
+              [routerLink]="item.disabled ? null : item.link"
+              [routerLinkActive]="item.disabled ? '' : 'menu-active'"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="toggleItem(item)"
+            >
+              <span class="menu-icon"><mat-icon>{{ item.icon }}</mat-icon></span>
+              <span class="menu-label">{{ item.label }}</span>
+              <span class="menu-badge" *ngIf="item.badge">{{ item.badge }}</span>
+            </a>
+
+            <!-- ════════════════════════════════════
+                 CASE 2: Dropdown (has children)
+            ════════════════════════════════════ -->
+            <a
+              *ngIf="item.hasChildren"
+              class="menu-item"
+              [class.menu-active]="item.expanded"
+              (click)="toggleItem(item)"
+              href="javascript:void(0)"
+            >
+              <span class="menu-icon"><mat-icon>{{ item.icon }}</mat-icon></span>
+              <span class="menu-label">{{ item.label }}</span>
+              <span class="menu-badge" *ngIf="item.badge">{{ item.badge }}</span>
+              <mat-icon
+                class="menu-arrow"
+                [class.menu-arrow-open]="item.expanded">
+                chevron_right
+              </mat-icon>
+            </a>
+
+            <!-- Sub Menu (only for dropdown items) -->
+            <ul
+              class="submenu"
+              [class.submenu-open]="item.expanded"
+              *ngIf="item.hasChildren && item.children">
+              <li *ngFor="let child of item.children">
+                <!-- <a class="submenu-item" href="javascript:void(0)"
+                  (click)="navigateTo(child.link)"> -->
+                  <a
+  class="submenu-item"
+  [routerLink]="child.link"
+  routerLinkActive="menu-active"
+>
+                  <span class="sub-dot"></span>
+                  {{ child.label }}
+                </a>
+              </li>
+            </ul>
+
+          </li>
+        </ul>
+
+      </div>
+    </nav>
+  </div>
+
+</div>

@@ -1,0 +1,1109 @@
+/* ============================================================
+   Submit DSR — Light Dashboard Theme
+   ============================================================ */
+
+/* :host {
+  display: block;
+  --primary: #405189;
+  --primary-light: #eef0f7;
+   --primary-hover: #364474;
+  --success: #0ab39c;
+  --warning: #f7b84b;
+  --danger: #f06548;
+  --text-primary: #212529;
+  --text-secondary: #878a99;
+  --text-muted: #adb5bd;
+  --bg-page: #f3f6f9;
+  --bg-card: #ffffff;
+  --border: #e9ebec;
+  --border-input: #ced4da;
+  --shadow-card: 0 1px 3px rgba(56, 65, 74, .1);
+  --radius-card: 8px;
+  --radius-input: 6px;
+} */
+
+/* ─── Loading guard ─────────────────────────────────────────── */
+.dsr-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.dsr-loading__spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #e9ebec;
+  border-top-color: #405189;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ─── Page ──────────────────────────────────────────────────── */
+@keyframes dsrFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dsr-page {
+  background: var(--bg-page);
+  min-height: 100vh;
+  padding: 24px;
+  box-sizing: border-box;
+  font-family: 'Inter';
+  animation: dsrFadeIn .32s cubic-bezier(.4, 0, .2, 1) both;
+}
+
+/* ─── Page Header ───────────────────────────────────────────── */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.page-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #444050;
+  margin: 0 0 4px;
+  letter-spacing: 0.5px;
+  font-family: 'Inter';
+}
+
+.page-breadcrumb {
+  font-size: 12px;
+  color: #878a99;
+  margin: 0;
+
+  span {
+    color: #405189;
+    font-weight: 500;
+  }
+}
+
+/* ─── Weekly Hours Card ─────────────────────────────────────── */
+.weekly-card {
+  background: #fff;
+  border: 1px solid #e9ebec;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .07);
+  transition: transform .25s ease, box-shadow .25s ease;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+
+.weekly-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+
+}
+
+.weekly-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: #eef0f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  mat-icon {
+    color: #405189;
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+  }
+}
+
+.weekly-info {
+  flex: 1;
+  min-width: 160px;
+}
+
+.weekly-label {
+  font-size: 12px;
+  color: #405189;
+  margin-bottom: 6px;
+}
+
+.weekly-track {
+  height: 6px;
+  background: #e9ebec;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.weekly-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, #405189, #6691e7);
+  transition: width .4s ease;
+}
+
+.weekly-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #405189;
+  white-space: nowrap;
+}
+
+/* ─── Main Form Card ────────────────────────────────────────── */
+.dsr-card {
+  background: #ffffff;
+  border: 1px solid #e9ebec;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .07);
+  transition: transform .25s ease, box-shadow .25s ease;
+  overflow: hidden;
+}
+
+.dsr-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08)
+}
+
+.card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e9ebec;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #212529;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  mat-icon {
+    color: #405189;
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+  }
+}
+
+.card-subtitle {
+  font-size: 11px;
+  color: #878a99;
+  margin-top: 5px;
+  margin-left: 27px;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+/* ─── Form Sections ─────────────────────────────────────────── */
+.form-section {
+  margin-bottom: 24px;
+}
+
+.field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2b2b2b;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+
+  .req {
+    color: #f06548;
+  }
+}
+
+.field-hint {
+  font-size: 11px;
+  color: #878a99;
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+/* ─── Grid Layouts ──────────────────────────────────────────── */
+/* .two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+} */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.date-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.date-field {
+  min-width: 200px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* ─── Material overrides ────────────────────────────────────── */
+::ng-deep .dsr-page {
+  .mat-mdc-form-field {
+
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: #ced4da !important;
+    }
+
+    &:hover .mdc-notched-outline__leading,
+    &:hover .mdc-notched-outline__notch,
+    &:hover .mdc-notched-outline__trailing {
+      border-color: #405189 !important;
+    }
+
+    .mdc-text-field--outlined {
+      background: #ffffff !important;
+    }
+
+    .mat-mdc-input-element,
+    .mat-mdc-select-value {
+      color: #212529 !important;
+      font-size: 13px;
+    }
+
+    .mat-mdc-floating-label {
+      color: #878a99 !important;
+      font-size: 13px;
+    }
+
+    /* ── Fix: prevent layout shift on first render ──────────── */
+    /* Lock the infix height so it never changes between empty/filled states */
+    .mat-mdc-form-field-infix {
+      min-height: 42px;
+      padding-top: 10px !important;
+      padding-bottom: 10px !important;
+    }
+
+    /* Keep the outline notch cut-out always consistent */
+    .mdc-notched-outline__notch {
+      border-top: none !important;
+    }
+
+    /* Prevent the label from pushing content down when it floats */
+    .mdc-text-field--outlined {
+      padding-top: 0 !important;
+    }
+
+    /* Force consistent wrapper height so grid rows stay aligned */
+    .mat-mdc-text-field-wrapper {
+      height: 42px;
+    }
+
+    /* Select trigger should be vertically centred */
+    .mat-mdc-select-trigger {
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  /* Floating label — keep it floated/small at ALL times (prevents jump) */
+  .mat-mdc-form-field .mdc-floating-label {
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    font-size: 13px !important;
+    transition: none !important;
+  }
+
+  .mat-mdc-form-field .mdc-floating-label--float-above {
+    top: 0 !important;
+    transform: translateY(-50%) scale(0.75) !important;
+    transition: none !important;
+  }
+}
+
+/* ─── Global dialog animation ────────────────────────────────── */
+/* Applied via panelClass on the MatDialog.open() call           */
+@keyframes dialogScaleFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(.88) translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes dialogScaleFadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(.88) translateY(10px);
+  }
+}
+
+::ng-deep .dsr-dialog-panel {
+  .mat-mdc-dialog-container {
+    border-radius: 16px !important;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(56, 65, 74, .18), 0 6px 20px rgba(56, 65, 74, .10) !important;
+    animation: dialogScaleFadeIn .28s cubic-bezier(.34, 1.28, .64, 1) both;
+  }
+
+  /* Remove default Material padding reset so our dialog padding shows */
+  .mdc-dialog__surface {
+    border-radius: 16px !important;
+    overflow: hidden;
+  }
+}
+
+/* ─── Backfill checkbox ─────────────────────────────────────── */
+.backfill-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #878a99;
+  cursor: pointer;
+
+  input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: #405189;
+    cursor: pointer;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TASK STATUS
+   Default:       On Track 50% | At Risk 50%
+   At Risk open:  On Track 30% | At Risk 30% | Textarea 40%
+   ═══════════════════════════════════════════════════════════════ */
+
+.status-row {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 12px;
+  min-height: 80px;
+}
+
+/* Each button takes equal share by default (50/50) */
+.status-btns {
+  display: contents;
+  /* let children participate directly in .status-row flex */
+}
+
+.status-card {
+  flex: 1 1 0;
+  /* equal share — both 50% by default */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 18px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  background: #ffffff;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    flex .32s cubic-bezier(.4, 0, .2, 1),
+    border-color .18s,
+    background .18s,
+    box-shadow .18s;
+
+  &:hover {
+    border-color: #405189;
+    box-shadow: 0 0 0 3px rgba(64, 81, 137, .06);
+  }
+}
+
+/* When textarea opens → each button shrinks to 30% (flex:3),
+   textarea takes 40% (flex:4).  3+3+4 = 10 units total.    */
+.status-row:has(.risk-panel--open) .status-card {
+  flex: 1 1 0;
+}
+
+.status-card__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot-green {
+  background: #0ab39c;
+}
+
+.dot-amber {
+  background: #f7b84b;
+}
+
+.status-card__icon {
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.icon-green {
+  color: #0ab39c;
+}
+
+.icon-amber {
+  color: #f7b84b;
+}
+
+.status-card__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2b2b2b;
+  font-family: 'Inter';
+  letter-spacing: 0.5px;
+}
+
+.status-card__check {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+  color: #405189;
+  margin-left: 6px;
+  flex-shrink: 0;
+}
+
+/* Active states */
+.status-card--on-track {
+  background: rgba(10, 179, 156, .07);
+  border-color: #0ab39c;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .07);
+  transition: transform .25s ease, box-shadow .25s ease;
+
+  .status-card__label {
+    color: #0ab39c;
+    font-weight: 600;
+  }
+}
+
+.status-card--on-track:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+
+}
+
+.risk_card {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .07);
+  transition: transform .25s ease, box-shadow .25s ease;
+
+}
+
+.risk_card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+
+}
+
+.status-card--at-risk {
+  background: rgba(247, 184, 75, .09);
+  border-color: #f7b84b;
+
+  .status-card__label {
+    color: #c9900a;
+    font-weight: 600;
+  }
+
+  .status-card__check {
+    color: #c9900a;
+  }
+}
+
+/* ── Textarea panel: 0 → ~40% of row ────────────────────────── */
+.risk-panel {
+  flex: 0 0 0px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    flex-basis .35s cubic-bezier(.4, 0, .2, 1),
+    flex-grow .35s cubic-bezier(.4, 0, .2, 1),
+    opacity .28s ease;
+}
+
+.risk-panel--open {
+  flex: 4 0 0px;
+  /* 4 units out of 10 total = exactly 40% */
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.risk-panel .mat-mdc-form-field,
+.risk-panel .full-width {
+  width: 100%;
+  min-width: 0;
+  display: block;
+}
+
+/* At-Risk textarea — fixed height with thin scrollbar */
+.risk-textarea {
+  width: 100%;
+  height: 80px;
+  resize: none;
+  overflow-y: auto;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #212529;
+  background: #ffffff;
+  box-sizing: border-box;
+  line-height: 1.5;
+  transition: border-color .18s, box-shadow .18s;
+  scrollbar-width: thin;
+  scrollbar-color: #ced4da transparent;
+
+  &::placeholder {
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #405189;
+    box-shadow: 0 0 0 3px rgba(64, 81, 137, .08);
+  }
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #ced4da;
+    border-radius: 100px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TIME BY CATEGORY TABLE
+   ═══════════════════════════════════════════════════════════════ */
+.cat-table {
+  border: 1px solid #e9ebec;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tbl-head {
+  display: grid;
+  grid-template-columns: 2fr 120px 1fr;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #f3f6f9;
+  border-bottom: 1px solid #e9ebec;
+  font-size: 11px;
+  font-weight: 600;
+  color: #444050;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+}
+
+.cat-row {
+  display: grid;
+  grid-template-columns: 2fr 120px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid #e9ebec;
+  /* transition: background .15s; */
+  transition: all 0.35s ease;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: #fafbfc;
+  }
+}
+
+.cat-row:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  background: #fafaff;
+}
+
+/* smooth row entry animation */
+.cat-row {
+  animation: rowFade 0.5s ease forwards;
+}
+
+@keyframes rowFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Idle row */
+.idle-row {
+  background: #fafbff;
+  transition: all 0.35s ease;
+
+  &:hover {
+    background: #f3f5fc;
+  }
+}
+
+.idle-row:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  background: #fafaff;
+}
+
+/* smooth row entry animation */
+.idle-row {
+  animation: rowFade 0.5s ease forwards;
+}
+
+@keyframes rowFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+/* Auto badge */
+.auto-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 7px;
+  border-radius: 100px;
+  background: #eef0f7;
+  color: #405189;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  margin-left: 6px;
+  border: 1px solid #d0d7f0;
+}
+
+.idle-val {
+  color: #878a99 !important;
+}
+
+.cat-lbl {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: #2b2b2b;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+
+  mat-icon {
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+  }
+}
+
+/* Hour controls */
+.cat-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ctrl-btn {
+  width: 26px;
+  height: 26px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #878a99;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Material Icons';
+  font-style: normal;
+  transition: all .18s;
+  flex-shrink: 0;
+  line-height: 1;
+  padding: 0;
+
+  &:hover:not(:disabled) {
+    background: #405189;
+    border-color: #405189;
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: .35;
+    cursor: not-allowed;
+  }
+}
+
+.hrs-val {
+  font-size: 14px;
+  font-weight: 600;
+  color: #405189;
+  min-width: 26px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Description cell */
+.cat-desc-cell {
+  display: flex;
+  align-items: flex-start;
+}
+
+.cat-desc-input {
+  width: 100%;
+  min-height: 32px;
+  max-height: 120px;
+  resize: none;
+  overflow: hidden;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-family: inherit;
+  color: #212529;
+  background: #fff;
+  transition: border-color .18s, box-shadow .18s;
+  line-height: 1.5;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: var(--text-muted);
+    font-size: 11px;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #405189;
+    box-shadow: 0 0 0 3px rgba(64, 81, 137, .08);
+  }
+}
+
+/* Total row */
+.total-row {
+  display: grid;
+  grid-template-columns: 2fr 120px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 16px;
+  background: #40518930;
+  border-top: 1px solid #405189;
+}
+
+.total-lbl {
+  font-size: 12px;
+  font-weight: 700;
+  color: #212529;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.total-hrs {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.total-num {
+  font-size: 18px;
+  font-weight: 700;
+  color: #405189;
+  font-variant-numeric: tabular-nums;
+}
+
+.total-den {
+  font-size: 12px;
+  color: #878a99;
+}
+
+.total-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bar-track {
+  flex: 1;
+  height: 5px;
+  background: #e9ebec;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width .3s ease;
+}
+
+.bar-pct {
+  font-size: 11px;
+  font-weight: 600;
+  color: #878a99;
+  min-width: 30px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.total-bar-fill {
+  background: linear-gradient(90deg, #405189, #6691e7);
+}
+
+/* ─── Completion slider ─────────────────────────────────────── */
+.completion-pct-label {
+  color: #405189;
+  font-weight: 600;
+}
+
+::ng-deep .dsr-page .mat-mdc-slider {
+  width: 100%;
+  margin-top: 4px;
+
+  .mdc-slider__track--active_fill {
+    background: #405189 !important;
+  }
+
+  .mdc-slider__thumb-knob {
+    background: #405189 !important;
+    border-color: #405189 !important;
+  }
+}
+
+/* ─── Optional toggle ───────────────────────────────────────── */
+.opt-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 16px;
+  border: 1px dashed #ced4da;
+  border-radius: 6px;
+  background: transparent;
+  color: #878a99;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all .2s;
+
+  mat-icon {
+    color: #405189;
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+  }
+
+  &:hover {
+    border-color: #405189;
+    color: #405189;
+    background: #eef0f7;
+  }
+}
+
+.opt-fields {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height .35s ease, opacity .3s ease;
+
+  &.visible {
+    max-height: 400px;
+    opacity: 1;
+  }
+}
+
+/* ─── Action row ────────────────────────────────────────────── */
+.action-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: 1px solid #e9ebec;
+  margin-top: 4px;
+}
+
+.cancel-btn {
+  padding: 9px 20px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #878a99;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .2s;
+
+  &:hover {
+    border-color: #878a99;
+    color: #212529;
+  }
+}
+
+.cancel-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.submit-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 22px;
+  border: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .07);
+  transition: transform .25s ease, box-shadow .25s ease;
+  ;
+  background: #405189;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter';
+  transition: background .2s, opacity .2s;
+  border-radius: 8px;
+
+  mat-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+  }
+
+  &:hover {
+    background: #364474;
+  }
+
+  &.submit-btn--inactive {
+    background: #eef0f7;
+    color: #405189;
+    cursor: default;
+    opacity: 0.7;
+
+    &:hover {
+      background: #eef0f7;
+    }
+  }
+}
+
+.submit-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* ─── Responsive ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .dsr-page {
+    padding: 16px;
+  }
+
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .tbl-head span:last-child {
+    display: none;
+  }
+
+  .tbl-head,
+  .cat-row,
+  .total-row {
+    grid-template-columns: 1fr 100px;
+  }
+
+  .cat-desc-cell,
+  .total-bar-wrap {
+    display: none;
+  }
+
+  .date-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Mobile: stack row vertically */
+  .status-row {
+    flex-direction: column;
+  }
+
+  .status-btns {
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .status-card {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .risk-panel {
+    width: 100% !important;
+    flex: 0 0 auto !important;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height .32s cubic-bezier(.4, 0, .2, 1), opacity .25s ease;
+  }
+
+  .risk-panel--open {
+    max-height: 180px;
+    opacity: 1;
+  }
+}

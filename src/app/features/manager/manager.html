@@ -1,0 +1,434 @@
+<!-- manager.html -->
+
+<div class="manager-wrapper">
+
+  <!-- ══════════════════════════════════════════════════════
+       HEADER ROW
+  ══════════════════════════════════════════════════════ -->
+  <div class="mgr-header-row">
+    <div class="mgr-title-block">
+      <span class="mgr-title">Manager Dashboard</span>
+      <span class="mgr-sub">Team overview &amp; timesheet approvals</span>
+    </div>
+    <!-- <div class="mgr-header-actions">
+      <div class="week-selector">
+        <button mat-icon-button (click)="navigateWeek(-1)">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <div class="week-chip">
+          <mat-icon class="wk-icon">calendar_today</mat-icon>
+          <span class="wk-label">{{ weekLabel }}</span>
+        </div>
+        <button mat-icon-button (click)="navigateWeek(1)">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+        <button mat-button class="wk-today-btn" (click)="goToCurrentWeek()">This Week</button>
+      </div>
+      <button mat-stroked-button class="export-btn" (click)="exportReport()">
+        <mat-icon>download</mat-icon><span>Export</span>
+      </button>
+    </div> -->
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       STAT CARDS — 6 cards
+  ══════════════════════════════════════════════════════ -->
+  <div class="mgr-stats-grid">
+
+    <div class="mgr-stat-card ms-blue" [style.--i]="0">
+      <div class="ms-icon-wrap"><mat-icon>groups</mat-icon></div>
+      <div class="ms-body">
+        <span class="ms-label">Team Size</span>
+        <span class="ms-count">{{ teamStats.total }}</span>
+        <span class="ms-sub">members</span>
+      </div>
+    </div>
+
+    <div class="mgr-stat-card ms-amber" [style.--i]="1">
+      <div class="ms-icon-wrap"><mat-icon>pending_actions</mat-icon></div>
+      <div class="ms-body">
+        <span class="ms-label">Pending Approvals</span>
+        <span class="ms-count">{{ teamStats.pendingApprovals }}</span>
+        <span class="ms-sub">timesheets</span>
+      </div>
+      <div class="ms-pulse" *ngIf="teamStats.pendingApprovals > 0"></div>
+    </div>
+
+    <div class="mgr-stat-card ms-green" [style.--i]="2">
+      <div class="ms-icon-wrap"><mat-icon>bar_chart</mat-icon></div>
+      <div class="ms-body">
+        <span class="ms-label">Avg Utilization</span>
+        <span class="ms-count">{{ teamStats.avgUtilization }}%</span>
+        <span class="ms-sub">this week</span>
+      </div>
+    </div>
+
+    <div class="mgr-stat-card ms-red" [style.--i]="3">
+      <div class="ms-icon-wrap"><mat-icon>warning</mat-icon></div>
+      <div class="ms-body">
+        <span class="ms-label">Open Risks</span>
+        <span class="ms-count">{{ teamStats.openRisks }}</span>
+        <span class="ms-sub">reported</span>
+      </div>
+    </div>
+
+    <div class="mgr-stat-card ms-purple" [style.--i]="4">
+      <div class="ms-icon-wrap"><mat-icon>block</mat-icon></div>
+      <div class="ms-body">
+        <span class="ms-label">Overdue Timesheets</span>
+        <span class="ms-count">{{ teamStats.blockedTasks }}</span>
+        <span class="ms-sub">need action</span>
+      </div>
+    </div>
+
+    <div class="mgr-stat-card ms-teal" [style.--i]="5">
+      <div class="ms-icon-wrap"><mat-icon>person_off</mat-icon></div>
+      <div class="ms-body">
+        <span class="ms-label">No Work Assigned</span>
+        <span class="ms-count">{{ teamStats.noWorkAssigned }}</span>
+        <span class="ms-sub">employees idle</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       TEAM UTILIZATION — mat-table with filter + sort + paginator
+  ══════════════════════════════════════════════════════ -->
+  <div class="mgr-card team-table-card">
+
+    <!-- Card Header -->
+    <div class="mgr-card-header">
+      <div class="mgr-card-title-group">
+        <mat-icon class="mgr-card-icon">people</mat-icon>
+        <span class="mgr-card-title">Team Utilization</span>
+        <span class="mgr-card-badge util-summary-badge">
+          <mat-icon class="badge-icon">group</mat-icon>
+          {{ filteredCount }} / {{ teamStats.total }} members
+        </span>
+      </div>
+      <!-- <span class="mgr-card-badge week-badge">{{ weekLabel }}</span> -->
+    </div>
+
+    <!-- ── FILTER TOOLBAR ── -->
+    <div class="tt-filter-bar">
+
+      <!-- Search input — wider for prominence -->
+      <mat-form-field appearance="outline" class="tt-search-field tt-search-field--wide">
+        <mat-icon matPrefix class="search-prefix-icon">search</mat-icon>
+        <input matInput
+          [(ngModel)]="searchText"
+          (ngModelChange)="applyFilters()"
+          placeholder="Search employee, role…">
+        @if (searchText) {
+          <button matSuffix mat-icon-button (click)="searchText=''; applyFilters()" matTooltip="Clear">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+      </mat-form-field>
+
+      <!-- Date Filter — no floating mat-label to prevent alignment shift on load -->
+      <mat-form-field appearance="outline" class="tt-date-field">
+        <mat-icon matPrefix class="tt-date-prefix-icon">calendar_today</mat-icon>
+        <input matInput
+          [matDatepicker]="tableDatePicker"
+          [(ngModel)]="filterDate"
+          (ngModelChange)="applyFilters()"
+          placeholder="Filter by Date"
+          readonly />
+        <mat-datepicker-toggle matIconSuffix [for]="tableDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #tableDatePicker></mat-datepicker>
+      </mat-form-field>
+
+      <!-- Week Selector — shows human-friendly week labels -->
+      <mat-form-field appearance="outline" class="tt-week-field">
+        <mat-icon matPrefix class="tt-week-prefix-icon">date_range</mat-icon>
+        <mat-select [(ngModel)]="filterWeek" (ngModelChange)="applyFilters()"
+          placeholder="Filter by Week">
+          @for (w of weekOptions; track w.value) {
+            <mat-option [value]="w.value">{{ w.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Submit button — triggers filter apply explicitly -->
+      <button class="tt-submit-btn" (click)="applyFilters()">
+        <mat-icon>search</mat-icon>
+        <span>Submit</span>
+      </button>
+
+      <!-- Clear filters button -->
+      @if (hasActiveFilters) {
+        <button mat-stroked-button class="tt-clear-btn" (click)="clearFilters()">
+          <mat-icon>filter_alt_off</mat-icon>
+          Clear
+        </button>
+      }
+
+    </div>
+
+    <!-- ── MAT TABLE ── -->
+    <div class="mat-table-scroll-wrapper">
+      <table mat-table [dataSource]="dataSource" matSort class="team-mat-table">
+
+        <!-- Employee Column -->
+        <ng-container matColumnDef="employee">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Employee</th>
+          <td mat-cell *matCellDef="let member">
+            <div class="tt-col-name">
+              <div class="tt-avatar" [ngStyle]="{'background': member.avatarColor}">
+                {{ member.initials }}
+              </div>
+              <div class="tt-info">
+                <span class="tt-name">{{ member.name }}</span>
+                <span class="tt-role">{{ member.role }}</span>
+              </div>
+              @if (member.noWork) {
+                <span class="idle-flag">
+                  <mat-icon>hourglass_empty</mat-icon>Idle
+                </span>
+              }
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- DATE Column -->
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="th-center">Date</th>
+          <td mat-cell *matCellDef="let member" class="td-center">
+            <span class="tt-date-value">{{ getFormattedDate(member.date) }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Client Name Column -->
+        <ng-container matColumnDef="ClientName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="th-center">Client Name</th>
+          <td mat-cell *matCellDef="let member" class="td-center">
+            <span class="tt-num">{{ member.clientName }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Project Column -->
+        <ng-container matColumnDef="Project">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="th-center">Project</th>
+          <td mat-cell *matCellDef="let member" class="td-center">
+            <span class="tt-num">{{ member.projectName }}</span>
+          </td>
+        </ng-container>
+
+        <!-- ACTION Column — View button colour reflects DSR decision -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef>Action</th>
+          <td mat-cell *matCellDef="let member" class="td-action">
+            <div class="tt-actions">
+              <button
+                class="tt-view-btn"
+                [ngClass]="getViewBtnClass(member)"
+                (click)="viewMemberDsr(member)"
+                [matTooltip]="getViewBtnTooltip(member)">
+                <mat-icon>visibility</mat-icon>
+                <span>View</span>
+                @if (getMemberDecisionStatus(member) !== 'pending') {
+                  <span class="tt-view-status-dot"
+                    [ngClass]="'tt-view-dot--' + getMemberDecisionStatus(member)">
+                  </span>
+                }
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- No data row -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data-cell" [attr.colspan]="teamTableColumns.length">
+            <div class="tt-empty-state">
+              <mat-icon>search_off</mat-icon>
+              <span>No members match your filters</span>
+              <button mat-button class="tt-clear-inline-btn" (click)="clearFilters()">
+                Clear Filters
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <tr mat-header-row *matHeaderRowDef="teamTableColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: teamTableColumns;"
+          [class.tt-row-flagged]="row.noWork">
+        </tr>
+
+      </table>
+    </div>
+
+    <!-- ── PAGINATOR ── -->
+    <mat-paginator
+      [pageSizeOptions]="[5, 10, 15, 20]"
+      [pageSize]="5"
+      showFirstLastButtons
+      class="team-paginator"
+      aria-label="Select page of team members">
+    </mat-paginator>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       TWO-COLUMN: Risk Heatmap + Pending Approvals
+  ══════════════════════════════════════════════════════ -->
+  <div class="mgr-two-col">
+
+    <!-- ── Risk Heatmap ── -->
+    <div class="mgr-card risk-card">
+      <div class="mgr-card-header">
+        <div class="mgr-card-title-group">
+          <mat-icon class="mgr-card-icon">local_fire_department</mat-icon>
+          <span class="mgr-card-title">Risk Heatmap</span>
+        </div>
+        <span class="risk-total-badge">{{ totalRisks }} risks</span>
+      </div>
+
+      @if (teamRisks.length === 0) {
+        <div class="no-risks-state">
+          <mat-icon>check_circle_outline</mat-icon>
+          <p>No active risks this week 🎉</p>
+        </div>
+      }
+
+      @for (risk of teamRisks; track risk.id) {
+        <div class="risk-row" [ngClass]="'risk-' + risk.impact">
+          <div class="risk-left">
+            <div class="risk-impact-dot" [ngClass]="'dot-' + risk.impact"></div>
+            <div class="risk-info">
+              <span class="risk-member">{{ risk.memberName }}</span>
+              <span class="risk-text">{{ risk.text }}</span>
+              <span class="risk-date">{{ risk.date }}</span>
+            </div>
+          </div>
+          <div class="risk-right">
+            <span class="risk-impact-chip" [ngClass]="'chip-' + risk.impact">
+              {{ risk.impact | titlecase }}
+            </span>
+            @if (risk.escalationRequired) {
+              <span class="escalation-badge">
+                <mat-icon>notifications_active</mat-icon>Escalated
+              </span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- ── Pending Approvals ── -->
+    <!-- @if (pendingMembers.length > 0) {
+      <div class="mgr-card approvals-card">
+        <div class="mgr-card-header">
+          <div class="mgr-card-title-group">
+            <mat-icon class="mgr-card-icon">task_alt</mat-icon>
+            <span class="mgr-card-title">Pending Approvals</span>
+            <span class="pending-count-badge">{{ pendingMembers.length }}</span>
+          </div>
+          <button mat-stroked-button class="approve-all-btn" (click)="approveAll()">
+            <mat-icon>done_all</mat-icon> Approve All
+          </button>
+        </div>
+        <div class="approvals-list">
+          @for (member of pendingMembers; track member.id) {
+            <div class="approval-row">
+              <div class="apr-avatar" [ngStyle]="{'background': member.avatarColor}">
+                {{ member.initials }}
+              </div>
+              <div class="apr-info">
+                <span class="apr-name">{{ member.name }}</span>
+                <span class="apr-meta">{{ member.loggedHours }}h logged &nbsp;·&nbsp; {{ member.taskCount }} tasks</span>
+              </div>
+              <div class="apr-hours-breakdown">
+                <span class="apr-bill">
+                  <mat-icon>attach_money</mat-icon>{{ member.billableHours }}h billable
+                </span>
+                <span class="apr-nonbill">
+                  <mat-icon>money_off</mat-icon>{{ member.nonBillableHours }}h non-billable
+                </span>
+              </div>
+              <div class="apr-actions">
+                <button mat-raised-button class="apr-approve-btn" (click)="approveTimesheet(member)">
+                  <mat-icon>check</mat-icon> Approve
+                </button>
+                <button mat-stroked-button class="apr-reject-btn" (click)="openRejectDialog(member)">
+                  <mat-icon>close</mat-icon> Cancel
+                </button>
+                <button mat-icon-button class="apr-view-btn"
+                  (click)="viewMemberDsr(member)" matTooltip="View Details">
+                  <mat-icon>open_in_new</mat-icon>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    } -->
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       CATEGORY BREAKDOWN
+  ══════════════════════════════════════════════════════ -->
+  <div class="mgr-card category-card">
+    <div class="mgr-card-header">
+      <div class="mgr-card-title-group">
+        <mat-icon class="mgr-card-icon">donut_large</mat-icon>
+        <span class="mgr-card-title">Team Hours by Category</span>
+      </div>
+      <span class="mgr-card-badge">This Week</span>
+    </div>
+    <div class="category-grid">
+      @for (cat of categoryBreakdown; track cat.name) {
+        <div class="cat-item">
+          <div class="cat-icon-wrap" [ngStyle]="{'background': cat.bgColor}">
+            <mat-icon [ngStyle]="{'color': cat.color}">{{ cat.icon }}</mat-icon>
+          </div>
+          <div class="cat-body">
+            <span class="cat-name">{{ cat.name }}</span>
+            <span class="cat-hours">{{ cat.hours }}h</span>
+          </div>
+          <div class="cat-bar-wrap">
+            <div class="cat-bar-fill"
+              [style.width.%]="(cat.hours / maxCategoryHours) * 100"
+              [ngStyle]="{'background': cat.color}">
+            </div>
+          </div>
+          <span class="cat-pct">{{ getCategoryPct(cat.hours) }}%</span>
+        </div>
+      }
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     APPROVE CONFIRMATION DIALOG TEMPLATE
+══════════════════════════════════════════════════════ -->
+<ng-template #approveConfirmTpl>
+  <div class="mgr-confirm-dialog-body">
+
+    <div class="mgr-confirm-icon-wrap">
+      <mat-icon class="mgr-confirm-icon">check_circle</mat-icon>
+    </div>
+
+    <h2 class="mgr-confirm-title">Approve DSR Entry</h2>
+    <p class="mgr-confirm-subtitle">Are you sure you want to proceed with this action?</p>
+
+    <div class="mgr-confirm-info-box">
+      This will mark the DSR entry dated
+      <strong>{{ getFormattedDate(pendingApproveMember?.date!) }}</strong>
+      for <strong>{{ pendingApproveMember?.name }}</strong> as <strong>Approved</strong>.
+    </div>
+
+    <div class="mgr-confirm-actions">
+      <button class="mgr-confirm-btn mgr-confirm-btn--no" (click)="cancelApprove()">
+        <mat-icon>close</mat-icon> No
+      </button>
+      <button class="mgr-confirm-btn mgr-confirm-btn--yes" (click)="confirmApprove()">
+        <mat-icon>check</mat-icon> Yes, Approve
+      </button>
+    </div>
+
+  </div>
+</ng-template>

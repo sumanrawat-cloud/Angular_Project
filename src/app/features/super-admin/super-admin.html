@@ -1,0 +1,327 @@
+<!-- super-admin.html -->
+
+<div class="sa-root">
+
+  <!-- ══════════════════════════════════════════════════════════
+       PAGE HEADER
+  ══════════════════════════════════════════════════════════ -->
+  <!-- <div class="sa-page-header">
+    <div class="sa-page-header__left">
+      <div class="sa-page-header__icon">
+        <mat-icon>admin_panel_settings</mat-icon>
+      </div>
+      <div>
+        <h1 class="sa-page-title">Super Admin Dashboard</h1>
+        <p class="sa-page-sub">Organisation overview — all roles, departments &amp; risks</p>
+      </div>
+    </div>
+    <div class="sa-page-header__right">
+      <button class="sa-btn sa-btn--outline" (click)="exportReport()">
+        <mat-icon>download</mat-icon>Export Report
+      </button>
+    </div>
+  </div> -->
+
+  <!-- ══════════════════════════════════════════════════════════
+       STAT CARDS
+  ══════════════════════════════════════════════════════════ -->
+  <div class="sa-stats-grid">
+
+    <div class="sa-stat-card">
+      <div class="sa-stat-card__icon" style="background:#eaecf5;color:#405189">
+        <mat-icon>groups</mat-icon>
+      </div>
+      <div class="sa-stat-card__body">
+        <span class="sa-stat-card__value">{{ orgStats.totalUsers }}</span>
+        <span class="sa-stat-card__label">Total Users</span>
+      </div>
+    </div>
+
+    <div class="sa-stat-card">
+      <div class="sa-stat-card__icon" style="background:#e8f8f5;color:#0ab39c">
+        <mat-icon>online_prediction</mat-icon>
+      </div>
+      <div class="sa-stat-card__body">
+        <span class="sa-stat-card__value">{{ orgStats.activeToday }}</span>
+        <span class="sa-stat-card__label">Active Today</span>
+      </div>
+    </div>
+
+    <div class="sa-stat-card">
+      <div class="sa-stat-card__icon" style="background:#fffbeb;color:#f59e0b">
+        <mat-icon>pending_actions</mat-icon>
+      </div>
+      <div class="sa-stat-card__body">
+        <span class="sa-stat-card__value">{{ orgStats.pendingDsrs }}</span>
+        <span class="sa-stat-card__label">Pending DSRs</span>
+      </div>
+    </div>
+
+    <div class="sa-stat-card">
+      <div class="sa-stat-card__icon" style="background:#fff0ee;color:#f06548">
+        <mat-icon>warning_amber</mat-icon>
+      </div>
+      <div class="sa-stat-card__body">
+        <span class="sa-stat-card__value">{{ orgStats.openRisks }}</span>
+        <span class="sa-stat-card__label">Open Risks</span>
+      </div>
+    </div>
+
+    <div class="sa-stat-card">
+      <div class="sa-stat-card__icon" style="background:#f5f3ff;color:#8854d0">
+        <mat-icon>trending_up</mat-icon>
+      </div>
+      <div class="sa-stat-card__body">
+        <span class="sa-stat-card__value">{{ orgStats.avgUtilization }}%</span>
+        <span class="sa-stat-card__label">Avg Utilization</span>
+      </div>
+    </div>
+
+    <div class="sa-stat-card">
+      <div class="sa-stat-card__icon" style="background:#fef2f2;color:#c62828">
+        <mat-icon>error_outline</mat-icon>
+      </div>
+      <div class="sa-stat-card__body">
+        <span class="sa-stat-card__value">{{ orgStats.highRisks }}</span>
+        <span class="sa-stat-card__label">High Risks</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       MIDDLE SECTION: Department Stats + Risk Panel
+  ══════════════════════════════════════════════════════════ -->
+  <div class="sa-mid-grid">
+
+    <!-- Department Stats -->
+    <div class="sa-card sa-dept-card">
+      <div class="sa-card__header">
+        <mat-icon class="sa-card__header-icon" style="color:#405189">corporate_fare</mat-icon>
+        <span class="sa-card__title">Department Overview</span>
+      </div>
+      <mat-divider></mat-divider>
+
+      <div class="sa-dept-list">
+        <div class="sa-dept-row" *ngFor="let dept of departmentStats">
+          <div class="sa-dept-icon" [style.background]="dept.bgColor" [style.color]="dept.color">
+            <mat-icon>{{ dept.icon }}</mat-icon>
+          </div>
+          <div class="sa-dept-info">
+            <span class="sa-dept-name">{{ dept.name }}</span>
+            <div class="sa-dept-meta">
+              <span>{{ dept.totalMembers }} members</span>
+              <span class="sa-dept-meta__dot">·</span>
+              <span>{{ dept.activeToday }} active</span>
+              <span class="sa-dept-meta__dot">·</span>
+              <span>{{ dept.pendingDsrs }} pending DSRs</span>
+            </div>
+            <div class="sa-util-bar-wrap">
+              <div
+                class="sa-util-bar"
+                [class]="getUtilBarClass(dept.avgUtil)"
+                [style.width.%]="dept.avgUtil">
+              </div>
+            </div>
+          </div>
+          <div class="sa-dept-util">
+            <span class="sa-dept-util__val">{{ dept.avgUtil }}%</span>
+            <span class="sa-dept-util__lbl">Util</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sa-dept-footer">
+        <div class="sa-dept-footer__item">
+          <mat-icon style="color:#0ab39c">manage_accounts</mat-icon>
+          <span>{{ orgStats.totalManagers }} Managers</span>
+        </div>
+        <div class="sa-dept-footer__item">
+          <mat-icon style="color:#405189">person</mat-icon>
+          <span>{{ orgStats.totalEmployees }} Employees</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Risk Panel -->
+    <div class="sa-card sa-risk-card">
+      <div class="sa-card__header">
+        <mat-icon class="sa-card__header-icon" style="color:#f06548">report_problem</mat-icon>
+        <span class="sa-card__title">Risk Overview</span>
+        <span class="sa-risk-count-badge">{{ orgRisks.length }}</span>
+      </div>
+      <mat-divider></mat-divider>
+
+      <div class="sa-risk-list">
+        <div class="sa-risk-row" *ngFor="let risk of orgRisks">
+          <div class="sa-risk-impact" [class]="getImpactClass(risk.impact)">
+            <mat-icon>{{ getImpactIcon(risk.impact) }}</mat-icon>
+            <span>{{ risk.impact | titlecase }}</span>
+          </div>
+          <div class="sa-risk-body">
+            <p class="sa-risk-text">{{ risk.text }}</p>
+            <div class="sa-risk-meta">
+              <mat-icon style="font-size:13px;width:13px;height:13px;">person_outline</mat-icon>
+              <span>{{ risk.reportedBy }}</span>
+              <span class="sa-dept-meta__dot">·</span>
+              <span>{{ risk.department }}</span>
+              <span class="sa-dept-meta__dot">·</span>
+              <mat-icon style="font-size:13px;width:13px;height:13px;">calendar_today</mat-icon>
+              <span>{{ risk.date }}</span>
+            </div>
+          </div>
+          <div class="sa-risk-escalation" *ngIf="risk.escalationRequired"
+               matTooltip="Escalation required">
+            <mat-icon style="color:#f06548">notification_important</mat-icon>
+          </div>
+        </div>
+
+        <div class="sa-risk-empty" *ngIf="orgRisks.length === 0">
+          <mat-icon>check_circle_outline</mat-icon>
+          <span>No open risks — everything looks good!</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       USER TABLE
+  ══════════════════════════════════════════════════════════ -->
+  <div class="sa-card sa-table-card">
+
+    <!-- Table header -->
+    <div class="sa-table-header">
+      <div class="sa-table-header__left">
+        <mat-icon class="sa-card__header-icon" style="color:#405189">people_outline</mat-icon>
+        <span class="sa-card__title">Emplyoess Data</span>
+        <span class="sa-result-count" *ngIf="hasActiveFilters">
+          {{ filteredCount }} of {{ orgUsers.length }}
+        </span>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+
+    <!-- Filters row -->
+    <div class="sa-filters">
+      <div class="sa-filter-search">
+        <mat-icon class="sa-filter-search__icon">search</mat-icon>
+        <input
+          class="sa-filter-search__input"
+          placeholder="Search name, email, department…"
+          [(ngModel)]="searchText"
+          (ngModelChange)="applyFilters()"
+        />
+      </div>
+
+      <select class="sa-select" [(ngModel)]="filterRole" (ngModelChange)="applyFilters()">
+        <option value="">All Roles</option>
+        <option value="MANAGER">Manager</option>
+        <option value="EMPLOYEE">Employee</option>
+      </select>
+
+      <select class="sa-select" [(ngModel)]="filterStatus" (ngModelChange)="applyFilters()">
+        <option value="">All Status</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+
+      <select class="sa-select" [(ngModel)]="filterDept" (ngModelChange)="applyFilters()">
+        <option value="">All Departments</option>
+        <option *ngFor="let d of uniqueDepartments" [value]="d">{{ d }}</option>
+      </select>
+
+      <button class="sa-btn sa-btn--ghost" *ngIf="hasActiveFilters" (click)="clearFilters()">
+        <mat-icon>filter_alt_off</mat-icon>Clear
+      </button>
+    </div>
+
+    <!-- Table -->
+    <div class="sa-table-wrap">
+      <table mat-table [dataSource]="dataSource" matSort class="sa-table">
+
+        <!-- User column -->
+        <ng-container matColumnDef="user">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>User</th>
+          <td mat-cell *matCellDef="let user">
+            <div class="sa-user-cell">
+              <div class="sa-avatar" [style.background]="user.avatarColor">
+                {{ user.initials }}
+              </div>
+              <div class="sa-user-cell__info">
+                <span class="sa-user-cell__name">{{ user.name }}</span>
+                <span class="sa-role-badge" [class]="getRoleClass(user.role)">
+                  {{ getRoleLabel(user.role) }}
+                </span>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Email column -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+          <td mat-cell *matCellDef="let user">
+            <span class="sa-email">{{ user.email }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Department column -->
+        <ng-container matColumnDef="department">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Department</th>
+          <td mat-cell *matCellDef="let user">{{ user.department }}</td>
+        </ng-container>
+
+        <!-- Status column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+          <td mat-cell *matCellDef="let user">
+            <span class="sa-status-badge" [class]="getStatusClass(user.status)">
+              <span class="sa-status-dot"></span>
+              {{ user.status | titlecase }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Last Active column -->
+        <ng-container matColumnDef="lastActive">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Active</th>
+          <td mat-cell *matCellDef="let user">
+            <span class="sa-last-active" [class.sa-last-active--today]="user.lastActive === 'Today'">
+              {{ user.lastActive }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Timesheets column -->
+        <ng-container matColumnDef="timesheets">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>DSRs (Month)</th>
+          <td mat-cell *matCellDef="let user">
+            <span class="sa-timesheets">{{ user.timesheetsThisMonth }}</span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="userTableColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: userTableColumns;" class="sa-table-row"></tr>
+
+        <!-- No data row -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="sa-no-data" [attr.colspan]="userTableColumns.length">
+            <mat-icon>search_off</mat-icon>
+            <span>No users match the current filters.</span>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+    <!-- Paginator -->
+    <mat-paginator
+      [pageSizeOptions]="[5, 10, 20]"
+      pageSize="5"
+      showFirstLastButtons>
+    </mat-paginator>
+
+  </div>
+
+</div>

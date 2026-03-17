@@ -1,0 +1,244 @@
+<div class="detail-page" *ngIf="data; else noData">
+
+  <!-- ══ Page Header ════════════════════════════════════════════ -->
+  <div class="page-header">
+    <div class="header-left">
+      <!-- <button class="back-btn" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon> Back
+      </button> -->
+      <div>
+        <h1 class="page-title">DSR Submission Detail</h1>
+        <p class="page-breadcrumb">
+          Submit DSR / <span>DSR Detail</span>
+        </p>
+      </div>
+    </div>
+    <button class="new-btn" (click)="submitNew()">
+      <mat-icon>add_circle_outline</mat-icon> Submit New DSR
+    </button>
+  </div>
+
+  <!-- ══ Success Banner ═════════════════════════════════════════ -->
+  <div class="success-banner">
+    <div class="banner-icon"><mat-icon>check_circle</mat-icon></div>
+    <div class="banner-text">
+      <span class="banner-title">DSR Submitted Successfully</span>
+      <span class="banner-sub">
+        Submitted on {{ data.submittedAt | date:'EEEE, MMMM d, y · h:mm a' }}
+      </span>
+    </div>
+    <span class="banner-badge">Confirmed</span>
+  </div>
+
+  <!-- ══ Detail Card ════════════════════════════════════════════ -->
+  <mat-card class="detail-card">
+
+    <!-- ── Card Header ───────────────────────────────────────── -->
+    <div class="card-title-row">
+      <div class="card-title-left">
+        <mat-icon class="card-title-icon">assignment_turned_in</mat-icon>
+        <div>
+          <div class="card-title-text">Daily Status Report</div>
+          <div class="card-title-sub">{{ data.dsrDate | date:'fullDate' }}</div>
+        </div>
+      </div>
+      <!-- Task Status chip -->
+      <span class="status-chip"
+        [ngClass]="{
+          'chip-on-track': data.taskStatus === 'on_track',
+          'chip-at-risk':  data.taskStatus === 'at_risk',
+          'chip-blocked':  data.taskStatus === 'blocked'
+        }">
+        <mat-icon>{{ getStatusIcon(data.taskStatus) }}</mat-icon>
+        {{ getStatusLabel(data.taskStatus) }}
+      </span>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-content class="card-body">
+
+      <!-- ── Section 1 : General Info ─────────────────────────── -->
+      <section class="info-section">
+        <div class="section-label">
+          <mat-icon>info_outline</mat-icon> General Info
+        </div>
+        <div class="info-grid-3">
+
+          <div class="info-field">
+            <span class="inf-label">DSR Date</span>
+            <span class="inf-value">{{ data.dsrDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+
+          <div class="info-field">
+            <span class="inf-label">Client</span>
+            <span class="inf-value">{{ data.client }}</span>
+          </div>
+
+          <div class="info-field">
+            <span class="inf-label">Project</span>
+            <span class="inf-value">{{ data.project }}</span>
+          </div>
+
+          <div class="info-field" *ngIf="data.allowBackfill">
+            <span class="inf-label">Backfill Entry</span>
+            <span class="inf-value backfill-yes">
+              <mat-icon>history</mat-icon> Yes — backfilled
+            </span>
+          </div>
+
+        </div>
+
+        <!-- At-Risk description (shown only when status is at_risk) -->
+        <div class="at-risk-note" *ngIf="data.taskStatus === 'at_risk' && data.atRiskDescription">
+          <div class="at-risk-note-header">
+            <mat-icon>warning</mat-icon>
+            <span>Risk / Blocker Description</span>
+          </div>
+          <p class="at-risk-note-text">{{ data.atRiskDescription }}</p>
+        </div>
+      </section>
+
+      <mat-divider></mat-divider>
+
+      <!-- ── Section 2 : Progress ──────────────────────────────── -->
+      <section class="info-section">
+        <div class="section-label">
+          <mat-icon>bar_chart</mat-icon> Progress & Metrics
+        </div>
+        <div class="info-grid-3">
+
+          <div class="info-field">
+            <span class="inf-label">Tasks Completed</span>
+            <span class="inf-value big-num">{{ data.tasksCompleted }}</span>
+          </div>
+
+          <div class="info-field">
+            <span class="inf-label">Total Hours Logged</span>
+            <span class="inf-value big-num">{{ data.totalHours }}h</span>
+          </div>
+
+          <div class="info-field">
+            <span class="inf-label">Completion</span>
+            <div class="pct-wrap">
+              <div class="pct-track">
+                <div class="pct-fill" [style.width.%]="data.completionPercent"></div>
+              </div>
+              <span class="pct-text">{{ data.completionPercent }}%</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <mat-divider></mat-divider>
+
+      <!-- ── Section 3 : Time by Category ─────────────────────── -->
+      <section class="info-section">
+        <div class="section-label">
+          <mat-icon>schedule</mat-icon> Time by Category
+          <span class="section-badge">{{ data.totalHours }}h / 8h</span>
+        </div>
+
+        <!-- Overall bar -->
+        <div class="overall-bar-row">
+          <div class="overall-bar-track">
+            <div class="overall-bar-fill" [style.width.%]="getBarPct(data.totalHours)"></div>
+          </div>
+          <span class="overall-bar-pct">{{ getBarPct(data.totalHours).toFixed(0) }}% of day</span>
+        </div>
+
+        <!-- Category rows -->
+        <div class="cat-list">
+          <ng-container *ngFor="let cat of data.timeCategories">
+            <div class="cat-item" *ngIf="data.timeByCategory[cat.key] > 0">
+              <div class="cat-left">
+                <span class="cat-dot" [style.background]="cat.color"></span>
+                <mat-icon [style.color]="cat.color">{{ cat.icon }}</mat-icon>
+                <div class="cat-name-wrap">
+                  <span class="cat-name">{{ cat.label }}</span>
+                  <span class="cat-desc-text" *ngIf="getCategoryDescription(cat)">
+                    {{ getCategoryDescription(cat) }}
+                  </span>
+                </div>
+              </div>
+              <div class="cat-mid">
+                <div class="cat-bar-track">
+                  <div class="cat-bar-fill"
+                    [style.width.%]="getBarPct(data.timeByCategory[cat.key])"
+                    [style.background]="cat.color">
+                  </div>
+                </div>
+              </div>
+              <div class="cat-right">
+                <span class="cat-hrs" [style.color]="cat.color">
+                  {{ data.timeByCategory[cat.key] }}h
+                </span>
+                <span class="cat-pct">
+                  ({{ getBarPct(data.timeByCategory[cat.key]).toFixed(0) }}%)
+                </span>
+              </div>
+            </div>
+          </ng-container>
+
+          <div class="cat-empty" *ngIf="loggedCategories.length === 0">
+            No category hours were logged.
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Section 4 : Notes (optional) ─────────────────────── -->
+      <ng-container *ngIf="data.blockers || data.tomorrowPlan">
+        <mat-divider></mat-divider>
+        <section class="info-section">
+          <div class="section-label">
+            <mat-icon>notes</mat-icon> Additional Notes
+          </div>
+          <div class="info-grid-2">
+            <div class="info-field note-field" *ngIf="data.blockers">
+              <span class="inf-label">
+                <mat-icon class="note-icon danger">block</mat-icon> Blockers / Risks
+              </span>
+              <span class="inf-value note-value">{{ data.blockers }}</span>
+            </div>
+            <div class="info-field note-field" *ngIf="data.tomorrowPlan">
+              <span class="inf-label">
+                <mat-icon class="note-icon primary">today</mat-icon> Tomorrow's Plan
+              </span>
+              <span class="inf-value note-value">{{ data.tomorrowPlan }}</span>
+            </div>
+          </div>
+        </section>
+      </ng-container>
+
+    </mat-card-content>
+
+    <mat-divider></mat-divider>
+
+    <!-- ── Card Footer ───────────────────────────────────────── -->
+    <div class="card-footer">
+      <span class="footer-meta">
+        <mat-icon>access_time</mat-icon>
+        Submitted {{ data.submittedAt | date:'medium' }}
+      </span>
+      <div class="footer-actions">
+        <button class="approve-btn" (click)="openApproveDialog()">
+          <mat-icon>how_to_reg</mat-icon> Approve DSR
+        </button>
+        <button class="new-dsr-btn" (click)="submitNew()">
+          <mat-icon>add</mat-icon> Submit Another DSR
+        </button>
+      </div>
+    </div>
+
+  </mat-card>
+
+</div>
+
+<!-- Guard: no data fallback -->
+<ng-template #noData>
+  <div class="no-data-wrap">
+    <mat-icon class="no-data-icon">inbox</mat-icon>
+    <p>No submission data found. Redirecting…</p>
+  </div>
+</ng-template>

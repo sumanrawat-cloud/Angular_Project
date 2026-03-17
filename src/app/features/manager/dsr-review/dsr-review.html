@@ -1,0 +1,200 @@
+<div class="review-wrapper" [@pageIn]>
+
+  <!-- ══════════════════════════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════════════════════════ -->
+  <div class="rv-header-row">
+
+    <div class="rv-back-block">
+      <button class="rv-back-btn" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+        <span>Back to Dashboard</span>
+      </button>
+    </div>
+
+    <div class="rv-title-block">
+      <div class="rv-avatar" [ngStyle]="{'background': member?.avatarColor}">
+        {{ member?.initials }}
+      </div>
+      <div class="rv-meta">
+        <h1 class="rv-name">{{ member?.name }}</h1>
+        <span class="rv-role">{{ member?.role }}</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       FILTER BAR
+  ══════════════════════════════════════════════════════════ -->
+  <div class="rv-filter-bar">
+
+    <mat-form-field appearance="outline" class="rv-date-field">
+      <mat-label>Filter by Date</mat-label>
+      <input matInput [matDatepicker]="datePicker"
+        [(ngModel)]="filterDate"
+        (ngModelChange)="applyFilters()"
+        placeholder="Pick a date"
+        readonly />
+      <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+      <mat-datepicker #datePicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="rv-week-field">
+      <mat-label>Filter by Week</mat-label>
+      <mat-select [(ngModel)]="filterWeek" (ngModelChange)="applyFilters()">
+        @for (w of weekOptions; track w.value) {
+          <mat-option [value]="w.value">{{ w.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    @if (filterDate || filterWeek) {
+      <button mat-stroked-button class="rv-clear-btn" (click)="clearFilters()">
+        <mat-icon>filter_alt_off</mat-icon> Clear
+      </button>
+    }
+
+    <span class="rv-count-badge">{{ filteredEntries.length }} entries</span>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       DSR CARDS
+  ══════════════════════════════════════════════════════════ -->
+  @if (isLoading) {
+    <div class="rv-loading">
+      <div class="rv-spinner"></div>
+      <span>Loading DSR entries…</span>
+    </div>
+  }
+
+  @if (!isLoading && filteredEntries.length === 0) {
+    <div class="rv-empty">
+      <mat-icon>inbox</mat-icon>
+      <p>No DSR entries found for the selected filters.</p>
+    </div>
+  }
+
+  <div class="rv-cards-grid">
+    @for (entry of filteredEntries; track entry.id; let i = $index) {
+      <div class="rv-dsr-card"
+        [style.--delay]="i * 60 + 'ms'"
+        [ngClass]="getCardStatusClass(entry.id)">
+
+        <!-- Card Header -->
+        <div class="rv-card-head">
+          <div class="rv-card-date">
+            <mat-icon>event</mat-icon>
+            <span>{{ entry.date | date:'EEE, MMM d, yyyy' }}</span>
+          </div>
+          <span class="rv-card-proj-chip">{{ entry.project }}</span>
+        </div>
+
+        <!-- Meta Row -->
+        <div class="rv-card-meta-row">
+          <div class="rv-meta-item">
+            <span class="rv-meta-label">Client</span>
+            <span class="rv-meta-value">{{ entry.client }}</span>
+          </div>
+          <div class="rv-meta-item">
+            <span class="rv-meta-label">Project</span>
+            <span class="rv-meta-value">{{ entry.project }}</span>
+          </div>
+          <div class="rv-meta-item">
+            <span class="rv-meta-label">Status</span>
+            <span class="rv-status-chip" [ngClass]="'rvs-' + entry.taskStatus">
+              {{ entry.taskStatus === 'on_track' ? 'On Track' : 'At Risk' }}
+            </span>
+          </div>
+          <div class="rv-meta-item">
+            <span class="rv-meta-label">Total Hours</span>
+            <span class="rv-meta-value rv-hours-val">{{ entry.totalHours }}h</span>
+          </div>
+        </div>
+
+        <!-- Time by Category -->
+        <div class="rv-section-label">Time by Category</div>
+        <div class="rv-cat-grid">
+          @for (cat of getCategoryEntries(entry); track cat.key) {
+            @if (cat.hours > 0) {
+              <div class="rv-cat-chip"
+                [ngStyle]="{'border-color': cat.color + '40', 'background': cat.color + '12'}">
+                <mat-icon [ngStyle]="{'color': cat.color}">{{ cat.icon }}</mat-icon>
+                <span class="rv-cat-name" [ngStyle]="{'color': cat.color}">{{ cat.label }}</span>
+                <span class="rv-cat-hours">{{ cat.hours }}h</span>
+              </div>
+            }
+          }
+        </div>
+
+        <!-- Blockers -->
+        @if (entry.blockers) {
+          <div class="rv-blocker-block">
+            <mat-icon>warning</mat-icon>
+            <div>
+              <span class="rv-blocker-label">Blocker / Risk</span>
+              <p class="rv-blocker-text">{{ entry.blockers }}</p>
+            </div>
+          </div>
+        }
+
+        <!-- At Risk Description -->
+        @if (entry.atRiskDescription) {
+          <div class="rv-risk-block">
+            <mat-icon>report_problem</mat-icon>
+            <div>
+              <span class="rv-risk-label">At Risk Detail</span>
+              <p class="rv-risk-text">{{ entry.atRiskDescription }}</p>
+            </div>
+          </div>
+        }
+
+        <!-- ══ PER-CARD DECISION BAR ══ -->
+        <div class="rv-card-decision-bar">
+
+          @if (getEntryDecision(entry.id) === 'approved') {
+            <span class="rv-decision-pill rv-decision-pill--approved rv-decision-pill--final">
+              <mat-icon>check_circle</mat-icon>
+              Approved
+            </span>
+          }
+
+          @else if (getEntryDecision(entry.id) === 'cancelled') {
+            <span class="rv-decision-pill rv-decision-pill--cancelled rv-decision-pill--final">
+              <mat-icon>cancel</mat-icon>
+              Cancelled
+            </span>
+          }
+
+          @else {
+            <span class="rv-decision-pill rv-decision-pill--pending">
+              <mat-icon>hourglass_top</mat-icon>
+              Awaiting Decision
+            </span>
+            <div class="rv-card-decision-btns">
+              <button
+                class="rv-card-btn rv-card-btn--cancel"
+                (click)="onCardDecision(entry, 'cancel')">
+                <mat-icon>cancel</mat-icon>
+                <span>Cancel</span>
+              </button>
+              <button
+                class="rv-card-btn rv-card-btn--approve"
+                (click)="onCardDecision(entry, 'approve')">
+                <mat-icon>check_circle</mat-icon>
+                <span>Approve</span>
+              </button>
+            </div>
+          }
+
+        </div>
+
+      </div>
+    }
+  </div>
+
+</div>
+
+<!-- Modal is rendered via DOM portal in dsr-review.ts (_injectPortal)
+     and appended directly to document.body — nothing needed here. -->

@@ -1,0 +1,28 @@
+<mat-sidenav-container class="layout-container" [hasBackdrop]="isMobile">
+
+  <mat-sidenav
+    #sidenav
+    [mode]="isMobile ? 'over' : 'side'"
+    [opened]="sidebarOpen"
+    class="sidebar"
+    fixedInViewport="true"
+    (openedChange)="sidebarOpen = $event"
+  >
+    <app-sidebar
+      [isMobile]="isMobile"
+      (closeSidebar)="toggleSidebar()">
+    </app-sidebar>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <app-header
+      [sidebarOpen]="sidebarOpen"
+      [isMobile]="isMobile"
+      (toggleSidebar)="toggleSidebar()">
+    </app-header>
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

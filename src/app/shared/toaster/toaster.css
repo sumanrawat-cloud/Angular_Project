@@ -1,0 +1,119 @@
+/* src/app/shared/toast/toast.component.css */
+
+/* ── Portal ── */
+.toast-portal {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+/* ── Base toast card ── */
+.toast-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 300px;
+  max-width: 420px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.12),
+    0 10px 24px -4px rgba(0, 0, 0, 0.14);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+  cursor: pointer;
+  pointer-events: all;
+
+  /* Enter animation */
+  animation: toastSlideIn 0.35s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
+}
+
+/* ── Colour variants ── */
+.toast-success {
+  background: linear-gradient(135deg, #0ab39c 0%, #099885 100%);
+  color: #ffffff;
+  border-left: 4px solid rgba(255, 255, 255, 0.35);
+}
+
+.toast-info {
+  background: linear-gradient(135deg, #405189 0%, #3444a1 100%);
+  color: #ffffff;
+  border-left: 4px solid rgba(255, 255, 255, 0.35);
+}
+
+.toast-warning {
+  background: linear-gradient(135deg, #f7b84b 0%, #e5a43a 100%);
+  color: #ffffff;
+  border-left: 4px solid rgba(255, 255, 255, 0.35);
+}
+
+.toast-error {
+  background: linear-gradient(135deg, #f06548 0%, #d9543c 100%);
+  color: #ffffff;
+  border-left: 4px solid rgba(255, 255, 255, 0.35);
+}
+
+/* ── Icon ── */
+.toast-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  padding: 3px;
+}
+
+.toast-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ── Message ── */
+.toast-message {
+  flex: 1;
+}
+
+/* ── Close ── */
+.toast-close {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  opacity: 0.7;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.2s;
+  color: inherit;
+}
+
+.toast-close:hover {
+  opacity: 1;
+}
+
+.toast-close svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ── Slide-in animation ── */
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(60px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}

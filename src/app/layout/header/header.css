@@ -1,0 +1,1197 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ===== HAMBURGER BUTTON ===== */
+.ham-btn {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  width: 40px !important;
+  height: 40px !important;
+  gap: 0 !important;
+  padding: 0 10px !important;
+  box-sizing: border-box !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  transition: background 0.22s ease, transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* Scale bounce on click */
+.ham-btn:active {
+  transform: scale(0.82) !important;
+}
+
+/* Hover glow */
+.ham-btn:hover {
+  background: #eaecf5 !important;
+}
+
+/* Ripple element injected via ::after */
+.ham-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background: radial-gradient(circle, rgba(64, 81, 137, 0.18) 0%, transparent 70%);
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s ease;
+  pointer-events: none;
+}
+
+.ham-btn:active::after {
+  transform: scale(2.5);
+  opacity: 1;
+  transition: transform 0s, opacity 0s;
+}
+
+/* Lines */
+.ham-btn .ham-l1,
+.ham-btn .ham-l2,
+.ham-btn .ham-l3 {
+  position: absolute !important;
+  left: 10px;
+  height: 2px;
+  border-radius: 3px;
+  background: #555b6e;
+  transform-origin: left center;
+  /* ✏️ Issue 1 fix: reduced from 0.55s → 0.2s, removed stagger delays */
+  transition:
+    top 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.18s ease;
+  transition-delay: 0ms;
+  pointer-events: none;
+}
+
+/* ── Default state = hamburger ☰ (sidebar is open) ── */
+.ham-btn .ham-l1 {
+  width: 20px;
+  top: 14px;
+}
+
+.ham-btn .ham-l2 {
+  width: 14px;
+  top: 19px;
+}
+
+.ham-btn .ham-l3 {
+  width: 20px;
+  top: 24px;
+}
+
+/* ── ham-open = arrow ← state (sidebar is CLOSED, click to reopen) ── */
+.ham-btn.ham-open .ham-l1 {
+  width: 10px;
+  top: 19px;
+  transform: rotate(45deg);
+  background: #405189;
+}
+
+.ham-btn.ham-open .ham-l2 {
+  width: 20px;
+  top: 19px;
+  transform: none;
+  background: #405189;
+}
+
+.ham-btn.ham-open .ham-l3 {
+  width: 10px;
+  top: 19px;
+  transform: rotate(-45deg);
+  background: #405189;
+}
+
+/* ── ham-close = ✕ state (mobile only: sidebar overlay is OPEN, tap to close) ── */
+.ham-btn.ham-close .ham-l1 {
+  width: 18px;
+  top: 19px;
+  left: 11px;
+  transform: rotate(45deg);
+  transform-origin: center center;
+  background: #f06548;
+}
+
+.ham-btn.ham-close .ham-l2 {
+  width: 0;
+  opacity: 0;
+}
+
+.ham-btn.ham-close .ham-l3 {
+  width: 18px;
+  top: 19px;
+  left: 11px;
+  transform: rotate(-45deg);
+  transform-origin: center center;
+  background: #f06548;
+}
+
+/* ===== BACKDROP ==== */
+.velzon-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  background: transparent;
+}
+
+/* ===== TOOLBAR ===== */
+.velzon-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 800 !important;
+  height: 70px !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.08) !important;
+  padding: 0 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ===== HAMBURGER ===== */
+.ham-btn {
+  flex-shrink: 0;
+  border: none;
+  background: #fff;
+  cursor: pointer;
+}
+
+.ham-btn:hover {
+  background: #f3f6f9 !important;
+}
+
+/* ===== SEARCH ===== */
+.v-search {
+  position: relative;
+  width: 340px;
+  flex-shrink: 0;
+}
+
+.v-search-icon {
+  position: absolute !important;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #adb5bd !important;
+  font-size: 18px !important;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.v-search-input {
+  width: 100%;
+  background: #f3f6f9;
+  border: 1px solid #e9ebec;
+  border-radius: 8px;
+  padding: 9px 14px 9px 38px;
+  font-size: 13.5px;
+  color: #495057;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.v-search-input:focus {
+  border-color: #405189;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(64, 81, 137, 0.1);
+}
+
+.v-spacer {
+  flex: 1 1 auto;
+}
+
+/* ===== NOTIFICATION BUTTON ===== */
+.v-notif-btn {
+  position: relative !important;
+  color: #6c757d !important;
+  width: 40px !important;
+  height: 40px !important;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 100%;
+  transition: transform 0.15s !important;
+  cursor: pointer;
+  padding: 9px;
+}
+
+.v-notif-btn:hover {
+  background: #f3f6f9 !important;
+  transform: scale(1.08);
+}
+
+.v-notif-btn.v-active {
+  color: #405189 !important;
+  background: #eaecf5 !important;
+}
+
+.v-dot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #f06548;
+  border: 2px solid #fff;
+  pointer-events: none;
+  animation: vdotpulse 2s infinite;
+}
+
+@keyframes vdotpulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(240, 101, 72, 0.45);
+  }
+
+  50% {
+    box-shadow: 0 0 0 5px rgba(240, 101, 72, 0);
+  }
+}
+
+/* ===== DIVIDER ===== */
+.v-divider {
+  width: 1px;
+  height: 26px;
+  background: #e9ebec;
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+/* ===== PROFILE BUTTON ===== */
+.v-profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 10px;
+  transition: background 0.2s;
+  font-family: 'Inter', sans-serif;
+  flex-shrink: 0;
+}
+
+.v-profile-btn:hover {
+  background: #f3f6f9;
+}
+
+.v-avatar img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #405189, #0ab39c);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #e3e6ef;
+  flex-shrink: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.v-pinfo {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  cursor: pointer;
+}
+
+.v-pname {
+  font-size: 13px;
+  font-weight: 600;
+  color: #343a40;
+  white-space: nowrap;
+}
+
+.v-prole {
+  font-size: 11px;
+  color: #9599ad;
+}
+
+.v-arrow {
+  font-size: 18px !important;
+  color: #9599ad;
+  transition: transform 0.25s ease !important;
+  display: inline-flex !important;
+  align-items: center;
+}
+
+.v-rotated {
+  transform: rotate(180deg) !important;
+}
+
+/* =============================================
+   NOTIFICATION PANEL
+   ============================================= */
+.v-notif-panel {
+  position: fixed;
+  top: 74px;
+  right: 110px;
+  width: 360px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.06);
+  z-index: 1000;
+  overflow: hidden;
+  /* Hidden state */
+  opacity: 0;
+  transform: translateY(-10px) scale(0.96);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: top right;
+}
+
+.v-notif-panel.v-panel-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: all;
+}
+
+.v-np-head {
+  background: linear-gradient(135deg, #405189, #3a4a80);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.v-np-title {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+}
+
+.v-np-badge {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.v-np-list {
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.v-np-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.v-np-list::-webkit-scrollbar-thumb {
+  background: #dee2e6;
+  border-radius: 4px;
+}
+
+.v-np-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 14px 20px;
+  border-bottom: 1px solid #f3f6f9;
+  cursor: pointer;
+  transition: background 0.15s;
+  position: relative;
+}
+
+.v-np-item:hover {
+  background: #f8f9fc;
+}
+
+.v-np-item:last-child {
+  border-bottom: none;
+}
+
+.v-np-item.v-unread {
+  background: #fafbff;
+}
+
+/* Notification Icons */
+.v-ni-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.v-ni-icon.v-blue {
+  background: #eaecf5;
+}
+
+.v-ni-icon.v-blue mat-icon {
+  color: #405189;
+  font-size: 18px !important;
+}
+
+.v-ni-icon.v-red {
+  background: #fde8e4;
+}
+
+.v-ni-icon.v-red mat-icon {
+  color: #f06548;
+  font-size: 18px !important;
+}
+
+.v-ni-icon.v-avatar-wrap {
+  background: none;
+}
+
+.v-ni-icon img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Notification Body */
+.v-ni-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.v-ni-body p {
+  font-size: 13px;
+  color: #495057;
+  line-height: 1.5;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.v-ni-body p strong {
+  color: #212529;
+}
+
+.v-ni-body p a {
+  color: #405189;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.v-ni-body p a:hover {
+  text-decoration: underline;
+}
+
+.v-highlight {
+  color: #405189 !important;
+}
+
+.v-ni-time {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  color: #adb5bd;
+  margin-top: 5px;
+  font-family: 'Inter', sans-serif;
+}
+
+.v-ni-time mat-icon {
+  font-size: 12px !important;
+  width: 12px !important;
+  height: 12px !important;
+}
+
+.v-unread-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #405189;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.v-np-footer {
+  padding: 13px 20px;
+  text-align: center;
+  border-top: 1px solid #f0f0f0;
+  background: #fafbfc;
+}
+
+.v-np-footer a {
+  font-size: 13px;
+  color: #405189;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Inter', sans-serif;
+}
+
+.v-np-footer a:hover {
+  text-decoration: underline;
+}
+
+.v-np-footer a mat-icon {
+  font-size: 14px !important;
+  width: 14px !important;
+  height: 14px !important;
+}
+
+/* =============================================
+   PROFILE PANEL
+   ============================================= */
+.v-profile-panel {
+  position: fixed;
+  top: 74px;
+  right: 16px;
+  width: 240px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.06);
+  z-index: 1000;
+  overflow: hidden;
+  /* Hidden state */
+  opacity: 0;
+  transform: translateY(-10px) scale(0.96);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: top right;
+}
+
+.v-profile-panel.v-panel-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: all;
+}
+
+/* ── Profile Panel Header ── */
+.v-pp-head {
+  padding: 16px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid #f0f2f5;
+  background: linear-gradient(135deg, #f8f9ff, #f0f5ff);
+}
+
+.v-pp-avatar {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #405189, #0ab39c);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 18px;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 10px rgba(64, 81, 137, 0.3);
+  flex-shrink: 0;
+  font-family: 'Inter', sans-serif;
+  line-height: 1;
+}
+
+.v-pp-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.v-pp-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #212529;
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.v-pp-role {
+  font-size: 11.5px;
+  color: #9599ad;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.3;
+}
+
+.v-pp-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #0ab39c;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.3;
+}
+
+.v-pp-status::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #0ab39c;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* ── Menu Items ── */
+.v-pp-menu {
+  padding: 6px 0;
+}
+
+.v-pp-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  font-size: 13.5px;
+  color: #495057;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.18s ease, color 0.18s ease, padding-left 0.18s ease;
+  font-family: 'Inter', sans-serif;
+  line-height: 1;
+}
+
+.v-pp-item:hover {
+  background: #f3f6f9;
+  color: #405189;
+  padding-left: 24px;
+}
+
+.v-pp-item mat-icon {
+  font-size: 19px !important;
+  width: 19px !important;
+  height: 19px !important;
+  line-height: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #9599ad;
+  flex-shrink: 0;
+  transition: color 0.18s;
+}
+
+.v-pp-item:hover mat-icon {
+  color: #405189;
+}
+
+.v-pp-badge {
+  margin-left: auto;
+  background: #405189;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+}
+
+.v-pp-div {
+  height: 1px;
+  background: #f0f2f5;
+  margin: 4px 0;
+}
+
+/* ── Logout Button ── */
+.v-pp-logout-wrap {
+  padding: 10px 14px 14px;
+}
+
+.v-logout-btn {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  background: linear-gradient(135deg, #f06548, #d94f34) !important;
+  color: #fff !important;
+  border-radius: 9px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  font-family: 'Inter', sans-serif !important;
+  box-shadow: none !important;
+  transition: opacity 0.2s, transform 0.15s !important;
+  padding: 10px 16px !important;
+  border: none !important;
+  cursor: pointer !important;
+}
+
+.v-logout-btn:hover {
+  opacity: 0.9 !important;
+  transform: translateY(-1px) !important;
+}
+
+.v-logout-btn mat-icon {
+  font-size: 17px !important;
+  width: 17px !important;
+  height: 17px !important;
+  line-height: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+}
+
+/* =============================================
+   RESPONSIVE HEADER — with !important overrides
+   for Angular Material compatibility
+   ============================================= */
+
+/* ── Tablet ≤ 1024px ── */
+@media (max-width: 1024px) {
+  .v-search {
+    width: 220px !important;
+  }
+}
+
+/* ── Mobile ≤ 768px ── */
+@media (max-width: 768px) {
+
+  .velzon-header {
+    padding: 0 10px !important;
+    gap: 4px !important;
+    height: 64px !important;
+  }
+
+  /* Hide desktop search bar */
+  .v-search {
+    display: none !important;
+  }
+
+  /* Hide profile name & role text */
+  .v-pinfo {
+    display: none !important;
+  }
+
+  /* Hide dropdown arrow */
+  .v-arrow {
+    display: none !important;
+  }
+
+  /* Tighten profile button */
+  .v-profile-btn {
+    padding: 4px 4px !important;
+    gap: 6px !important;
+  }
+
+  /* Notification + profile panels — full width */
+  .v-notif-panel {
+    left: 8px !important;
+    right: 8px !important;
+    width: auto !important;
+    top: 68px !important;
+  }
+
+  .v-profile-panel {
+    left: 8px !important;
+    right: 8px !important;
+    width: auto !important;
+    top: 68px !important;
+  }
+}
+
+/* ── Mobile Small ≤ 480px ── */
+@media (max-width: 480px) {
+
+  .velzon-header {
+    padding: 0 8px !important;
+    height: 58px !important;
+    gap: 2px !important;
+  }
+
+  /* Hide divider between bell and profile */
+  .v-divider {
+    display: none !important;
+  }
+
+  /* Avatar slightly smaller */
+  .v-avatar img {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .v-notif-panel {
+    top: 62px !important;
+    left: 4px !important;
+    right: 4px !important;
+  }
+
+  .v-profile-panel {
+    top: 62px !important;
+    left: 4px !important;
+    right: 4px !important;
+  }
+
+  /* Notification panel list max-height reduce on small screen */
+  .v-np-list {
+    max-height: 280px !important;
+  }
+}
+
+/* =============================================
+   ROLE SWITCHER — Segmented Control
+   ============================================= */
+
+.v-role-switcher {
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+/* The outer track */
+.v-role-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #f0f3fa;
+  border: 1px solid #e0e4f0;
+  border-radius: 12px;
+  padding: 3px;
+  gap: 0;
+  height: 38px;
+}
+
+/* Gliding active pill */
+.v-role-pill {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  height: calc(100% - 6px);
+  background: linear-gradient(135deg, #405189, #2e3d72);
+  border-radius: 9px;
+  box-shadow: 0 2px 8px rgba(64, 81, 137, 0.28);
+  transition: transform 0.28s cubic-bezier(0.34, 1.3, 0.64, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Pill slides to the right when Employee is active */
+.v-role-pill--right {
+  transform: translateX(100%);
+}
+
+/* Individual role buttons */
+.v-role-btn {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 12px;
+  height: 100%;
+  border: none;
+  background: transparent;
+  border-radius: 9px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.22s ease;
+  min-width: 96px;
+  justify-content: center;
+}
+
+.v-role-btn mat-icon {
+  font-size: 15px !important;
+  width: 15px !important;
+  height: 15px !important;
+  line-height: 1 !important;
+  transition: color 0.22s;
+}
+
+/* Active state — white text over the pill */
+.v-role-btn--active {
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+.v-role-btn--active mat-icon {
+  color: #ffffff !important;
+}
+
+/* Inactive hover */
+.v-role-btn:not(.v-role-btn--active):hover {
+  color: #405189;
+}
+
+.v-role-btn:not(.v-role-btn--active):hover mat-icon {
+  color: #405189;
+}
+
+/* =============================================
+   ROLE SWITCH TOAST
+   ============================================= */
+.v-role-toast {
+  position: fixed;
+  top: 82px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-12px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 20px 11px 14px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, .14), 0 2px 8px rgba(0, 0, 0, .06);
+  z-index: 9999;
+  pointer-events: none;
+  white-space: nowrap;
+  /* Default: hidden */
+  opacity: 0;
+  transition:
+    opacity 0.3s cubic-bezier(0.34, 1.3, 0.64, 1),
+    transform 0.3s cubic-bezier(0.34, 1.3, 0.64, 1);
+}
+
+.v-role-toast--show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Colored icon ring */
+.v-role-toast__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.v-role-toast__icon--mgr {
+  background: #eaecf5;
+}
+
+.v-role-toast__icon--mgr mat-icon {
+  color: #405189;
+  font-size: 19px !important;
+}
+
+.v-role-toast__icon--emp {
+  background: #e8f5e9;
+}
+
+.v-role-toast__icon--emp mat-icon {
+  color: #2e7d32;
+  font-size: 19px !important;
+}
+
+.v-role-toast__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.v-role-toast__title {
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #212529;
+}
+
+.v-role-toast__sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 11.5px;
+  color: #9599ad;
+}
+
+/* ── Responsive: hide switcher label text on small screens ── */
+@media (max-width: 860px) {
+  .v-role-btn span {
+    display: none;
+  }
+
+  .v-role-btn {
+    min-width: 42px;
+    padding: 0 10px;
+  }
+
+  .v-role-pill {
+    width: calc(50% - 3px);
+  }
+}
+
+@media (max-width: 640px) {
+  .v-role-switcher {
+    margin-right: 4px;
+  }
+
+  .v-role-track {
+    height: 34px;
+  }
+
+  .v-role-toast {
+    top: 72px;
+    font-size: 12px;
+  }
+}
+
+/* =============================================
+   ROLE SWITCHER — Premium Segmented Control
+   ============================================= */
+
+.rs-switcher {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ── Outer track ── */
+.rs-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 216px;
+  height: 35px;
+  padding: 2px;
+  background: #eef0f8;
+  border-radius: 13px;
+  border: 1px solid rgba(64, 81, 137, 0.12);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.07);
+  overflow: visible;
+}
+
+/* ── Sliding pill (the highlight that moves) ── */
+.rs-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  height: calc(100% - 6px);
+  border-radius: 10px;
+
+  /* Rich gradient — brand blue */
+  background: linear-gradient(135deg, #4f63c4 0%, #3346a8 100%);
+  box-shadow:
+    0 2px 10px rgba(64, 81, 137, 0.40),
+    0 1px 3px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+
+  /* Smooth spring transition */
+  transition:
+    transform 0.38s cubic-bezier(0.34, 1.3, 0.64, 1),
+    background 0.3s ease,
+    box-shadow 0.3s ease;
+
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Pill slides right when Employee is active */
+.rs-thumb--right {
+  transform: translateX(100%);
+  background: linear-gradient(135deg, #0f9e6e 0%, #0b7f59 100%);
+  box-shadow:
+    0 2px 10px rgba(15, 158, 110, 0.40),
+    0 1px 3px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+/* ── Shared button styles ── */
+.rs-btn {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 100%;
+  padding: 0 10px;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  font-family: "Inter";
+  font-size: 12px;
+  font-weight: 500;
+  color: #8891b4;
+  cursor: pointer;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: color 0.25s ease, transform 0.18s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.rs-btn mat-icon {
+  font-size: 15px !important;
+  width: 15px !important;
+  height: 15px !important;
+  line-height: 1 !important;
+  flex-shrink: 0;
+  transition:
+    color 0.25s ease,
+    transform 0.28s cubic-bezier(0.34, 1.5, 0.64, 1);
+}
+
+/* ── Active state — white text/icon over the gliding pill ── */
+.rs-btn--active {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.rs-btn--active mat-icon {
+  color: #ffffff !important;
+  transform: scale(1.15);
+}
+
+/* ── Inactive hover ── */
+.rs-btn:not(.rs-btn--active):hover {
+  color: #405189;
+  transform: scale(1.04);
+}
+
+.rs-btn:not(.rs-btn--active):hover mat-icon {
+  color: #405189 !important;
+  transform: scale(1.1);
+}
+
+/* ── Press feedback ── */
+.rs-btn:active {
+  transform: scale(0.96) !important;
+}
+
+/* Subtle focus ring for accessibility */
+.rs-btn:focus-visible {
+  outline: 2px solid #405189;
+  outline-offset: -2px;
+  border-radius: 10px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  .rs-track {
+    width: 88px;
+  }
+
+  .rs-btn {
+    padding: 0 8px;
+  }
+
+  .rs-btn span {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .rs-switcher {
+    display: none;
+  }
+}

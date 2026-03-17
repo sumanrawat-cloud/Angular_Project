@@ -1,0 +1,99 @@
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 20px 24px 8px !important;
+  color: #111827;
+}
+
+.dialog-title .risk-icon {
+  color: #ea580c;
+  font-size: 22px;
+}
+
+.dialog-content {
+  padding: 16px 24px !important;
+  min-width: 420px;
+  max-width: 100%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.report-btn {
+  background-color: #ea580c !important;
+  color: white !important;
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+}
+
+.report-btn mat-icon {
+  margin-right: 4px;
+}
+
+.risk-list-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.risk-item {
+  background: #fff7ed;
+  border-left: 3px solid #ea580c;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  height: auto !important;
+  min-height: 48px !important;
+}
+
+.risk-item .risk-item-icon {
+  color: #ea580c;
+}
+
+.risk-item .risk-text {
+  font-size: 14px;
+  color: #374151;
+  white-space: normal !important;
+  line-height: 1.5;
+}
+
+.risk-item .remove-btn {
+  color: #6b7280;
+}
+
+.no-risks {
+  text-align: center;
+  color: #9ca3af;
+  padding: 24px;
+}
+
+.no-risks mat-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  display: block;
+  margin: 0 auto 8px;
+}
+
+.no-risks p {
+  font-size: 14px;
+}
+
+.dialog-actions {
+  padding: 8px 24px 20px !important;
+}
+
+.dialog-actions .close-btn {
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+}
+
+@media (max-width: 500px) {
+  .dialog-content {
+    min-width: unset;
+  }
+}

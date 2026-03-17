@@ -1,0 +1,257 @@
+/* ══════════════════════════════════════════════════════════
+   Keyframes
+══════════════════════════════════════════════════════════ */
+@keyframes dialogIn {
+  from { opacity: 0; transform: translateY(18px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* ══════════════════════════════════════════════════════════
+   Dialog surface
+══════════════════════════════════════════════════════════ */
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 20px !important;
+  box-shadow: 0 32px 72px rgba(0,0,0,0.13), 0 6px 20px rgba(0,0,0,0.07) !important;
+  animation: dialogIn 0.32s cubic-bezier(0.34, 1.28, 0.64, 1) both;
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════════════════════════
+   Title
+══════════════════════════════════════════════════════════ */
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  padding: 22px 24px 8px !important;
+  animation: slideUp 0.3s 0.04s ease both;
+}
+.dialog-title mat-icon {
+  color: #2563eb;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.dialog-title:hover mat-icon { transform: rotate(-10deg) scale(1.2); }
+
+/* ══════════════════════════════════════════════════════════
+   Content
+══════════════════════════════════════════════════════════ */
+.dialog-content {
+  padding: 8px 24px 4px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 440px;
+}
+
+/* Staggered entrance */
+.dialog-content > mat-form-field:nth-child(1) { animation: slideUp 0.3s 0.09s ease both; }
+.dialog-content > mat-form-field:nth-child(2) { animation: slideUp 0.3s 0.15s ease both; }
+.dialog-content > .row-fields                 { animation: slideUp 0.3s 0.21s ease both; }
+
+/* ══════════════════════════════════════════════════════════
+   FONT SIZES — typed text small & clean
+══════════════════════════════════════════════════════════ */
+
+/* Typed text inside inputs / textarea / select */
+.dialog-content input.mat-mdc-input-element,
+.dialog-content textarea.mat-mdc-input-element {
+  font-size:   13px   !important;
+  font-weight: 400    !important;
+  line-height: 1.5    !important;
+  color:       #1e293b !important;
+}
+
+.dialog-content .mat-mdc-select-value-text,
+.dialog-content .mat-mdc-select-placeholder {
+  font-size:   13px !important;
+  font-weight: 400  !important;
+  color:       #1e293b !important;
+}
+
+/* Floating label */
+.dialog-content .mat-mdc-floating-label,
+.dialog-content .mdc-floating-label {
+  font-size: 13px !important;
+}
+
+/* Placeholder text */
+.dialog-content input::placeholder,
+.dialog-content textarea::placeholder {
+  font-size:   13px   !important;
+  font-weight: 400    !important;
+  color:       #94a3b8 !important;
+}
+
+/* Hint text */
+.dialog-content .mat-mdc-form-field-hint { font-size: 11px !important; }
+
+/* ══════════════════════════════════════════════════════════
+   Prefix icons (single-line fields)
+══════════════════════════════════════════════════════════ */
+.field-icon {
+  font-size:    18px  !important;
+  width:        18px  !important;
+  height:       18px  !important;
+  color:        #94a3b8;
+  margin-right: 2px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   Description field — icon INSIDE, aligned to first line
+   Strategy: keep matPrefix inside MDC but force the whole
+   text-field row to flex-start, then pad the prefix down
+   so the icon sits flush beside the first text line.
+══════════════════════════════════════════════════════════ */
+
+/* 1. MDC wrapper row — top-align always */
+.desc-field .mdc-text-field--outlined,
+.desc-field .mat-mdc-text-field-wrapper,
+.desc-field .mdc-text-field--outlined.mdc-text-field--focused,
+.desc-field .mdc-text-field--outlined:not(.mdc-text-field--disabled) {
+  align-items: flex-start !important;
+}
+
+/* 2. Prefix wrapper — locked to top, never moves */
+.desc-field .mat-mdc-form-field-icon-prefix,
+.desc-field .mat-mdc-form-field-icon-prefix:focus-within,
+.desc-field .mat-mdc-form-field-icon-prefix:focus {
+  display:        flex       !important;
+  align-self:     flex-start !important;
+  align-items:    center     !important;
+  padding-top:    14px       !important;
+  padding-bottom: 0          !important;
+  height:         auto       !important;
+  margin-right:   0          !important;
+  position:       relative   !important;
+  top:            0          !important;
+  transform:      none       !important;
+}
+
+/* 3. The mat-icon — fixed size, no movement */
+.desc-field .mat-mdc-form-field-icon-prefix .desc-prefix-icon {
+  display:     block  !important;
+  line-height: 1      !important;
+  margin:      0      !important;
+  font-size:   18px   !important;
+  width:       18px   !important;
+  height:      18px   !important;
+  color:       #94a3b8;
+  flex-shrink: 0;
+}
+
+/* 4. Textarea — fixed top padding locked at all states */
+.desc-field textarea.mat-mdc-input-element,
+.desc-field .mdc-text-field--focused textarea.mat-mdc-input-element,
+.desc-field .mdc-text-field--outlined textarea.mat-mdc-input-element {
+  align-self:  flex-start !important;
+  margin-top:  0          !important;
+  padding-top: 14px       !important;
+  box-sizing:  border-box !important;
+}
+
+/* 5. Kill any MDC transform/translate on the input wrapper that shifts on focus */
+.desc-field .mat-mdc-form-field-infix {
+  padding-top: 14px !important;
+  padding-bottom: 10px !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   Layout helpers
+══════════════════════════════════════════════════════════ */
+.full-width             { width: 100%; }
+.row-fields             { display: flex; gap: 16px; }
+.row-fields .half-width { flex: 1; }
+
+/* ══════════════════════════════════════════════════════════
+   Status option dots
+══════════════════════════════════════════════════════════ */
+.status-option {
+  display:     flex;
+  align-items: center;
+  gap:         8px;
+  font-size:   13px;
+  font-weight: 400;
+  color:       #1e293b;
+}
+
+.status-dot {
+  width:         8px;
+  height:        8px;
+  border-radius: 50%;
+  flex-shrink:   0;
+}
+.dot-pending    { background: #a78bfa; box-shadow: 0 0 0 2px rgba(167,139,250,0.25); }
+.dot-inprogress { background: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.25);  }
+.dot-completed  { background: #22c55e; box-shadow: 0 0 0 2px rgba(34,197,94,0.25);   }
+
+/* Dropdown panel */
+.status-panel .mat-mdc-option {
+  border-radius: 8px !important;
+  margin: 2px 6px   !important;
+  font-size: 13px   !important;
+  min-height: 38px  !important;
+  transition: background 0.15s ease;
+}
+.status-panel .mat-mdc-option:hover           { background: #f1f5f9 !important; }
+.status-panel .mat-mdc-option.mdc-list-item--selected { background: #eff6ff !important; }
+
+/* ══════════════════════════════════════════════════════════
+   Actions
+══════════════════════════════════════════════════════════ */
+.dialog-actions {
+  padding: 8px 24px 22px !important;
+  gap: 10px;
+  animation: slideUp 0.3s 0.26s ease both;
+}
+
+/* Cancel */
+.dialog-actions .cancel-btn {
+  border-radius: 10px;
+  font-size:   13px;
+  font-weight: 600;
+  color:       #6b7280;
+  transition:  background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+.dialog-actions .cancel-btn:hover  { background: #f3f4f6; color: #374151; transform: translateY(-1px); }
+.dialog-actions .cancel-btn:active { transform: translateY(0); }
+
+/* Save */
+.dialog-actions .save-btn {
+  border-radius: 10px !important;
+  font-size:   13px   !important;
+  font-weight: 700    !important;
+  transition: transform 0.22s cubic-bezier(0.34,1.36,0.64,1), box-shadow 0.22s ease !important;
+}
+.dialog-actions .save-btn:not([disabled]):hover {
+  transform:  translateY(-2px) scale(1.025);
+  box-shadow: 0 8px 24px rgba(37,99,235,0.3) !important;
+}
+.dialog-actions .save-btn:not([disabled]):active { transform: translateY(0) scale(0.97); box-shadow: none !important; }
+
+/* Save icon */
+.dialog-actions .save-btn mat-icon {
+  margin-right: 4px;
+  font-size: 15px;
+  width:     15px;
+  height:    15px;
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.dialog-actions .save-btn:not([disabled]):hover mat-icon { transform: rotate(-12deg) scale(1.2); }
+
+/* ══════════════════════════════════════════════════════════
+   Responsive
+══════════════════════════════════════════════════════════ */
+@media (max-width: 500px) {
+  .dialog-content { min-width: unset; }
+  .row-fields     { flex-direction: column; gap: 0; }
+}

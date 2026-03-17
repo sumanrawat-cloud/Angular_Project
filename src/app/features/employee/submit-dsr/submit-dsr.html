@@ -1,0 +1,256 @@
+<ng-container *ngIf="isReady; else loadingTpl">
+<div class="dsr-page">
+
+  <!-- ── Page Header ─────────────────────────────────────────── -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Submit Daily Status Report</h1>
+      <!-- <p class="page-breadcrumb">Dashboard / My Work / <span>Submit DSR</span></p> -->
+    </div>
+  </div>
+
+  <!-- ── Weekly Hours ─────────────────────────────────────────── -->
+  <div class="weekly-card">
+    <div class="weekly-icon"><mat-icon>bar_chart</mat-icon></div>
+    <div class="weekly-info">
+      <div class="weekly-label">This Week's Hours</div>
+      <div class="weekly-track">
+        <div class="weekly-fill" [style.width.%]="weeklyPercent"></div>
+      </div>
+    </div>
+    <div class="weekly-value">{{ weeklyHours }}h / {{ weeklyTarget }}h standard</div>
+  </div>
+
+  <!-- ── Main Card ────────────────────────────────────────────── -->
+  <div class="dsr-card">
+
+    <div class="card-header">
+      <div>
+        <div class="card-title">
+          <mat-icon>assignment_turned_in</mat-icon>
+          Daily Status Report
+        </div>
+        <div class="card-subtitle">Log your time by category — out of 8 hours per day</div>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <form [formGroup]="dsrForm" (ngSubmit)="onSubmit()" novalidate>
+
+        <!-- ── DSR Date ────────────────────────────────────────── -->
+        <div class="form-section">
+          <label class="field-label">DSR Date <span class="req">*</span></label>
+          <div class="date-row">
+            <mat-form-field appearance="outline" class="date-field">
+              <mat-label>DD/MM/YYYY</mat-label>
+              <input matInput [matDatepicker]="picker"
+                     formControlName="dsrDate" [max]="today" />
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              <mat-error *ngIf="dsrForm.get('dsrDate')?.hasError('required')">
+                Date is required
+              </mat-error>
+            </mat-form-field>
+            <label class="backfill-label">
+              <input type="checkbox" formControlName="allowBackfill" />
+              Missed yesterday? Fill it now — up to 7 days back
+            </label>
+          </div>
+        </div>
+
+        <!-- ── Client & Project ───────────────────────────────── -->
+        <div class="form-section">
+        <div class="two-col">
+          <div>
+            <label class="field-label">Client Name <span class="req">*</span></label>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>— Select Client —</mat-label>
+              <mat-select formControlName="client">
+                <mat-option *ngFor="let c of clients" [value]="c">{{ c }}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="dsrForm.get('client')?.hasError('required')">
+                Client is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div>
+            <label class="field-label">Project Name <span class="req">*</span></label>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>— Select Project —</mat-label>
+              <mat-select formControlName="project">
+                <mat-option *ngFor="let p of projects" [value]="p">{{ p }}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="dsrForm.get('project')?.hasError('required')">
+                Project is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════════
+             TASK STATUS
+             ── .status-row       = single flex row (full width)
+             ── .status-btns      = left: On Track + At Risk side-by-side
+             ── .risk-panel       = right: slides in on At Risk click
+             ══════════════════════════════════════════════════════ -->
+        <div class="form-section">
+          <label class="field-label">PROJECT STATUS <span class="req">*</span></label>
+
+          <div class="status-row">
+
+            <!-- display:contents makes these buttons direct flex children of .status-row -->
+            <div class="status-btns">
+
+              <button type="button" class="status-card"
+                [class.status-card--on-track]="selectedStatus === 'on_track'"
+                (click)="setStatus('on_track')">
+                <span class="status-card__dot dot-green"></span>
+                <mat-icon class="status-card__icon icon-green">check_circle</mat-icon>
+                <span class="status-card__label">On Track</span>
+                <mat-icon class="status-card__check" *ngIf="selectedStatus === 'on_track'">check</mat-icon>
+              </button>
+
+              <button type="button" class="status-card risk_card"
+                [class.status-card--at-risk]="selectedStatus === 'at_risk'"
+                (click)="setStatus('at_risk')">
+                <span class="status-card__dot dot-amber"></span>
+                <mat-icon class="status-card__icon icon-amber">warning</mat-icon>
+                <span class="status-card__label">At Risk</span>
+                <mat-icon class="status-card__check" *ngIf="selectedStatus === 'at_risk'">check</mat-icon>
+              </button>
+
+            </div>
+
+            <!-- Textarea slides in to the right when At Risk is selected -->
+            <div class="risk-panel" [class.risk-panel--open]="showRiskTextarea">
+              <textarea class="risk-textarea"
+                [(ngModel)]="atRiskDescription"
+                [ngModelOptions]="{standalone: true}"
+                placeholder="Describe the risk or blocker..."
+                rows="3"></textarea>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── Time by Category ───────────────────────────────── -->
+        <div class="form-section">
+          <label class="field-label">
+            TIME BY CATEGORY <span class="req">*</span>
+            <span class="field-hint">— How did you spend your 8 hours?</span>
+          </label>
+
+          <div class="cat-table">
+            <!-- Header -->
+            <div class="tbl-head">
+              <span>CATEGORY</span>
+              <span>HOURS</span>
+              <span>DESCRIPTION</span>
+            </div>
+
+            <!-- Manual rows -->
+            <div class="cat-row" *ngFor="let cat of manualCategories">
+              <div class="cat-lbl">
+                <mat-icon [style.color]="cat.color">{{ cat.icon }}</mat-icon>
+                <span>{{ cat.label }}</span>
+              </div>
+              <div class="cat-ctrl">
+                <button type="button" class="ctrl-btn"
+                  (click)="decrementHours(cat)"
+                  [disabled]="cat.hours === 0">remove</button>
+                <span class="hrs-val">{{ cat.hours }}</span>
+                <button type="button" class="ctrl-btn"
+                  (click)="incrementHours(cat)"
+                  [disabled]="manualTotal >= maxDailyHours">add</button>
+              </div>
+              <div class="cat-desc-cell">
+                <textarea class="cat-desc-input"
+                  [(ngModel)]="cat.description"
+                  [ngModelOptions]="{standalone: true}"
+                  placeholder="Notes for {{ cat.label }}..."
+                  rows="1"
+                  (input)="autoResize($event)"></textarea>
+              </div>
+            </div>
+
+            <!-- Idle Time — read-only, auto-calc -->
+            <div class="cat-row idle-row">
+              <div class="cat-lbl">
+                <mat-icon [style.color]="idleCat.color">{{ idleCat.icon }}</mat-icon>
+                <span>{{ idleCat.label }}</span>
+                <span class="auto-badge">Auto</span>
+              </div>
+              <div class="cat-ctrl">
+                <button type="button" class="ctrl-btn" disabled>remove</button>
+                <span class="hrs-val idle-val">{{ idleCat.hours }}</span>
+                <button type="button" class="ctrl-btn" disabled>add</button>
+              </div>
+              <div class="cat-desc-cell">
+                <textarea class="cat-desc-input"
+                  [(ngModel)]="idleCat.description"
+                  [ngModelOptions]="{standalone: true}"
+                  placeholder="Notes for Idle Time..."
+                  rows="1"
+                  (input)="autoResize($event)"></textarea>
+              </div>
+            </div>
+
+            <!-- Total -->
+            <div class="total-row">
+              <span class="total-lbl">TOTAL</span>
+              <div class="total-hrs">
+                <span class="total-num">{{ manualTotal + idleCat.hours }}</span>
+                <span class="total-den">&nbsp;h / 8h</span>
+              </div>
+              <div class="total-bar-wrap">
+                <div class="bar-track">
+                  <div class="bar-fill total-bar-fill" [style.width.%]="((manualTotal + idleCat.hours) / maxDailyHours) * 100"></div>
+                </div>
+                <span class="bar-pct">{{ ((manualTotal + idleCat.hours) / maxDailyHours * 100) | number:'1.0-0' }}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Optional Details ───────────────────────────────── -->
+        <div class="form-section">
+          <button type="button" class="opt-toggle" (click)="toggleOptionalDetails()">
+            <mat-icon>{{ showOptionalDetails ? 'remove' : 'add' }}</mat-icon>
+            {{ showOptionalDetails ? 'Hide' : 'Add' }} Blockers / Risk
+          </button>
+          <div class="opt-fields" [class.visible]="showOptionalDetails">
+            <div style="margin-top:14px">
+              <label class="field-label">BLOCKERS / RISK</label>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Describe any blockers.</mat-label>
+                <textarea matInput formControlName="blockers" rows="3"></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Actions ───────────────────────────────────────── -->
+        <div class="action-row">
+          <button type="button" class="cancel-btn" (click)="onCancel()">Cancel</button>
+          <button type="submit" class="submit-btn"
+            [class.submit-btn--inactive]="dsrForm.invalid || manualTotal === 0">
+            <mat-icon>check_circle</mat-icon> Review DSR
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+
+  </div>
+
+</div>
+</ng-container>
+
+<!-- Shown while isReady = false (brief flash guard) -->
+<ng-template #loadingTpl>
+  <div class="dsr-loading">
+    <div class="dsr-loading__spinner"></div>
+  </div>
+</ng-template>

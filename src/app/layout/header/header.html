@@ -1,0 +1,154 @@
+<!-- Backdrop -->
+<div class="velzon-backdrop" *ngIf="notifOpen || profileOpen" (click)="closeAll()"></div>
+
+<!-- ===== HEADER TOOLBAR ===== -->
+<mat-toolbar class="velzon-header">
+
+  <!--
+    ham-open CSS = lines form arrow ← (means: sidebar is CLOSED, click to reopen)
+    No ham-open  = lines form hamburger ☰ (means: sidebar is OPEN, click to collapse)
+    Desktop: arrow ← when closed | Mobile: always hamburger ☰ (X is in sidebar)
+  -->
+  <button
+    class="ham-btn"
+    [class.ham-open]="!sidebarOpen && !isMobile"
+    (click)="toggleSidebar.emit()"
+    aria-label="Toggle sidebar"
+  >
+    <span class="ham-l1"></span>
+    <span class="ham-l2"></span>
+    <span class="ham-l3"></span>
+  </button>
+
+  <!-- Spacer pushes everything after it to the right -->
+  <span class="v-spacer"></span>
+
+  <!-- ===== ROLE SWITCHER — right side, just before notification bell ===== -->
+  <div class="rs-switcher" *ngIf="showRoleSwitcher">
+    <div class="rs-track">
+      <!-- Gliding white thumb -->
+      <div class="rs-thumb" [class.rs-thumb--right]="activeViewRole === 'EMPLOYEE'"></div>
+
+      <button type="button" class="rs-btn"
+        [class.rs-btn--active]="activeViewRole === 'MANAGER'"
+        (click)="switchRole('MANAGER')">
+        <mat-icon>manage_accounts</mat-icon>
+        <span>Manager</span>
+      </button>
+
+      <button type="button" class="rs-btn"
+        [class.rs-btn--active]="activeViewRole === 'EMPLOYEE'"
+        (click)="switchRole('EMPLOYEE')">
+        <mat-icon>badge</mat-icon>
+        <span>Employee</span>
+      </button>
+    </div>
+  </div>
+  <!-- ===== END ROLE SWITCHER ===== -->
+
+  <!-- Notification Bell -->
+  <button mat-icon-button class="v-notif-btn" (click)="toggleNotif()" [class.v-active]="notifOpen">
+    <mat-icon>notifications</mat-icon>
+    <span class="v-dot" *ngIf="unreadCount > 0"></span>
+  </button>
+
+  <div class="v-divider"></div>
+
+  <!-- Profile Button -->
+  <button class="v-profile-btn" (click)="toggleProfile()" [class.v-open]="profileOpen">
+    <div class="v-avatar">
+      <img [src]="userProfile.avatarUrl" [alt]="userProfile.name" />
+    </div>
+    <div class="v-pinfo">
+      <span class="v-pname">{{ userProfile.name }}</span>
+      <span class="v-prole">{{ userProfile.role }}</span>
+    </div>
+    <mat-icon class="v-arrow" [class.v-rotated]="profileOpen">keyboard_arrow_down</mat-icon>
+  </button>
+
+</mat-toolbar>
+
+<!-- ===== NOTIFICATION PANEL ===== -->
+<div class="v-notif-panel" [class.v-panel-open]="notifOpen">
+
+  <div class="v-np-head">
+    <span class="v-np-title">Notifications</span>
+    <span class="v-np-badge">{{ unreadCount }} New</span>
+  </div>
+
+  <div class="v-np-list">
+
+    <div class="v-np-item" [class.v-unread]="!notifications[0].read" (click)="notifications[0].read = true">
+      <div class="v-ni-icon v-blue"><mat-icon>settings</mat-icon></div>
+      <div class="v-ni-body">
+        <p>Your <strong>Elite author</strong> Graphic Optimization <a href="#" (click)="$event.preventDefault()">reward</a> is ready!</p>
+        <div class="v-ni-time"><mat-icon>schedule</mat-icon> JUST 30 SEC AGO</div>
+      </div>
+      <span class="v-unread-dot" *ngIf="!notifications[0].read"></span>
+    </div>
+
+    <div class="v-np-item" [class.v-unread]="!notifications[1].read" (click)="notifications[1].read = true">
+      <div class="v-ni-icon v-avatar-wrap">
+        <img src="https://ui-avatars.com/api/?name=Angela+Bernier&background=405189&color=fff&bold=true" alt="Angela" />
+      </div>
+      <div class="v-ni-body">
+        <p><strong>Angela Bernier</strong> answered to your comment on the cash flow forecast's graph 🔔</p>
+        <div class="v-ni-time"><mat-icon>schedule</mat-icon> 48 MIN AGO</div>
+      </div>
+      <span class="v-unread-dot" *ngIf="!notifications[1].read"></span>
+    </div>
+
+    <div class="v-np-item" [class.v-unread]="!notifications[2].read" (click)="notifications[2].read = true">
+      <div class="v-ni-icon v-red"><mat-icon>chat_bubble</mat-icon></div>
+      <div class="v-ni-body">
+        <p>You have received <strong class="v-highlight">20</strong> new messages in the conversation</p>
+        <div class="v-ni-time"><mat-icon>schedule</mat-icon> 2 HRS AGO</div>
+      </div>
+      <span class="v-unread-dot" *ngIf="!notifications[2].read"></span>
+    </div>
+
+    <div class="v-np-item" [class.v-unread]="!notifications[3].read" (click)="notifications[3].read = true">
+      <div class="v-ni-icon v-avatar-wrap">
+        <img src="https://ui-avatars.com/api/?name=Felicia+Rourke&background=0ab39c&color=fff&bold=true" alt="Felicia" />
+      </div>
+      <div class="v-ni-body">
+        <p><strong>Felicia Rourke</strong> requested refund of your <strong>order #3429</strong></p>
+        <div class="v-ni-time"><mat-icon>schedule</mat-icon> 6 HRS AGO</div>
+      </div>
+      <span class="v-unread-dot" *ngIf="!notifications[3].read"></span>
+    </div>
+
+  </div>
+
+  <div class="v-np-footer">
+    <a href="#" (click)="$event.preventDefault(); markAllRead()">
+      View All Notifications <mat-icon>arrow_forward</mat-icon>
+    </a>
+  </div>
+</div>
+
+<!-- ===== PROFILE PANEL ===== -->
+<div class="v-profile-panel" [class.v-panel-open]="profileOpen">
+
+  <div class="v-pp-head">
+    <div class="v-pp-avatar">{{ userProfile.initials }}</div>
+    <div class="v-pp-info">
+      <span class="v-pp-name">{{ userProfile.name }}</span>
+      <span class="v-pp-role">{{ userProfile.role }}</span>
+      <span class="v-pp-status">Online</span>
+    </div>
+  </div>
+
+  <div class="v-pp-menu">
+    <a class="v-pp-item" href="#" (click)="$event.preventDefault()"><mat-icon>person_outline</mat-icon> Profile</a>
+    <a class="v-pp-item" href="#" (click)="$event.preventDefault()"><mat-icon>chat_bubble_outline</mat-icon> Messages <span class="v-pp-badge">3</span></a>
+    <a class="v-pp-item" href="#" (click)="$event.preventDefault()"><mat-icon>help_outline</mat-icon> Help</a>
+    <div class="v-pp-div"></div>
+  </div>
+
+  <div class="v-pp-logout-wrap">
+    <button mat-raised-button class="v-logout-btn" (click)="logout()">
+      <mat-icon>logout</mat-icon> Sign Out
+    </button>
+  </div>
+</div>

@@ -1,0 +1,73 @@
+<!-- src/app/task-dialog/task-dialog.component.html -->
+<h2 mat-dialog-title class="dialog-title">
+  <mat-icon>{{ mode === 'add' ? 'add_task' : 'edit' }}</mat-icon>
+  {{ mode === 'add' ? 'Add New Task' : 'Edit Task' }}
+</h2>
+
+<mat-dialog-content class="dialog-content">
+
+  <!-- Task Name -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Task Name</mat-label>
+    <mat-icon matPrefix class="field-icon">title</mat-icon>
+    <input matInput [(ngModel)]="taskName" placeholder="e.g. Design System Updates" />
+  </mat-form-field>
+
+  <!-- Description — icon inside, top-aligned via CSS -->
+  <mat-form-field appearance="outline" class="full-width desc-field">
+    <mat-label>Description</mat-label>
+    <mat-icon matPrefix class="field-icon desc-prefix-icon">notes</mat-icon>
+    <textarea matInput [(ngModel)]="taskDescription" rows="3"
+      placeholder="Short description..."></textarea>
+  </mat-form-field>
+
+  <!-- Hours + Status -->
+  <div class="row-fields">
+
+    <mat-form-field appearance="outline" class="half-width">
+      <mat-label>Hours</mat-label>
+      <mat-icon matPrefix class="field-icon">schedule</mat-icon>
+      <input matInput type="number" [(ngModel)]="taskHours"
+        placeholder="e.g. 3.5" min="0.5" max="24" step="0.5" />
+      <mat-hint>0.5 – 24</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="half-width">
+      <mat-label>Status</mat-label>
+      <mat-icon matPrefix class="field-icon">flag</mat-icon>
+      <mat-select [(ngModel)]="taskStatus" panelClass="status-panel">
+        <mat-option value="pending">
+          <span class="status-option">
+            <span class="status-dot dot-pending"></span>
+            Pending
+          </span>
+        </mat-option>
+        <mat-option value="in-progress">
+          <span class="status-option">
+            <span class="status-dot dot-inprogress"></span>
+            In Progress
+          </span>
+        </mat-option>
+        <mat-option value="completed">
+          <span class="status-option">
+            <span class="status-dot dot-completed"></span>
+            Completed
+          </span>
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-button (click)="cancel()" class="cancel-btn">Cancel</button>
+  <button mat-raised-button color="primary"
+    (click)="save()"
+    [disabled]="!isFormValid()"
+    class="save-btn">
+    <mat-icon>save</mat-icon>
+    Save Task
+  </button>
+</mat-dialog-actions>

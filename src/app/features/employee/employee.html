@@ -1,0 +1,329 @@
+<div class="tracker-wrapper">
+
+  <!-- ══════════════════════════════════════════════════════
+       STAT CARDS
+  ══════════════════════════════════════════════════════ -->
+  <div class="stats-grid">
+
+    <div class="stat-card stat-total" [style.--i]="0">
+      <div class="stat-icon-wrap"><mat-icon class="stat-icon">assignment</mat-icon></div>
+      <div class="stat-body">
+        <span class="stat-label">Total Tasks</span>
+        <span class="stat-count">{{ statCounts.total }}</span>
+      </div>
+    </div>
+
+    <div class="stat-card stat-completed" [style.--i]="1">
+      <div class="stat-icon-wrap"><mat-icon class="stat-icon">check_circle</mat-icon></div>
+      <div class="stat-body">
+        <span class="stat-label">Completed</span>
+        <span class="stat-count">{{ statCounts.completed }}</span>
+      </div>
+    </div>
+
+    <div class="stat-card stat-incomplete" [style.--i]="2">
+      <div class="stat-icon-wrap"><mat-icon class="stat-icon">pending_actions</mat-icon></div>
+      <div class="stat-body">
+        <span class="stat-label">Incomplete</span>
+        <span class="stat-count">{{ statCounts.incomplete }}</span>
+      </div>
+    </div>
+
+    <div class="stat-card stat-overdue" [style.--i]="3">
+      <div class="stat-icon-wrap"><mat-icon class="stat-icon">running_with_errors</mat-icon></div>
+      <div class="stat-body">
+        <span class="stat-label">Overdue</span>
+        <span class="stat-count">{{ statCounts.overdue }}</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       WEEKLY SUMMARY STRIP
+  ══════════════════════════════════════════════════════ -->
+  <div class="weekly-strip">
+
+    <div class="ws-item">
+      <div class="ws-icon-wrap ws-blue"><mat-icon>bar_chart</mat-icon></div>
+      <div class="ws-body">
+        <span class="ws-label">This Week</span>
+        <span class="ws-val">{{ weekSummary.total }}h logged</span>
+      </div>
+    </div>
+
+    <div class="ws-divider"></div>
+
+    <div class="ws-item">
+      <div class="ws-icon-wrap ws-green"><mat-icon>attach_money</mat-icon></div>
+      <div class="ws-body">
+        <span class="ws-label">Billable</span>
+        <span class="ws-val" style="color:#15803d">{{ weekSummary.billable }}h</span>
+      </div>
+    </div>
+
+    <div class="ws-divider"></div>
+
+    <div class="ws-item">
+      <div class="ws-icon-wrap ws-amber"><mat-icon>money_off</mat-icon></div>
+      <div class="ws-body">
+        <span class="ws-label">Non-Billable</span>
+        <span class="ws-val" style="color:#b45309">{{ weekSummary.nonBillable }}h</span>
+      </div>
+    </div>
+
+    <div class="ws-divider"></div>
+
+    <div class="ws-item">
+      <div class="ws-icon-wrap ws-red"><mat-icon>warning</mat-icon></div>
+      <div class="ws-body">
+        <span class="ws-label">Open Risks</span>
+        <span class="ws-val" style="color:#b91c1c">{{ statCounts.openRisks }} active</span>
+      </div>
+    </div>
+
+    <span class="ws-spacer"></span>
+
+    <!-- Approval status badge -->
+    <div class="approval-badge" [ngClass]="'appr-' + weekSummary.approvalStatus">
+      <mat-icon class="appr-icon">{{ getApprovalIcon(weekSummary.approvalStatus) }}</mat-icon>
+      <span>{{ getApprovalLabel(weekSummary.approvalStatus) }}</span>
+    </div>
+
+    <!-- Submit timesheet -->
+    <button mat-raised-button class="submit-btn"
+      [disabled]="weekSummary.approvalStatus === 'approved' || weekSummary.approvalStatus === 'submitted'"
+      (click)="submitTimesheet()">
+      <mat-icon>send</mat-icon>
+      <span class="btn-text">Submit Week</span>
+    </button>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       FILTER ROW
+  ══════════════════════════════════════════════════════ -->
+  <div class="filter-row">
+
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Client Name</mat-label>
+      <mat-icon matPrefix class="filter-prefix-icon">business</mat-icon>
+      <mat-select [(ngModel)]="selectedClient" (ngModelChange)="onFilterChange()">
+        <mat-option value="">All Clients</mat-option>
+        <mat-option *ngFor="let c of clientOptions" [value]="c.value">{{ c.label }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Project Name</mat-label>
+      <mat-icon matPrefix class="filter-prefix-icon">folder_open</mat-icon>
+      <mat-select [(ngModel)]="selectedProject" (ngModelChange)="onFilterChange()">
+        <mat-option value="">All Projects</mat-option>
+        <mat-option *ngFor="let p of projectOptions" [value]="p.value">{{ p.label }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button *ngIf="selectedClient || selectedProject"
+      mat-stroked-button class="clear-btn" (click)="clearFilters()">
+      <mat-icon>close</mat-icon> Clear
+    </button>
+
+  </div>
+
+  <!-- ══ TOP BAR ══════════════════════════════════════════ -->
+  <div class="top-bar-card">
+    <div class="top-bar-content">
+
+      <mat-button-toggle-group [(ngModel)]="currentView"
+        (change)="setView($event.value)"
+        class="view-toggle"
+        hideSingleSelectionIndicator="true">
+        <mat-button-toggle value="daily">Daily</mat-button-toggle>
+        <mat-button-toggle value="weekly">Weekly</mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <div class="date-nav">
+        <button mat-icon-button (click)="navigateDate(-1)">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <div class="date-chip">
+          <mat-icon class="cal-icon">calendar_today</mat-icon>
+          <span class="date-label">{{ navDate }}</span>
+        </div>
+        <button mat-icon-button (click)="navigateDate(1)">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+
+      <button mat-button class="today-btn" (click)="goToToday()">Today</button>
+      <span class="spacer"></span>
+
+      <button mat-raised-button color="primary" class="add-btn" (click)="openAddDialog()">
+        <mat-icon>add</mat-icon><span class="btn-text">Add Task</span>
+      </button>
+
+      <button mat-stroked-button class="risk-btn" (click)="openRiskDialog()">
+        <mat-icon>error_outline</mat-icon><span class="btn-text">Report Risk/Blocker</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ══ VIEW CONTAINER ═══════════════════════════════════ -->
+  <div class="view-container" [class.fading]="viewTransition">
+
+    <!-- ── DAILY VIEW ── -->
+    @if (currentView === 'daily') {
+      <div class="main-card">
+
+        <div class="card-header">
+          <h2 class="card-title">{{ formattedDate }}</h2>
+          <div class="hours-row">
+            <span class="hours-label">Total Hours</span>
+            <span class="hours-badge">{{ totalHours }}h</span>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="card-body">
+
+          @if (_currentTasks.length === 0) {
+            <div class="empty-state">
+              <mat-icon>task_alt</mat-icon>
+              <p>No tasks for this day</p>
+              <button mat-raised-button color="primary" (click)="openAddDialog()">
+                <mat-icon>add</mat-icon> Add First Task
+              </button>
+            </div>
+          }
+
+          @if (_currentTasks.length > 0) {
+            <div class="task-list">
+              @for (task of _currentTasks; track task.id) {
+                <div class="task-card" [ngClass]="getStatusClass(task.status)">
+
+                  <mat-icon class="t-icon" [ngClass]="'s-' + task.status">
+                    {{ getStatusIcon(task.status) }}
+                  </mat-icon>
+
+                  <div class="t-body">
+                    <!-- Title row: name + status chip + category + billable -->
+                    <div class="t-title-row">
+                      <span class="t-name">{{ task.name }}</span>
+                      <span class="s-chip" [ngClass]="'c-' + task.status">
+                        {{ getStatusLabel(task.status) }}
+                      </span>
+                      @if (task.category) {
+                        <span class="cat-chip">{{ task.category }}</span>
+                      }
+                      <span class="billable-badge" [ngClass]="task.billable ? 'bill-yes' : 'bill-no'">
+                        <mat-icon>{{ task.billable ? 'attach_money' : 'money_off' }}</mat-icon>
+                        {{ task.billable ? 'Billable' : 'Non-Billable' }}
+                      </span>
+                    </div>
+
+                    <!-- Project + Client meta -->
+                    <div class="t-meta-row">
+                      @if (task.projectName) {
+                        <span class="t-meta-item">
+                          <mat-icon>folder_open</mat-icon>{{ task.projectName }}
+                        </span>
+                      }
+                      @if (task.clientName) {
+                        <span class="t-meta-item">
+                          <mat-icon>business</mat-icon>{{ task.clientName }}
+                        </span>
+                      }
+                    </div>
+
+                    @if (task.description) {
+                      <p class="t-desc">{{ task.description }}</p>
+                    }
+                    <div class="t-time">
+                      <mat-icon>schedule</mat-icon>
+                      {{ task.hours }} hour{{ task.hours !== 1 ? 's' : '' }}
+                    </div>
+                  </div>
+
+                  <div class="t-actions">
+                    <button mat-icon-button class="edit-btn" (click)="openEditDialog(task)" matTooltip="Edit">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button class="del-btn" (click)="deleteTask(task.id)" matTooltip="Delete">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+
+                </div>
+              }
+            </div>
+          }
+
+        </div>
+      </div>
+    }
+
+    <!-- ── WEEKLY VIEW ── -->
+    @if (currentView === 'weekly') {
+      <div class="main-card">
+
+        <div class="card-header">
+          <h2 class="card-title">{{ weekTitle }}</h2>
+          <div class="hours-row">
+            <span class="hours-label">Week Total</span>
+            <span class="hours-badge">{{ weekTotalHours }}h</span>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="card-body week-body">
+          @for (day of _weekDays; track day.dateKey) {
+
+            <div class="week-row" [class.today-row]="isToday(day.date)">
+
+              <div class="day-col">
+                <div class="day-name-row">
+                  <span class="day-name" [class.today-name]="isToday(day.date)">{{ day.label }}</span>
+                  @if (isToday(day.date)) { <span class="today-pill">Today</span> }
+                </div>
+                <span class="day-date">{{ day.shortDate }}</span>
+                <span class="day-hours" [class.zero]="day.totalHours === 0">{{ day.totalHours }}h</span>
+                <button mat-icon-button class="day-add-btn"
+                  (click)="openAddDialog(day.dateKey)" [matTooltip]="'Add to ' + day.label">
+                  <mat-icon>add_circle_outline</mat-icon>
+                </button>
+              </div>
+
+              <div class="tasks-col">
+                @if (day.tasks.length === 0) {
+                  <span class="no-tasks">No tasks</span>
+                }
+                @for (task of day.tasks; track task.id) {
+                  <div class="w-task" [ngClass]="getStatusClass(task.status)">
+                    <mat-icon class="w-icon" [ngClass]="'s-' + task.status">{{ getStatusIcon(task.status) }}</mat-icon>
+                    <span class="w-name">{{ task.name }}</span>
+                    @if (task.category) { <span class="w-cat">{{ task.category }}</span> }
+                    <span class="w-hours">{{ task.hours }}h</span>
+                    <button mat-icon-button class="edit-btn sm" (click)="openEditDialog(task)" matTooltip="Edit">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button class="del-btn sm" (click)="deleteTask(task.id, day.dateKey)" matTooltip="Delete">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                }
+              </div>
+
+            </div>
+
+            @if (!$last) { <mat-divider class="week-div"></mat-divider> }
+          }
+        </div>
+
+      </div>
+    }
+
+  </div>
+</div>
