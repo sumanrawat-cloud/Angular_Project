@@ -16,22 +16,6 @@ body {
 }
 
 
-/* .mdc-text-field--outlined:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-floating-label {
-      font-size: 14px;
-    letter-spacing: 0.5px;
-
-}
-.mat-mdc-form-field.mat-form-field-animations-enabled .mdc-text-field__input {
-    font-size: 12px;
-    letter-spacing: 0.5px;
-    font-family: 'Inter';
-}
-
-.mat-mdc-select-value-text {
-    font-size: 14px;
-    letter-spacing: 0.5px;
-} */
-
 /******************** TOSTER ********************************/
 
 .success-snackbar {

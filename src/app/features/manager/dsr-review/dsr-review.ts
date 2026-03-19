@@ -165,7 +165,6 @@ export class DsrReview implements OnInit, OnDestroy {
     padding: 20px; box-sizing: border-box;
     z-index: 2147483647;
     font-family: 'Inter';
-    /* ✏️ You can increase animation timing from here → backdrop fade-in duration (.22s) */
     animation: _rvBd .22s ease both;
     will-change: opacity;
   }
@@ -179,10 +178,9 @@ export class DsrReview implements OnInit, OnDestroy {
     padding: 40px 40px 32px; text-align: center;
     width: 100%; max-width: 440px;
     display: flex; flex-direction: column; align-items: center;
-    /*You can increase animation timing from here → card pop-in duration (.34s) */
     animation: _rvPop .34s cubic-bezier(.34,1.28,.64,1) both;
     will-change: transform, opacity, box-shadow;
-     font-size: 13px;
+    font-size: 13px;
     letter-spacing: 0.5px;
     font-family: inter;
   }
@@ -290,11 +288,9 @@ export class DsrReview implements OnInit, OnDestroy {
     const card     = this._portalEl?.querySelector<HTMLElement>('#_rv_card_');
     if (!backdrop || !card) { this._teardownPortal(); then?.(); return; }
 
-    // ✏️ You can increase animation timing from here → dismiss card exit duration (230ms)
     card.style.transition     = 'opacity 230ms cubic-bezier(.4,0,1,1), transform 230ms cubic-bezier(.4,0,1,1)';
     card.style.opacity        = '0';
     card.style.transform      = 'scale(0.88) translateY(12px)';
-    // ✏️ You can increase animation timing from here → dismiss backdrop fade duration (280ms)
     backdrop.style.transition = 'opacity 280ms ease';
     backdrop.style.opacity    = '0';
 
@@ -317,7 +313,6 @@ export class DsrReview implements OnInit, OnDestroy {
     const titleEl  = this._portalEl?.querySelector<HTMLElement>('._rv_h2_');
     const actions  = this._portalEl?.querySelector<HTMLElement>('._rv_acts_');
     const bodyEl   = this._portalEl?.querySelector<HTMLElement>('._rv_p_');
-    const subEl    = this._portalEl?.querySelector<HTMLElement>('._rv_sub_');
 
     if (!card) { then(); return; }
 
@@ -327,24 +322,20 @@ export class DsrReview implements OnInit, OnDestroy {
 
     // ── Phase 1: Button press micro-feedback ─────────────────────────────
     if (yesBtn) {
-      // ✏️ You can increase animation timing from here → button press scale duration (130ms)
       yesBtn.style.transition = 'transform 130ms cubic-bezier(.4,0,.2,1), box-shadow 130ms';
       yesBtn.style.transform  = 'scale(0.92)';
       yesBtn.style.boxShadow  = 'none';
     }
 
     // ── Phase 2: Burst into success / cancel state ───────────────────────
-    // ✏️ You can increase animation timing from here → delay before phase 2 fires (150ms)
     setTimeout(() => {
 
       // Lock buttons to prevent double-fire
       if (yesBtn) { yesBtn.style.pointerEvents = 'none'; yesBtn.style.transform = 'scale(1)'; }
       if (noBtn)  { noBtn.style.pointerEvents  = 'none'; }
 
-      // ✏️ You can increase animation timing from here → action row / body fade-out (180ms)
       if (actions) { actions.style.transition = 'opacity 180ms ease'; actions.style.opacity = '0'; }
       if (bodyEl)  { bodyEl.style.transition  = 'opacity 180ms ease'; bodyEl.style.opacity  = '0'; }
-      // subEl (the "This will mark..." detail box) stays visible — no fade
 
       if (isApprove) {
         // Card glow pulse — CSS keyframe rvGlowPulse (defined in dsr-review.css)
@@ -364,7 +355,6 @@ export class DsrReview implements OnInit, OnDestroy {
 
         // Glyph swap: fade out → swap to check_circle → fade in with spring
         if (iconSpan) {
-          // ✏️ You can increase animation timing from here → glyph fade-out duration (120ms)
           iconSpan.style.transition = 'opacity 120ms ease, transform 120ms ease';
           iconSpan.style.opacity    = '0';
           iconSpan.style.transform  = 'scale(0.5)';
@@ -372,7 +362,6 @@ export class DsrReview implements OnInit, OnDestroy {
             if (!iconSpan) return;
             iconSpan.textContent = 'check_circle';
             iconSpan.style.color = '#22c55e';
-            // ✏️ You can increase animation timing from here → glyph fade-in duration (200ms)
             iconSpan.style.transition = 'opacity 200ms ease, transform 200ms cubic-bezier(.34,1.4,.64,1)';
             iconSpan.style.opacity    = '1';
             iconSpan.style.transform  = 'scale(1)';
@@ -381,7 +370,6 @@ export class DsrReview implements OnInit, OnDestroy {
 
         // Title cross-fade to success message
         if (titleEl) {
-          // ✏️ You can increase animation timing from here → title fade-out (160ms)
           titleEl.style.transition = 'opacity 160ms ease, color 160ms ease';
           titleEl.style.opacity    = '0';
           setTimeout(() => {
@@ -389,7 +377,6 @@ export class DsrReview implements OnInit, OnDestroy {
             titleEl.textContent      = 'Entry Approved!';
             titleEl.style.color      = '#15803d';
             titleEl.style.fontWeight = '900';
-            // ✏️ You can increase animation timing from here → title fade-in (240ms)
             titleEl.style.transition = 'opacity 240ms ease';
             titleEl.style.opacity    = '1';
             // Success message slides up — CSS keyframe rvSubIn (dsr-review.css)
@@ -403,7 +390,6 @@ export class DsrReview implements OnInit, OnDestroy {
       } else {
         // ── CANCEL PATH — simpler ripple + title swap ─────────────────────
         void card.offsetWidth; // force reflow before transition
-        // ✏️ You can increase animation timing from here → cancel ripple expansion (420ms)
         card.style.transition = 'box-shadow 420ms cubic-bezier(.4,0,.2,1)';
         card.style.boxShadow  = `0 0 0 22px ${rippleBg}, 0 32px 80px rgba(15,23,42,.22)`;
 
@@ -428,8 +414,8 @@ export class DsrReview implements OnInit, OnDestroy {
     }, 150);
 
     // ── Phase 3 / 4: Hold → collapse glow → dismiss ──────────────────────
-    //  increase animation timing from here → hold duration (approve: 900ms | cancel: 640ms)
-    const holdMs = isApprove ? 2250000 : 640;
+    // FIX: was 2250000 (typo — 37.5 minutes!) now correctly 900ms for approve
+    const holdMs = isApprove ? 900 : 640;
     setTimeout(() => {
       if (iconEl) {
         iconEl.style.transition = 'transform 220ms ease, box-shadow 220ms ease';
@@ -441,7 +427,7 @@ export class DsrReview implements OnInit, OnDestroy {
         card.style.boxShadow  = '';
         card.classList.remove('--approving');
       }
-      //  increase animation timing from here → pause before final dismiss (140ms)
+      // pause before final dismiss
       setTimeout(() => this._animateDismiss(then), 140);
     }, holdMs);
   }

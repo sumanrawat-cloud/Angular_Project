@@ -1,0 +1,97 @@
+.dcd-wrap {
+  padding: 36px 32px 28px;
+  text-align: center;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.dcd-icon-ring {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #eef0f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  box-shadow: 0 0 0 8px rgba(64, 81, 137, .07);
+}
+
+.dcd-icon-ring mat-icon {
+  font-size: 25px;
+  color: #405189;
+}
+
+.dcd-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #12141f;
+  margin: 0 0 10px;
+  letter-spacing: 0.5px;
+}
+
+.dcd-body {
+  font-size: 12px;
+  color: #495057;
+  margin: 0 0 6px;
+  line-height: 1.5;
+}
+
+.dcd-sub {
+  font-size: 12px;
+  color: #878a99;
+  margin: 0 0 28px;
+}
+
+.dcd-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.dcd-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 24px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  outline: none;
+  transition: background .18s, box-shadow .18s, transform .15s;
+}
+
+.dcd-btn:active {
+  transform: scale(.97);
+}
+
+.dcd-btn--cancel {
+  background: #f3f6f9;
+  color: #6c757d;
+  border: 1px solid #e9ebec;
+}
+
+.dcd-btn--cancel:hover {
+  background: #e9ebec;
+  color: #495057;
+}
+
+.dcd-btn--confirm {
+  background: #405189;
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(64, 81, 137, .25);
+}
+
+.dcd-btn--confirm mat-icon {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+}
+
+.dcd-btn--confirm:hover {
+  background: #364474;
+  box-shadow: 0 5px 14px rgba(64, 81, 137, .35);
+}

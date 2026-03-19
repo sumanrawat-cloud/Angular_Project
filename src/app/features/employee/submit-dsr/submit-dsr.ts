@@ -1,6 +1,6 @@
 import {
   Component, OnInit, OnDestroy, AfterViewInit,
-  Inject, ChangeDetectorRef,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import {
@@ -26,10 +26,12 @@ import { MatCheckboxModule }  from '@angular/material/checkbox';
 import { MatTooltipModule }   from '@angular/material/tooltip';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { MatDialogModule, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatDividerModule }   from '@angular/material/divider';
 
 import { DsrDataService, DsrTimeCategory } from '../../../core/services/dsr-data-service';
+import { ConfirmSubmitDialog } from '../../../shared/confirm-submit-dialog/confirm-submit-dialog';
+import { SubmitSuccessDialog } from '../../../shared/submit-success-dialog/submit-success-dialog';
 
 /* ─── DD/MM/YYYY Date Adapter ───────────────────────────────── */
 export class DdMmYyyyDateAdapter extends NativeDateAdapter {
@@ -52,6 +54,7 @@ export class DdMmYyyyDateAdapter extends NativeDateAdapter {
     return super.format(date, displayFormat);
   }
 }
+
 export const DD_MM_YYYY_FORMATS = {
   parse:   { dateInput: 'input' },
   display: {
@@ -59,177 +62,6 @@ export const DD_MM_YYYY_FORMATS = {
     dateA11yLabel: 'LL', monthYearA11yLabel: 'MMMM YYYY',
   },
 };
-
-/* ─── Confirm Dialog ────────────────────────────────────────── */
-@Component({
-  selector: 'app-confirm-submit-dialog',
-  standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule],
-  template: `
-    <div class="dcd-wrap">
-      <div class="dcd-icon-ring">
-        <mat-icon>help_outline</mat-icon>
-      </div>
-      <h2 class="dcd-title">Confirm Submission</h2>
-      <p class="dcd-body">Are you sure you want to submit this Daily Status Report?</p>
-      <!--<p class="dcd-sub">This action cannot be undone once confirmed.</p>-->
-      <div class="dcd-actions">
-        <button mat-dialog-close="cancel" class="dcd-btn dcd-btn--cancel">
-          Cancel
-        </button>
-        <button mat-dialog-close="confirm" class="dcd-btn dcd-btn--confirm">
-          <mat-icon>check_circle</mat-icon> Confirm
-        </button>
-      </div>
-    </div>`,
-  styles: [`
-    .dcd-wrap {
-      padding: 36px 32px 28px;
-      text-align: center;
-      font-family: 'Inter', 'Segoe UI', sans-serif;
-    }
-    .dcd-icon-ring {
-          width: 40px;
-    height: 40px;
-      border-radius: 50%;
-      background: #eef0f7;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 20px;
-      box-shadow: 0 0 0 8px rgba(64,81,137,.07);
-    }
-    .dcd-icon-ring mat-icon {
-      font-size: 25px;
-      color: #405189;
-    }
-    .dcd-title {
-       font-size: 15px;
-    font-weight: 700;
-    color: #12141f;
-    margin: 0 0 10px;
-    letter-spacing: 0.5px;
-    }
-    .dcd-body {
-      font-size: 12px; color: #495057;
-      margin: 0 0 6px; line-height: 1.5;
-    }
-    .dcd-sub {
-      font-size: 12px; color: #878a99;
-      margin: 0 0 28px;
-    }
-    .dcd-actions {
-      display: flex; justify-content: center; gap: 12px;
-      margin-top: 25px;
-    }
-    .dcd-btn {
-      display: inline-flex; align-items: center; gap: 7px;
-      padding: 9px 24px;
-      border-radius: 8px;
-      font-size: 13px; font-weight: 600;
-      cursor: pointer; font-family: inherit;
-      border: none; outline: none;
-      transition: background .18s, box-shadow .18s, transform .15s;
-      &:active { transform: scale(.97); }
-    }
-    .dcd-btn--cancel {
-      background: #f3f6f9;
-      color: #6c757d;
-      border: 1px solid #e9ebec;
-      &:hover { background: #e9ebec; color: #495057; }
-    }
-    .dcd-btn--confirm {
-      background: #405189;
-      color: #fff;
-      box-shadow: 0 3px 10px rgba(64,81,137,.25);
-      mat-icon { font-size: 16px; height: 16px; width: 16px; }
-      &:hover {
-        background: #364474;
-        box-shadow: 0 5px 14px rgba(64,81,137,.35);
-      }
-    }
-  `],
-})
-export class ConfirmSubmitDialogComponent {}
-
-/* ─── Success Dialog ────────────────────────────────────────── */
-@Component({
-  selector: 'app-success-submit-dialog',
-  standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule],
-  template: `
-    <div class="dsd-wrap">
-      <div class="dsd-icon-ring">
-        <mat-icon>check_circle</mat-icon>
-      </div>
-      <h2 class="dsd-title">Submitted Successfully!</h2>
-      <p class="dsd-body">Data has been submitted successfully.</p>
-      <p class="dsd-sub">Your DSR for <strong>{{ data.date | date:'mediumDate' }}</strong> has been recorded.</p>
-      <div class="dsd-actions">
-        <button mat-dialog-close class="dsd-btn">
-          <mat-icon>arrow_forward</mat-icon> View Submission
-        </button>
-      </div>
-    </div>`,
-  styles: [`
-    .dsd-wrap {
-      padding: 36px 32px 28px;
-      text-align: center;
-      font-family: 'Inter';
-    }
-    .dsd-icon-ring {
-      width: 40px;
-    height: 40px;
-      border-radius: 50%;
-      background: rgba(10, 179, 156, .12);
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 20px;
-      box-shadow: 0 0 0 10px rgba(10, 179, 156, .07);
-    }
-    .dsd-icon-ring mat-icon {
-      font-size: 25px;
-      color: #0ab39c;
-    }
-    .dsd-title {
-      font-size: 15px; font-weight: 700;
-      color: #12141f; margin: 0 0 10px;
-    }
-    .dsd-body {
-     font-size: 13px;
-    color: #495057;
-    margin: 0 0 6px;
-    line-height: 1.5;
-    letter-spacing: 0.5px;
-    font-family: 'Inter';
-    }
-    .dsd-sub {
-       font-size: 11px;
-    color: #878a99;
-    margin: 0 0 28px;
-    letter-spacing: 0.5px;
-}
-    .dsd-actions { display: flex; justify-content: center; }
-    .dsd-btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 10px 28px;
-      border-radius: 8px;
-      font-size: 13px; font-weight: 600;
-      cursor: pointer; font-family: inherit;
-      border: 1px solid #e9ebec;
-      background: #f3f6f9;
-      color: #212529;
-      outline: none;
-      transition: background .18s, box-shadow .18s, transform .15s;
-      mat-icon { font-size: 16px; height: 16px; width: 16px; }
-      &:hover {
-        background: #e9ebec;
-        box-shadow: 0 3px 8px rgba(56,65,74,.12);
-      }
-      &:active { transform: scale(.97); }
-    }
-  `],
-})
-export class SuccessSubmitDialogComponent {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { date: Date }) {}
-}
 
 /* ─── Extended category interface ───────────────────────────── */
 export interface DsrTimeCategoryEx extends DsrTimeCategory {
@@ -398,7 +230,7 @@ export class SubmitDsr implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
     this.dialog
-      .open(ConfirmSubmitDialogComponent, {
+      .open(ConfirmSubmitDialog, {
         width: '420px', disableClose: true, panelClass: 'dsr-dialog-panel',
       })
       .afterClosed()
@@ -424,7 +256,7 @@ export class SubmitDsr implements OnInit, AfterViewInit, OnDestroy {
       submittedAt:       new Date(),
     });
     this.dialog
-      .open(SuccessSubmitDialogComponent, {
+      .open(SubmitSuccessDialog, {
         width: '420px', disableClose: true,
         panelClass: 'dsr-dialog-panel', data: { date: v.dsrDate },
       })

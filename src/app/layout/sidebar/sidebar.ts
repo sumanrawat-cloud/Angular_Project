@@ -38,13 +38,13 @@ const EMPLOYEE_MENU: MenuGroup[] = [
         hasChildren: false,
         link:        '/employee',
       },
-      {
-        label:       'My Profile',
-        icon:        'person_outline',
-        hasChildren: false,
-        link:        '/employee/profile',
-        disabled:    true,
-      },
+      // {
+      //   label:       'My Profile',
+      //   icon:        'person_outline',
+      //   hasChildren: false,
+      //   link:        '/employee/profile',
+      //   disabled:    true,
+      // },
     ]
   },
   {
@@ -56,34 +56,34 @@ const EMPLOYEE_MENU: MenuGroup[] = [
         hasChildren: false,
         link:        '/employee/my-timesheet',
       },
-      {
-        label:       'My Risks',
-        icon:        'warning_amber',
-        hasChildren: false,
-        link:        '/employee/risks',
-        disabled:    true,
-      },
-      {
-        label:       'History',
-        icon:        'history',
-        hasChildren: false,
-        link:        '/employee/history',
-        disabled:    true,
-      },
+      // {
+      //   label:       'My Risks',
+      //   icon:        'warning_amber',
+      //   hasChildren: false,
+      //   link:        '/employee/risks',
+      //   disabled:    true,
+      // },
+      // {
+      //   label:       'History',
+      //   icon:        'history',
+      //   hasChildren: false,
+      //   link:        '/employee/history',
+      //   disabled:    true,
+      // },
     ]
   },
-  {
-    title: 'SUPPORT',
-    items: [
-      {
-        label:       'Help & Docs',
-        icon:        'help_outline',
-        hasChildren: false,
-        link:        '/employee/help',
-        disabled:    true,
-      },
-    ]
-  },
+  // {
+  //   title: 'SUPPORT',
+  //   items: [
+  //     {
+  //       label:       'Help & Docs',
+  //       icon:        'help_outline',
+  //       hasChildren: false,
+  //       link:        '/employee/help',
+  //       disabled:    true,
+  //     },
+  //   ]
+  // },
 ];
 
 // ─── Manager menu (no Submit DSR) ────────────────────────────────────────────
@@ -97,53 +97,53 @@ const MANAGER_MENU: MenuGroup[] = [
         hasChildren: false,
         link:        '/manager',
       },
-      {
-        label:       'My Profile',
-        icon:        'person_outline',
-        hasChildren: false,
-        link:        '/manager/profile',
-        disabled:    true,
-      },
+      // {
+      //   label:       'My Profile',
+      //   icon:        'person_outline',
+      //   hasChildren: false,
+      //   link:        '/manager/profile',
+      //   disabled:    true,
+      // },
     ]
   },
-  {
-    title: 'MY WORK',
-    items: [
-      {
-        label:       'My Timesheet',
-        icon:        'edit_calendar',
-        hasChildren: false,
-        link:        '/manager/timesheet',
-        disabled:    true,
-      },
-      {
-        label:       'My Risks',
-        icon:        'warning_amber',
-        hasChildren: false,
-        link:        '/manager/risks',
-        disabled:    true,
-      },
-      {
-        label:       'History',
-        icon:        'history',
-        hasChildren: false,
-        link:        '/manager/history',
-        disabled:    true,
-      },
-    ]
-  },
-  {
-    title: 'SUPPORT',
-    items: [
-      {
-        label:       'Help & Docs',
-        icon:        'help_outline',
-        hasChildren: false,
-        link:        '/manager/help',
-        disabled:    true,
-      },
-    ]
-  },
+  // {
+  //   title: 'MY WORK',
+  //   items: [
+  //     {
+  //       label:       'My Timesheet',
+  //       icon:        'edit_calendar',
+  //       hasChildren: false,
+  //       link:        '/manager/timesheet',
+  //       disabled:    true,
+  //     },
+  //     {
+  //       label:       'My Risks',
+  //       icon:        'warning_amber',
+  //       hasChildren: false,
+  //       link:        '/manager/risks',
+  //       disabled:    true,
+  //     },
+  //     {
+  //       label:       'History',
+  //       icon:        'history',
+  //       hasChildren: false,
+  //       link:        '/manager/history',
+  //       disabled:    true,
+  //     },
+  //   ]
+  // },
+  // {
+  //   title: 'SUPPORT',
+  //   items: [
+  //     {
+  //       label:       'Help & Docs',
+  //       icon:        'help_outline',
+  //       hasChildren: false,
+  //       link:        '/manager/help',
+  //       disabled:    true,
+  //     },
+  //   ]
+  // },
 ];
 
 // ─── Super Admin menu ─────────────────────────────────────────────────────────
@@ -176,15 +176,24 @@ const SUPER_ADMIN_MENU: MenuGroup[] = [
         link:        '/super-admin/users',
         disabled:    true,
       },
-      {
+      // {
+      //   label:       'report',
+      //   icon:        'bar_chart',
+      //   hasChildren: false,
+      //   link:        '/super-admin/report',
+      // //  disabled:    false,
+      // },
+{
+        // FIX: label was 'report' (lowercase), link was '/super-admin/report' ✓ (already correct)
         label:       'Reports',
         icon:        'bar_chart',
         hasChildren: false,
-        link:        '/super-admin/reports',
-        disabled:    true,
+        link:        '/super-admin/report',
       },
     ]
   },
+      
+  
   {
     title: 'SUPPORT',
     items: [

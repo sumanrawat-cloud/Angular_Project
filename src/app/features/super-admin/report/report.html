@@ -1,0 +1,434 @@
+<!-- report.html -->
+<div class="rp-page">
+
+  <!-- ══ PAGE HEADER ══════════════════════════════════════════ -->
+  <div class="rp-header">
+    <div class="rp-header__left">
+      <div class="rp-header__icon"><mat-icon>bar_chart</mat-icon></div>
+      <div>
+        <h1 class="rp-header__title">Reports</h1>
+        <p class="rp-header__sub">Organisation-wide analytics — DSR, utilization &amp; risks</p>
+      </div>
+    </div>
+    <div class="rp-header__actions">
+      <button mat-stroked-button class="rp-btn-outline" (click)="exportCSV()">
+        <mat-icon>download</mat-icon><span>Export CSV</span>
+      </button>
+      <button mat-flat-button class="rp-btn-primary" (click)="exportPDF()">
+        <mat-icon>picture_as_pdf</mat-icon><span>Export PDF</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ FILTER BAR ═══════════════════════════════════════════ -->
+  <mat-card class="rp-filter-card">
+    <mat-card-content class="rp-filter-content">
+
+      <!-- Left group: dropdowns + clear button — all inline, no wrap -->
+      <div class="rp-filter-left">
+
+        <mat-form-field appearance="outline" class="rp-field">
+          <mat-label>Date Range</mat-label>
+          <mat-select [(ngModel)]="filters.dateRange">
+            <mat-option value="this_week">This Week</mat-option>
+            <mat-option value="last_week">Last Week</mat-option>
+            <mat-option value="this_month">This Month</mat-option>
+            <mat-option value="last_month">Last Month</mat-option>
+            <mat-option value="last_3_months">Last 3 Months</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="rp-field">
+          <mat-label>Department</mat-label>
+          <mat-select [(ngModel)]="filters.department" (ngModelChange)="applyFilters()">
+            <mat-option value="">All Departments</mat-option>
+            <mat-option value="Engineering">Engineering</mat-option>
+            <mat-option value="QA">QA</mat-option>
+            <mat-option value="Design">Design</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Always in DOM, invisible when no filter active — prevents layout shift -->
+        <button mat-stroked-button class="rp-btn-clear"
+          [class.rp-btn-clear--visible]="filters.department || searchTerm"
+          (click)="clearFilters()">
+          <mat-icon>filter_alt_off</mat-icon>Clear
+        </button>
+
+      </div>
+
+      <!-- Right group: 3 tabs pushed to the right -->
+      <mat-button-toggle-group [(ngModel)]="activeTab" (change)="setTab($event.value)" class="rp-tabs"
+        hideSingleSelectionIndicator>
+        <mat-button-toggle value="dsr">
+          <mat-icon>assignment</mat-icon>
+          <span class="rp-tab-label">DSR Summary</span>
+          <span class="rp-tab-ink" *ngIf="activeTab === 'dsr'"></span>
+        </mat-button-toggle>
+        <mat-button-toggle value="utilization">
+          <mat-icon>trending_up</mat-icon>
+          <span class="rp-tab-label">Utilization</span>
+          <span class="rp-tab-ink" *ngIf="activeTab === 'utilization'"></span>
+        </mat-button-toggle>
+        <mat-button-toggle value="risk">
+          <mat-icon>warning_amber</mat-icon>
+          <span class="rp-tab-label">Risk Report</span>
+          <span class="rp-tab-ink" *ngIf="activeTab === 'risk'"></span>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+
+    </mat-card-content>
+  </mat-card>
+
+  <!-- ══ KPI CARDS ════════════════════════════════════════════ -->
+  <div class="rp-kpi-grid">
+    <mat-card class="rp-kpi-card" *ngFor="let k of kpiCards; let i = index" [style.--delay]="i * 75 + 'ms'">
+      <mat-card-content class="rp-kpi-body">
+        <div class="rp-kpi-icon" [style.background]="k.iconBg" [style.color]="k.iconColor">
+          <mat-icon>{{ k.icon }}</mat-icon>
+        </div>
+        <div class="rp-kpi-text">
+          <span class="rp-kpi-value">{{ k.value }}</span>
+          <span class="rp-kpi-label">{{ k.label }}</span>
+        </div>
+        <div class="rp-kpi-trend" [class.rp-kpi-trend--up]="k.trend > 0" [class.rp-kpi-trend--down]="k.trend < 0"
+          *ngIf="k.trend !== 0">
+          <mat-icon>{{ k.trend > 0 ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+          <span>{{ k.trendLabel }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- ══ CHARTS ════════════════════════════════════════════════ -->
+  <div class="rp-charts-grid">
+
+    <mat-card class="rp-card">
+      <div class="rp-card-header">
+        <div class="rp-card-hicon"><mat-icon>insert_chart</mat-icon></div>
+        <div class="rp-card-htitle">
+          <span class="rp-card-title">DSR Submissions Over Time</span>
+          <span class="rp-card-sub">Weekly breakdown this period</span>
+        </div>
+        <div class="rp-legend">
+          <span class="rp-ldot rp-ldot--blue"></span><span>Submitted</span>
+          <span class="rp-ldot rp-ldot--amber"></span><span>Pending</span>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <mat-card-content class="rp-chart-body">
+        <div class="rp-bar-chart">
+          <div class="rp-y-axis">
+            <span *ngFor="let t of yTicks">{{ t }}</span>
+          </div>
+          <div class="rp-bars">
+            <div class="rp-bar-col" *ngFor="let d of dsrChartData"
+              [matTooltip]="d.submitted + ' submitted · ' + d.pending + ' pending'" matTooltipPosition="above">
+              <div class="rp-bar rp-bar--blue" [style.height.%]="(d.submitted / maxDsr) * 100"></div>
+              <div class="rp-bar rp-bar--amber" [style.height.%]="(d.pending   / maxDsr) * 100"></div>
+              <span class="rp-bar-lbl">{{ d.day }}</span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="rp-card">
+      <div class="rp-card-header">
+        <div class="rp-card-hicon"><mat-icon>donut_small</mat-icon></div>
+        <div class="rp-card-htitle">
+          <span class="rp-card-title">Avg Utilization</span>
+          <span class="rp-card-sub">By department</span>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <mat-card-content class="rp-donut-body">
+        <svg class="rp-donut-svg" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="48" fill="none" stroke="#f1f3fa" stroke-width="12" />
+          <circle cx="60" cy="60" r="48" fill="none" stroke="#405189" stroke-width="12" stroke-linecap="round"
+            stroke-dasharray="301.6" [attr.stroke-dashoffset]="301.6 - (301.6 * avgUtilization / 100)"
+            transform="rotate(-90 60 60)" class="rp-donut-arc" />
+          <text x="60" y="56" text-anchor="middle" class="rp-donut-pct">{{ avgUtilization }}%</text>
+          <text x="60" y="69" text-anchor="middle" class="rp-donut-lbl">Avg Util</text>
+        </svg>
+        <div class="rp-dept-rows">
+          <div class="rp-dept-row" *ngFor="let d of deptUtil">
+            <span class="rp-dept-dot" [style.background]="d.color"></span>
+            <span class="rp-dept-name">{{ d.name }}</span>
+            <mat-progress-bar mode="determinate" [value]="d.util" class="rp-dept-bar"
+              [ngClass]="'rp-dept-bar--' + d.key">
+            </mat-progress-bar>
+            <span class="rp-dept-pct">{{ d.util }}%</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+
+  <!-- ══ DATA TABLE ════════════════════════════════════════════ -->
+  <!-- FIX 5: id="rp-table-section" is the scroll target used by _scrollToTable() -->
+  <mat-card id="rp-table-section" class="rp-card rp-table-card" [class.rp-table--switching]="tabSwitching">
+
+    <div class="rp-table-top">
+      <div class="rp-table-top__left">
+        <div class="rp-card-hicon rp-card-hicon--sm"><mat-icon>table_chart</mat-icon></div>
+        <div>
+          <span class="rp-showing-label">Showing:&nbsp;<strong>{{ activeTab === 'dsr' ? 'DSR Summary' : activeTab === 'utilization' ? 'Utilization' : 'Risk Report' }}</strong></span>
+          <span class="rp-card-title">
+            <ng-container [ngSwitch]="activeTab">
+              <ng-container *ngSwitchCase="'dsr'">DSR Submission Report</ng-container>
+              <ng-container *ngSwitchCase="'utilization'">Utilization Report</ng-container>
+              <ng-container *ngSwitchDefault>Risk Report</ng-container>
+            </ng-container>
+          </span>
+          <span class="rp-table-count">{{ filteredCount }} results</span>
+        </div>
+      </div>
+      <mat-form-field appearance="outline" class="rp-search-field">
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput placeholder="Search name, department…" [(ngModel)]="searchTerm"
+          (ngModelChange)="applyFilters()" />
+        <button mat-icon-button matSuffix *ngIf="searchTerm" (click)="searchTerm=''; applyFilters()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- SKELETON — shown while switching -->
+    <div class="rp-skeleton-wrap" *ngIf="tabSwitching">
+      <div class="rp-skeleton-row" *ngFor="let i of [1,2,3,4,5]">
+        <div class="rp-skel rp-skel--avatar"></div>
+        <div class="rp-skel rp-skel--text"></div>
+        <div class="rp-skel rp-skel--short"></div>
+        <div class="rp-skel rp-skel--short"></div>
+        <div class="rp-skel rp-skel--medium"></div>
+        <div class="rp-skel rp-skel--short"></div>
+        <div class="rp-skel rp-skel--badge"></div>
+      </div>
+    </div>
+
+    <div class="rp-table-content" [class.rp-table-content--visible]="!tabSwitching">
+
+      <!-- ══ DSR TABLE — matColumnDef prefixed with dsr_ ══ -->
+      <div class="rp-table-wrap" *ngIf="activeTab === 'dsr'">
+        <table mat-table [dataSource]="dsrDataSource" matSort #sort1="matSort" class="rp-table">
+
+          <ng-container matColumnDef="dsr_user">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Employee</th>
+            <td mat-cell *matCellDef="let r">
+              <div class="rp-emp-cell">
+                <div class="rp-avatar" [style.background]="r.avatarColor">{{ r.initials }}</div>
+                <div class="rp-emp-info">
+                  <span class="rp-emp-name">{{ r.name }}</span>
+                  <span class="rp-emp-role" [class.rp-emp-role--manager]="r.role === 'Manager'">
+                    {{ r.role }}
+                  </span>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="dsr_dept">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Department</th>
+            <td mat-cell *matCellDef="let r">{{ r.department }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="dsr_submitted">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Submitted</th>
+            <td mat-cell *matCellDef="let r">
+              <span class="rp-num rp-num--primary">{{ r.submitted }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="dsr_pending">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Pending</th>
+            <td mat-cell *matCellDef="let r">
+              <span class="rp-num" [class.rp-num--amber]="r.pending > 0">{{ r.pending }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="dsr_approved">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Approved</th>
+            <td mat-cell *matCellDef="let r">
+              <span class="rp-num rp-num--green">{{ r.approved }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="dsr_completion">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Completion</th>
+            <td mat-cell *matCellDef="let r">
+              <div class="rp-prog-cell">
+                <mat-progress-bar mode="determinate" [value]="r.completion" class="rp-prog"
+                  [ngClass]="getProgClass(r.completion)">
+                </mat-progress-bar>
+                <span class="rp-prog-pct">{{ r.completion }}%</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="dsr_status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+            <td mat-cell *matCellDef="let r">
+              <span class="rp-status-badge" [class.rp-status--active]="r.status === 'Active'"
+                [class.rp-status--inactive]="r.status !== 'Active'">
+                <span class="rp-status-dot"></span>{{ r.status }}
+              </span>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="dsrColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let r; columns: dsrColumns;" class="rp-row"></tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="rp-empty" [attr.colspan]="dsrColumns.length">
+              <mat-icon>search_off</mat-icon><span>No records match.</span>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- ══ UTILIZATION TABLE — matColumnDef prefixed with util_ ══ -->
+      <div class="rp-table-wrap" *ngIf="activeTab === 'utilization'">
+        <table mat-table [dataSource]="utilDataSource" matSort #sort2="matSort" class="rp-table">
+
+          <ng-container matColumnDef="util_user">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Employee</th>
+            <td mat-cell *matCellDef="let r">
+              <div class="rp-emp-cell">
+                <div class="rp-avatar" [style.background]="r.avatarColor">{{ r.initials }}</div>
+                <div class="rp-emp-info">
+                  <span class="rp-emp-name">{{ r.name }}</span>
+                  <span class="rp-emp-role" [class.rp-emp-role--manager]="r.role === 'Manager'">
+                    {{ r.role }}
+                  </span>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="util_dept">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Department</th>
+            <td mat-cell *matCellDef="let r">{{ r.department }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="util_billable">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Billable Hrs</th>
+            <td mat-cell *matCellDef="let r">
+              <span class="rp-num rp-num--primary">{{ r.billable }}h</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="util_total">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Hrs</th>
+            <td mat-cell *matCellDef="let r">{{ r.total }}h</td>
+          </ng-container>
+
+          <ng-container matColumnDef="util_utilization">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Utilization</th>
+            <td mat-cell *matCellDef="let r">
+              <div class="rp-prog-cell">
+                <mat-progress-bar mode="determinate" [value]="r.utilization" class="rp-prog"
+                  [ngClass]="getProgClass(r.utilization)">
+                </mat-progress-bar>
+                <span class="rp-prog-pct">{{ r.utilization }}%</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="util_trend">
+            <th mat-header-cell *matHeaderCellDef>Trend</th>
+            <td mat-cell *matCellDef="let r">
+              <span class="rp-trend-badge" [class.rp-trend--up]="r.trend === 'up'"
+                [class.rp-trend--down]="r.trend === 'down'" [class.rp-trend--stable]="r.trend === 'stable'">
+                <mat-icon>{{ r.trend === 'up' ? 'arrow_upward' : r.trend === 'down' ? 'arrow_downward' : 'remove'
+                  }}</mat-icon>
+                {{ r.trend === 'up' ? 'Rising' : r.trend === 'down' ? 'Falling' : 'Stable' }}
+              </span>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="utilColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let r; columns: utilColumns;" class="rp-row"></tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="rp-empty" [attr.colspan]="utilColumns.length">
+              <mat-icon>search_off</mat-icon><span>No records match.</span>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- ══ RISK TABLE — matColumnDef prefixed with risk_ ══ -->
+      <div class="rp-table-wrap" *ngIf="activeTab === 'risk'">
+        <table mat-table [dataSource]="riskDataSource" matSort #sort3="matSort" class="rp-table">
+
+          <ng-container matColumnDef="risk_desc">
+            <th mat-header-cell *matHeaderCellDef>Risk Description</th>
+            <td mat-cell *matCellDef="let r">
+              <p class="rp-risk-text">{{ r.text }}</p>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="risk_reporter">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Reported By</th>
+            <td mat-cell *matCellDef="let r">
+              <div class="rp-emp-cell">
+                <div class="rp-avatar" [style.background]="r.avatarColor">{{ r.initials }}</div>
+                <span class="rp-emp-name">{{ r.reportedBy }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="risk_dept">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Department</th>
+            <td mat-cell *matCellDef="let r">{{ r.department }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="risk_impact">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Severity</th>
+            <td mat-cell *matCellDef="let r">
+              <span class="rp-impact-badge" [class.rp-impact--high]="r.impact === 'high'"
+                [class.rp-impact--medium]="r.impact === 'medium'" [class.rp-impact--low]="r.impact === 'low'">
+                <mat-icon>{{ getImpactIcon(r.impact) }}</mat-icon>
+                {{ r.impact | titlecase }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="risk_date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+            <td mat-cell *matCellDef="let r">
+              <span class="rp-date">{{ r.date }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="risk_status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let r">
+              <span class="rp-status-badge" [class.rp-status--active]="r.status === 'Resolved'"
+                [class.rp-status--inactive]="r.status === 'Open'">
+                <span class="rp-status-dot"></span>{{ r.status }}
+              </span>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="riskColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let r; columns: riskColumns;" class="rp-row"></tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="rp-empty" [attr.colspan]="riskColumns.length">
+              <mat-icon>search_off</mat-icon><span>No records match.</span>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+    </div><!-- /rp-table-content -->
+
+    <mat-divider></mat-divider>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" pageSize="5" showFirstLastButtons>
+    </mat-paginator>
+
+  </mat-card>
+
+</div>

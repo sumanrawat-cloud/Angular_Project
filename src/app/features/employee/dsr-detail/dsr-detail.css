@@ -562,31 +562,6 @@
   flex-wrap: wrap;
 }
 
-.approve-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 18px;
-  border: none;
-  border-radius: var(--radius-input);
-  background: var(--success);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
-  box-shadow: 0 3px 10px rgba(10, 179, 156, 0.25);
-
-  mat-icon { font-size: 16px; height: 16px; width: 16px; }
-
-  &:hover {
-    background: #099d8c;
-    box-shadow: 0 5px 16px rgba(10, 179, 156, 0.38);
-    transform: translateY(-1px);
-  }
-  &:active { transform: translateY(0); }
-}
-
 .new-dsr-btn {
   display: flex;
   align-items: center;
@@ -641,33 +616,3 @@
   .success-banner { flex-wrap: wrap; }
   .banner-badge { display: none; }
 }
-/* ─── Footer Actions (Approve + Submit Another) ─────────────── */
-.footer-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.approve-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 18px;
-  border: none;
-  border-radius: var(--radius-input);
-  background: var(--success);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
-  box-shadow: 0 3px 10px rgba(10, 179, 156, 0.25);
-}
-.approve-btn mat-icon { font-size: 16px; height: 16px; width: 16px; }
-.approve-btn:hover {
-  background: #099d8c;
-  box-shadow: 0 5px 16px rgba(10, 179, 156, 0.38);
-  transform: translateY(-1px);
-}
-.approve-btn:active { transform: translateY(0); }

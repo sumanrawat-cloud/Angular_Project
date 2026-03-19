@@ -1,5 +1,4 @@
 // app.routes.ts
-
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from './layout/main-layout/main-layout';
 import { AuthGuard } from './core/auth/auth-guard.service';
@@ -63,11 +62,28 @@ export const routes: Routes = [
           
         ],
       },
+
+     
+      // ── Super Admin ───────────────────────────────────────
+      // FIX: Changed from loadComponent to children array so
+      // child routes like /super-admin/report work correctly.
       {
         path: 'super-admin',
-        loadComponent: () =>
-          import('./features/super-admin/super-admin').then(m => m.SuperAdmin),
+        children: [
+          {
+            path: '',          // /super-admin  → dashboard
+            loadComponent: () =>
+              import('./features/super-admin/super-admin').then(m => m.SuperAdmin),
+          },
+          {
+            path: 'report',   // /super-admin/report  → reports page
+            loadComponent: () =>
+              import('./features/super-admin/report/report').then(m => m.Report),
+          },
+        ],
       },
+ 
+      // ── Default ───────────────────────────────────────────
       {
         path: '',
         redirectTo: 'employee',

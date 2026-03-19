@@ -1,0 +1,1312 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ── CSS Variables ───────────────────────────────────────── */
+.rp-page {
+  --primary:      #405189;
+  --primary-light:#eaecf5;
+  --primary-hover:#364474;
+  --success:      #0ab39c;
+  --success-light:#e8f8f5;
+  --warn:         #f06548;
+  --warn-light:   #fff0ee;
+  --amber:        #f7b731;
+  --amber-light:  #fffbeb;
+  --text-dark:    #1a1d2e;
+  --text-mid:     #374151;
+  --text-soft:    #7b8ab8;
+  --text-muted:   #a0aec0;
+  --border:       #e9ebec;
+  --bg-page:      #f3f6f9;
+  --bg-card:      #ffffff;
+  --bg-row-alt:   #fafbff;
+  --shadow-sm:    0 1px 4px rgba(56,65,74,.08);
+  --shadow-md:    0 4px 16px rgba(56,65,74,.12);
+  --radius:       12px;
+  --radius-sm:    8px;
+/* 
+  background: var(--bg-page); */
+  min-height: 100vh;
+  padding: 24px;
+  /* box-sizing: border-box; */
+  font-family: 'Inter';
+  /* animation: rp-fade-in .32s ease both; */
+}
+/* 
+@keyframes rp-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+} */
+
+/* ── Page Header ─────────────────────────────────────────── */
+.rp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.rp-header__left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.rp-header__icon {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-sm);
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rp-header__icon mat-icon {
+  font-size: 22px !important;
+  width: 22px !important;
+  height: 22px !important;
+  color: var(--primary);
+}
+
+.rp-header__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0 0 3px;
+  letter-spacing: -.2px;
+}
+
+.rp-header__sub {
+  font-size: 12.5px;
+  color: var(--text-soft);
+  margin: 0;
+}
+
+.rp-header__actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Buttons */
+.rp-btn-outline {
+  height: 38px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  border-color: var(--border) !important;
+  color: var(--text-mid) !important;
+  transition: all .18s !important;
+}
+
+.rp-btn-outline:hover {
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
+  background: var(--primary-light) !important;
+}
+
+.rp-btn-primary {
+  height: 38px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  background: var(--primary) !important;
+  color: #fff !important;
+  transition: background .18s !important;
+}
+
+.rp-btn-primary:hover { background: var(--primary-hover) !important; }
+
+.rp-btn-outline mat-icon,
+.rp-btn-primary mat-icon {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+  margin-right: 4px;
+}
+
+/* ── Filter Card ─────────────────────────────────────────── */
+.rp-filter-card {
+  margin-bottom: 20px !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .07);
+  transition: box-shadow .25s ease;
+}
+.rp-filter-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.rp-filter-card .mat-mdc-card-content {
+  padding: 20px !important;
+}
+
+/* Single row: ALL items on one line — dropdowns + clear + tabs */
+/* FIX 1 & 2: explicit height + align-items:center keeps all elements on same axis */
+.rp-filter-content {
+  display:         flex !important;
+  align-items:     center !important;
+  justify-content: space-between !important;
+  gap:             12px !important;
+  padding:         16px 20px !important;
+  flex-wrap:       nowrap !important;
+  min-height:      64px;           /* prevents height jitter when clear btn fades */
+}
+
+/* Left group: dropdowns + clear, always inline, never wrap internally */
+.rp-filter-left {
+  display:     flex;
+  align-items: center;             /* same midline as the tab group */
+  gap:         10px;
+  flex-wrap:   nowrap;
+  flex-shrink: 0;
+}
+
+/* mat-form-field — fixed compact height to align with toggle tabs */
+.rp-field {
+  min-width: 155px;
+  /* Remove ALL extra space Angular Material adds below the field */
+}
+
+/* FIX 1: strip ALL space Angular Material injects below fields */
+.rp-field .mat-mdc-form-field-subscript-wrapper,
+.rp-field .mat-mdc-form-field-bottom-align::before {
+  display: none !important;
+  height:  0    !important;
+}
+
+.rp-field .mat-mdc-form-field-infix {
+  min-height:     40px !important;
+  padding-top:    6px  !important;
+  padding-bottom: 6px  !important;
+}
+
+/* FIX 1: Remove ALL bottom gap the Material form-field host adds */
+.rp-filter-left .mat-mdc-form-field {
+  margin-bottom: 0 !important;
+}
+
+/* FIX 1: prevent MDC wrapper from adding vertical padding */
+.rp-field .mat-mdc-text-field-wrapper {
+  padding-bottom: 0 !important;
+}
+
+.rp-field .mdc-notched-outline__leading,
+.rp-field .mdc-notched-outline__notch,
+.rp-field .mdc-notched-outline__trailing {
+  border-color: var(--border) !important;
+}
+
+.rp-field.mat-focused .mdc-notched-outline__leading,
+.rp-field.mat-focused .mdc-notched-outline__notch,
+.rp-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: var(--primary) !important;
+}
+
+.rp-field .mat-mdc-select-value-text,
+.rp-field .mat-mdc-floating-label,
+.rp-field input {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+}
+
+/* mat-button-toggle-group */
+/* FIX 1: explicit 40px height + inline-flex so tabs sit on same midline as fields */
+.rp-tabs {
+  border:        1.5px solid var(--border) !important;
+  border-radius: var(--radius-sm) !important;
+  overflow:      hidden;
+  flex-shrink:   0;
+  height:        40px;          /* matches .rp-field height */
+  display:       inline-flex !important;
+  align-self:    center;        /* snap to flex parent midline */
+}
+
+.rp-tabs .mat-button-toggle {
+  font-family:  'Inter';
+  background:   var(--bg-page);
+  border:       none !important;
+  height:       40px !important;
+  display:      inline-flex !important;
+  align-items:  center !important;
+}
+
+.rp-tabs .mat-button-toggle-label-content {
+  display:     flex !important;
+  align-items: center !important;
+  gap:         5px !important;
+  padding:     0 14px !important;
+  height:      40px !important;    /* FIX 1: explicit height, not line-height */
+  line-height: 40px !important;
+  font-size:   12.5px !important;
+  font-weight: 600 !important;
+  color:       var(--text-soft);
+  transition:  color .15s;
+}
+
+.rp-tabs .mat-button-toggle mat-icon {
+  font-size: 15px !important;
+  width: 15px !important;
+  height: 15px !important;
+  vertical-align: middle;
+}
+
+.rp-tabs .mat-button-toggle-checked {
+  background: var(--primary) !important;
+}
+
+.rp-tabs .mat-button-toggle-checked .mat-button-toggle-label-content {
+  color: #fff !important;
+}
+
+.rp-tab-label { white-space: nowrap; }
+
+.rp-btn-clear {
+  height:       40px !important;
+  font-size:    12.5px !important;
+  font-weight:  600 !important;
+  font-family:  'Inter', sans-serif !important;
+  color:        var(--warn) !important;
+  border-color: rgba(240,101,72,.3) !important;
+  flex-shrink:  0;
+  white-space:  nowrap;
+  display:      inline-flex !important;
+  align-items:  center !important;
+  gap:          4px !important;
+  align-self:   center;
+  /* FIX 3: Always in DOM, starts invisible — no layout shift */
+  opacity:         0;
+  pointer-events:  none;
+  transform:       scale(0.85) translateX(-6px);
+  /* FIX 3: Smooth fade + spring-scale entrance (0.25s) */
+  transition:
+    opacity   .25s ease,
+    transform .25s cubic-bezier(0.34, 1.4, 0.64, 1) !important;
+  will-change: opacity, transform;
+}
+
+/* FIX 3: Visible state — spring pops into its natural position */
+.rp-btn-clear.rp-btn-clear--visible {
+  opacity:        1;
+  pointer-events: auto;
+  transform:      scale(1) translateX(0);
+}
+
+.rp-btn-clear:hover {
+  background: var(--warn-light) !important;
+  border-color: var(--warn) !important;
+}
+
+/* ── KPI Cards ───────────────────────────────────────────── */
+.rp-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.rp-kpi-card {
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow-sm) !important;
+  border: 1px solid var(--border) !important;
+  transition: transform .22s ease, box-shadow .22s ease !important;
+  animation: rp-card-in .4s cubic-bezier(.34,1.2,.64,1) both;
+  animation-delay: var(--delay, 0ms);
+  padding: 0 !important;
+}
+
+.rp-kpi-card:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+@keyframes rp-card-in {
+  from { opacity: 0; transform: translateY(14px) scale(.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.rp-kpi-card .mat-mdc-card-content,
+.rp-kpi-body {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  padding: 18px 20px !important;
+  margin: 0 !important;
+}
+
+.rp-kpi-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rp-kpi-icon mat-icon {
+  font-size: 22px !important;
+  width: 22px !important;
+  height: 22px !important;
+}
+
+.rp-kpi-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.rp-kpi-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-dark);
+  line-height: 1;
+  letter-spacing: -.3px;
+}
+
+.rp-kpi-label {
+  font-size: 11.5px;
+  color: var(--text-soft);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rp-kpi-trend {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.rp-kpi-trend mat-icon {
+  font-size: 12px !important;
+  width: 12px !important;
+  height: 12px !important;
+}
+
+.rp-kpi-trend--up   { color: var(--success); }
+.rp-kpi-trend--down { color: var(--warn); }
+
+/* ── Charts Grid ─────────────────────────────────────────── */
+.rp-charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* ── Generic Card ────────────────────────────────────────── */
+.rp-card {
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow-sm) !important;
+  border: 1px solid var(--border) !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+}
+
+.rp-card .mat-mdc-card-content {
+  padding: 0 !important;
+}
+
+/* Card header row */
+.rp-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+}
+
+.rp-card-hicon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rp-card-hicon mat-icon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  color: var(--primary);
+}
+
+.rp-card-hicon--sm {
+  width: 32px;
+  height: 32px;
+}
+
+.rp-card-hicon--sm mat-icon {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.rp-card-htitle {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.rp-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+  display: block;
+  letter-spacing: .1px;
+}
+
+.rp-card-sub {
+  font-size: 11.5px;
+  color: var(--text-soft);
+  display: block;
+}
+
+/* Legend */
+.rp-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  color: var(--text-soft);
+  flex-shrink: 0;
+}
+
+.rp-ldot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.rp-ldot--blue  { background: var(--primary); }
+.rp-ldot--amber { background: var(--amber); }
+
+/* ── Bar Chart ───────────────────────────────────────────── */
+.rp-chart-body {
+  padding: 16px 20px !important;
+}
+
+.rp-bar-chart {
+  display: flex;
+  gap: 8px;
+  height: 180px;
+}
+
+.rp-y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text-muted);
+  padding-bottom: 20px;
+  width: 24px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.rp-bars {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.rp-bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  height: 100%;
+  cursor: pointer;
+}
+
+.rp-bar {
+  width: 100%;
+  border-radius: 3px 3px 0 0;
+  min-height: 3px;
+  transition: height .5s cubic-bezier(.4,0,.2,1), filter .15s;
+}
+
+.rp-bar:hover { filter: brightness(.88); }
+.rp-bar--blue  { background: var(--primary); }
+.rp-bar--amber { background: var(--amber); }
+
+.rp-bar-lbl {
+  font-size: 9.5px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  white-space: nowrap;
+}
+
+/* ── Donut Chart ─────────────────────────────────────────── */
+/* FIX 6: explicit column layout — SVG centred, dept rows full width */
+.rp-donut-body {
+  display:         flex !important;
+  flex-direction:  column !important;
+  align-items:     center !important;
+  justify-content: center !important;
+  gap:             18px !important;
+  padding:         20px 24px 24px !important;
+}
+
+.rp-donut-svg {
+  width:      136px;
+  height:     136px;
+  display:    block;
+  margin:     0 auto;         /* FIX 6: explicit horizontal centre */
+  flex-shrink: 0;
+  overflow:   visible;        /* prevent stroke round-caps from clipping */
+  filter: drop-shadow(0 2px 8px rgba(64,81,137,.10));
+}
+
+.rp-donut-arc {
+  transition: stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1);
+}
+
+.rp-donut-pct {
+  font-size: 17px;
+  font-weight: 800;
+  fill: var(--text-dark);
+  font-family: 'Inter', sans-serif;
+}
+
+.rp-donut-lbl {
+  font-size: 9px;
+  fill: var(--text-soft);
+  font-family: 'Inter', sans-serif;
+}
+
+.rp-dept-rows {
+  width:          100%;
+  display:        flex;
+  flex-direction: column;
+  gap:            10px;
+  align-self:     stretch; /* FIX 6: stretch to card width inside column flex */
+  padding:        0 4px;
+  box-sizing:     border-box;
+}
+
+.rp-dept-row {
+  display:               grid;
+  grid-template-columns: 10px 80px 1fr 38px; /* FIX 6: balanced column widths */
+  align-items:           center;
+  gap:                   8px;
+}
+
+.rp-dept-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.rp-dept-name {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-mid);
+  white-space: nowrap;
+}
+
+.rp-dept-bar {
+  border-radius: 100px !important;
+}
+
+.rp-dept-bar--primary { --mdc-linear-progress-active-indicator-color: var(--primary); --mdc-linear-progress-track-color: #f1f3fa; }
+.rp-dept-bar--success { --mdc-linear-progress-active-indicator-color: var(--success); --mdc-linear-progress-track-color: #f1f3fa; }
+.rp-dept-bar--warn    { --mdc-linear-progress-active-indicator-color: var(--warn);    --mdc-linear-progress-track-color: #f1f3fa; }
+
+.rp-dept-pct {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-dark);
+  text-align: right;
+}
+
+/* ── Table Card ──────────────────────────────────────────── */
+.rp-table-card {
+  margin-bottom:  0 !important;
+  scroll-margin-top: 16px;     /* FIX 5: breathing room when scrolled into view */
+}
+
+.rp-table-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.rp-table-top__left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rp-table-count {
+  font-size: 11.5px;
+  color: var(--text-soft);
+  background: var(--primary-light);
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+/* Search field */
+.rp-search-field {
+  min-width: 280px;
+  max-width: 380px;
+}
+
+.rp-search-field .mat-mdc-form-field-subscript-wrapper { display: none !important; }
+
+.rp-search-field .mat-mdc-form-field-infix {
+  min-height: 38px !important;
+  padding-top: 7px !important;
+  padding-bottom: 7px !important;
+}
+
+.rp-search-field .mat-mdc-text-field-wrapper {
+  background: var(--bg-page) !important;
+}
+
+.rp-search-field .mdc-notched-outline__leading,
+.rp-search-field .mdc-notched-outline__notch,
+.rp-search-field .mdc-notched-outline__trailing {
+  border-color: var(--border) !important;
+}
+
+.rp-search-field.mat-focused .mdc-notched-outline__leading,
+.rp-search-field.mat-focused .mdc-notched-outline__notch,
+.rp-search-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: var(--primary) !important;
+}
+
+/* ── Table ───────────────────────────────────────────────── */
+.rp-table-wrap { overflow-x: auto; }
+
+.rp-table { width: 100%; }
+
+/* Header cells */
+.rp-table .mat-mdc-header-row {
+  background: #f8fafc !important;
+}
+
+.rp-table .mat-mdc-header-cell {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #64748b !important;
+  letter-spacing: .5px !important;
+  text-transform: uppercase !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  padding: 12px 16px !important;
+  white-space: nowrap;
+}
+
+/* Data rows — zebra striping */
+.rp-table .mat-mdc-row:nth-child(even) .mat-mdc-cell {
+  background: var(--bg-row-alt);
+}
+
+.rp-table .mat-mdc-row:nth-child(odd) .mat-mdc-cell {
+  background: var(--bg-card);
+}
+
+/* Hover highlight */
+.rp-table .mat-mdc-row:hover .mat-mdc-cell {
+  background: #f0f4ff !important;
+  transition: background .15s ease;
+}
+
+.rp-table .mat-mdc-cell {
+  font-size: 13px !important;
+  color: var(--text-mid) !important;
+  padding: 14px 16px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  vertical-align: middle !important;
+}
+
+.rp-row { transition: background .15s; }
+
+/* ══ EMPLOYEE COLUMN — matches reference screenshot exactly ══
+   Avatar (circle) + bold name on top + lighter role below     */
+.rp-emp-cell {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.rp-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  letter-spacing: .5px;
+}
+
+.rp-emp-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+/* Bold name — matches reference */
+.rp-emp-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dark);
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+/* Lighter role text below name — matches reference */
+.rp-emp-role {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--primary);      /* Employee = blue (#405189) */
+  line-height: 1.2;
+}
+
+.rp-emp-role--manager {
+  color: var(--success);      /* Manager = green (#0ab39c) */
+}
+
+/* ── Number cells ────────────────────────────────────────── */
+.rp-num {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-mid);
+  font-variant-numeric: tabular-nums;
+}
+
+.rp-num--primary { color: var(--primary); }
+.rp-num--amber   { color: #c9900a; }
+.rp-num--green   { color: var(--success); }
+
+/* ── Progress bar ────────────────────────────────────────── */
+.rp-prog-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rp-prog {
+  width: 88px !important;
+  flex-shrink: 0;
+  border-radius: 100px !important;
+}
+
+.rp-prog-high { --mdc-linear-progress-active-indicator-color: var(--primary); --mdc-linear-progress-track-color: #e9ebec; }
+.rp-prog-mid  { --mdc-linear-progress-active-indicator-color: var(--amber);   --mdc-linear-progress-track-color: #e9ebec; }
+.rp-prog-low  { --mdc-linear-progress-active-indicator-color: var(--warn);    --mdc-linear-progress-track-color: #e9ebec; }
+
+.rp-prog-pct {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-mid);
+  min-width: 32px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Status badge ────────────────────────────────────────── */
+.rp-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.rp-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.rp-status--active  { background: var(--success-light); color: #0d6e5f; }
+.rp-status--active .rp-status-dot  { background: var(--success); }
+.rp-status--inactive { background: #f4f4f6; color: var(--text-soft); }
+.rp-status--inactive .rp-status-dot { background: var(--text-muted); }
+
+/* ── Trend badge ─────────────────────────────────────────── */
+.rp-trend-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.rp-trend-badge mat-icon {
+  font-size: 12px !important;
+  width: 12px !important;
+  height: 12px !important;
+}
+
+.rp-trend--up     { background: var(--success-light); color: #0d6e5f; }
+.rp-trend--down   { background: var(--warn-light);    color: #c03318; }
+.rp-trend--stable { background: var(--primary-light); color: var(--primary); }
+
+/* ── Impact badge ────────────────────────────────────────── */
+.rp-impact-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.rp-impact-badge mat-icon {
+  font-size: 13px !important;
+  width: 13px !important;
+  height: 13px !important;
+}
+
+.rp-impact--high   { background: var(--warn-light);    color: var(--warn); }
+.rp-impact--medium { background: var(--amber-light);   color: #b37a00; }
+.rp-impact--low    { background: var(--success-light); color: var(--success); }
+
+/* ── Risk text / Date ────────────────────────────────────── */
+.rp-risk-text {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--text-mid);
+  line-height: 1.5;
+  max-width: 300px;
+}
+
+.rp-date {
+  font-size: 12px;
+  color: var(--text-soft);
+}
+
+/* ── No data ─────────────────────────────────────────────── */
+.rp-empty {
+  text-align: center !important;
+  padding: 40px 20px !important;
+  color: var(--text-muted) !important;
+  font-size: 13px !important;
+}
+
+.rp-empty mat-icon {
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+/* ── Paginator ───────────────────────────────────────────── */
+.rp-table-card .mat-mdc-paginator {
+  background: #fafbff !important;
+  border-top: 1px solid #f1f3fa;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 12px !important;
+  color: var(--text-soft) !important;
+}
+
+/* ── Responsive: Tablet ──────────────────────────────────── */
+@media (max-width: 1100px) {
+  .rp-kpi-grid    { grid-template-columns: repeat(2, 1fr); }
+  .rp-charts-grid { grid-template-columns: 1fr; }
+  .rp-tabs        { margin-left: 0; }
+  /* FIX 6: wider donut card on tablet — more horizontal room */
+  .rp-donut-body  { padding: 20px 32px 24px !important; }
+}
+
+@media (max-width: 900px) {
+  .rp-table-top   { flex-direction: column; align-items: flex-start; }
+  .rp-search-field { min-width: 100%; max-width: 100%; }
+  /* FIX 2: Tablet — filter bar wraps: dropdowns on line 1, tabs on line 2 */
+  .rp-filter-content {
+    flex-wrap:  wrap !important;
+    padding:    14px 16px !important;
+    min-height: unset;
+  }
+  .rp-filter-left { flex-shrink: 1; flex-wrap: wrap; gap: 8px; }
+  .rp-tabs        { flex-shrink: 0; }
+}
+
+/* ── Responsive: Mobile ──────────────────────────────────── */
+@media (max-width: 600px) {
+  .rp-page         { padding: 14px; }
+  .rp-kpi-grid     { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .rp-header       { flex-direction: column; align-items: flex-start; }
+  .rp-filter-content {
+    flex-wrap:  wrap !important;
+    gap:        10px !important;
+    padding:    12px 14px !important;
+  }
+  .rp-filter-left  { flex-wrap: wrap; gap: 8px; width: 100%; }
+  .rp-field        { min-width: 140px; flex: 1; }
+  .rp-tabs         { width: 100%; }
+  .rp-tabs .mat-button-toggle-label-content {
+    padding:   0 10px !important;
+    font-size: 11.5px !important;
+  }
+  .rp-tab-label { display: none; }
+  .rp-kpi-value { font-size: 18px; }
+  .rp-bar-chart { height: 140px; }
+  /* FIX 3: Mobile — always show clear button, skip animation */
+  .rp-btn-clear {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: none !important;
+  }
+  .rp-donut-body  { padding: 16px !important; }
+}
+
+@media (max-width: 420px) {
+  .rp-kpi-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   ENHANCED INTERACTIONS & ANIMATIONS — appended to base CSS
+   All new additions are below this line.
+   ============================================================ */
+
+/* ── 1. TAB SWITCH FEEDBACK ──────────────────────────────────
+
+   Active tab: bold text + animated ink underline at bottom.
+   Non-active: hover lift + color transition.
+   ---------------------------------------------------------- */
+
+/* Scale-up on hover for inactive tabs */
+.rp-tabs .mat-button-toggle:not(.mat-button-toggle-checked):hover {
+  background: var(--primary-light) !important;
+}
+
+.rp-tabs .mat-button-toggle:not(.mat-button-toggle-checked):hover
+  .mat-button-toggle-label-content {
+  color: var(--primary) !important;
+}
+
+/* Checked tab: stronger visual — bold + slightly larger text */
+.rp-tabs .mat-button-toggle-checked .mat-button-toggle-label-content {
+  color: #fff !important;
+  font-weight: 700 !important;
+  letter-spacing: .2px;
+}
+
+/* Animated ink underline — slides in from left */
+.rp-tab-ink {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(255,255,255,.55);
+  border-radius: 3px 3px 0 0;
+  animation: rp-ink-slide .22s cubic-bezier(.4,0,.2,1) both;
+}
+
+@keyframes rp-ink-slide {
+  from { transform: scaleX(0); opacity: 0; }
+  to   { transform: scaleX(1); opacity: 1; }
+}
+
+/* Ensure the toggle button can host the absolute ink */
+.rp-tabs .mat-button-toggle {
+  position: relative !important;
+  transition: background .18s ease !important;
+}
+
+/* FIX #3: Active tab — bolder text for clear visual feedback */
+.rp-tabs .mat-button-toggle-checked .mat-button-toggle-label-content {
+  color: #fff !important;
+  font-weight: 700 !important;
+  letter-spacing: .2px;
+}
+
+/* ── FIX #3: "Showing:" label above table — instant tab-change feedback ── */
+.rp-showing-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-soft);
+  margin-bottom: 2px;
+  letter-spacing: .2px;
+  animation: rp-fade-in .2s ease both;
+}
+
+.rp-showing-label strong {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+@keyframes rp-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── 2. SKELETON SHIMMER LOADER ──────────────────────────────
+
+   Shown for 260ms while tab content swaps out.
+   Uses a moving gradient sweep to feel alive.
+   ---------------------------------------------------------- */
+
+.rp-skeleton-wrap {
+  padding: 8px 0;
+  animation: rp-fade-in .15s ease both;
+}
+
+.rp-skeleton-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.rp-skeleton-row:last-child { border-bottom: none; }
+
+/* Base shimmer block */
+.rp-skel {
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    #f0f0f5 25%,
+    #e4e6f0 50%,
+    #f0f0f5 75%
+  );
+  background-size: 200% 100%;
+  animation: rp-shimmer 1.4s infinite linear;
+  flex-shrink: 0;
+}
+
+@keyframes rp-shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+.rp-skel--avatar  { width: 34px; height: 34px; border-radius: 50%; }
+.rp-skel--text    { width: 120px; height: 14px; }
+.rp-skel--short   { width: 48px;  height: 14px; }
+.rp-skel--medium  { width: 88px;  height: 8px; border-radius: 100px; }
+.rp-skel--badge   { width: 60px;  height: 20px; border-radius: 20px; }
+
+/* ── 3. TABLE CONTENT FADE-IN ────────────────────────────────
+
+   The table wrapper fades + slides up when skeleton disappears.
+   ---------------------------------------------------------- */
+
+/* FIX 4: Table entrance — starts lower, slides up naturally */
+.rp-table-content {
+  opacity:   0;
+  transform: translateY(16px);
+  transition: none;                /* no transition while skeleton is showing */
+}
+
+.rp-table-content--visible {
+  opacity:   1;
+  transform: translateY(0);
+  transition:
+    opacity   .32s ease-out,
+    transform .32s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* FIX 4: Each table-wrap also animates for a polished reveal */
+.rp-table-wrap {
+  animation: rp-table-enter .3s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+@keyframes rp-table-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── 4. TABLE ROW MICRO-INTERACTIONS ─────────────────────────
+
+   Each row gets a left-border flash on hover for extra depth.
+   ---------------------------------------------------------- */
+
+.rp-row {
+  position: relative;
+  transition: background .15s ease, transform .15s ease !important;
+}
+
+/* .rp-row::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--primary);
+  transform: scaleY(0);
+  transition: transform .18s cubic-bezier(.4,0,.2,1);
+  border-radius: 0 2px 2px 0;
+}
+
+.rp-row:hover::before {
+  transform: scaleY(1);
+} */
+tr.mat-mdc-row.mdc-data-table__row.cdk-row.rp-row:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+tr.mat-mdc-row.mdc-data-table__row.cdk-row.rp-row {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .07);
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+/* Subtle translateX nudge on hover */
+.rp-row:hover .mat-mdc-cell {
+  background: #f0f4ff !important;
+  transition: background .15s ease !important;
+}
+
+/* ── 5. BUTTON MICRO-INTERACTIONS ────────────────────────────
+
+   Press feedback (scale down), hover lift.
+   ---------------------------------------------------------- */
+
+.rp-btn-outline,
+.rp-btn-primary {
+  transition: all .18s cubic-bezier(.4,0,.2,1) !important;
+}
+
+.rp-btn-outline:active,
+.rp-btn-primary:active {
+  transform: scale(.96) !important;
+}
+
+.rp-btn-primary:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(64,81,137,.28) !important;
+}
+
+/* ── 6. KPI CARD HOVER — stronger lift + subtle border glow ──*/
+
+.rp-kpi-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 8px 24px rgba(56,65,74,.14) !important;
+  border-color: rgba(64,81,137,.2) !important;
+}
+
+/* ── 7. CHART CARD HOVER ─────────────────────────────────────*/
+
+.rp-card {
+  transition: box-shadow .22s ease, border-color .22s ease !important;
+}
+
+.rp-card:hover {
+  box-shadow: 0 4px 20px rgba(56,65,74,.11) !important;
+  border-color: rgba(64,81,137,.15) !important;
+}
+
+/* ── 8. BAR HOVER — individual bar highlight + scale ─────────*/
+
+.rp-bar-col:hover .rp-bar--blue  { filter: brightness(.82); }
+.rp-bar-col:hover .rp-bar--amber { filter: brightness(.82); }
+.rp-bar-col:hover .rp-bar-lbl    { color: var(--primary); font-weight: 600; }
+
+.rp-bar {
+  transition: height .5s cubic-bezier(.4,0,.2,1),
+              filter .15s ease !important;
+}
+
+/* ── 9. AVATAR HOVER RING ────────────────────────────────────*/
+
+.rp-avatar {
+  transition: box-shadow .18s ease, transform .18s ease;
+}
+
+.rp-row:hover .rp-avatar {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--primary);
+  transform: scale(1.08);
+}
+
+/* ── 10. BADGE HOVER TRANSITIONS ─────────────────────────────*/
+
+.rp-status-badge,
+.rp-impact-badge,
+.rp-trend-badge {
+  transition: opacity .15s ease, transform .15s ease;
+}
+
+.rp-row:hover .rp-status-badge,
+.rp-row:hover .rp-impact-badge,
+.rp-row:hover .rp-trend-badge {
+  transform: scale(1.04);
+}
+
+/* ── 11. SEARCH FIELD FOCUS GLOW ─────────────────────────────*/
+
+.rp-search-field.mat-focused .mat-mdc-text-field-wrapper {
+  background: #fff !important;
+  box-shadow: 0 0 0 3px rgba(64,81,137,.1) !important;
+}
+
+/* ── 12. FILTER CARD HOVER ───────────────────────────────────*/
+
+.rp-filter-card {
+  transition: box-shadow .2s ease !important;
+}
+
+.rp-filter-card:hover {
+  box-shadow: 0 3px 12px rgba(56,65,74,.1) !important;
+}
+
+/* ── 13. TABLE SWITCHING STATE — dim while skeleton shows ─────*/
+
+.rp-table--switching .rp-table-top {
+  opacity: .5;
+  pointer-events: none;
+  transition: opacity .15s ease;
+}
+
+/* ── 14. DEPT PROGRESS BAR HOVER ─────────────────────────────*/
+
+.rp-dept-row {
+  transition: transform .15s ease;
+  border-radius: 6px;
+  padding: 2px 4px;
+  margin: 0 -4px;
+}
+
+.rp-dept-row:hover {
+  transform: translateX(3px);
+  background: rgba(64,81,137,.04);
+}
+
+/* ── 15. PAGINATOR HOVER ─────────────────────────────────────*/
+
+.rp-table-card .mat-mdc-paginator-navigation-next:hover,
+.rp-table-card .mat-mdc-paginator-navigation-previous:hover,
+.rp-table-card .mat-mdc-paginator-navigation-first:hover,
+.rp-table-card .mat-mdc-paginator-navigation-last:hover {
+  background: var(--primary-light) !important;
+  color: var(--primary) !important;
+}

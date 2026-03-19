@@ -1,0 +1,82 @@
+.dsd-wrap {
+  padding: 36px 32px 28px;
+  text-align: center;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.dsd-icon-ring {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(10, 179, 156, .12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  box-shadow: 0 0 0 10px rgba(10, 179, 156, .07);
+}
+
+.dsd-icon-ring mat-icon {
+  font-size: 25px;
+  color: #0ab39c;
+}
+
+.dsd-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #12141f;
+  margin: 0 0 10px;
+}
+
+.dsd-body {
+  font-size: 13px;
+  color: #495057;
+  margin: 0 0 6px;
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.dsd-sub {
+  font-size: 11px;
+  color: #878a99;
+  margin: 0 0 28px;
+  letter-spacing: 0.5px;
+}
+
+.dsd-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.dsd-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 28px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  border: 1px solid #e9ebec;
+  background: #f3f6f9;
+  color: #212529;
+  outline: none;
+  transition: background .18s, box-shadow .18s, transform .15s;
+}
+
+.dsd-btn mat-icon {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+}
+
+.dsd-btn:hover {
+  background: #e9ebec;
+  box-shadow: 0 3px 8px rgba(56, 65, 74, .12);
+}
+
+.dsd-btn:active {
+  transform: scale(.97);
+}

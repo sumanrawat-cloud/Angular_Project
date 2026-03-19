@@ -1006,3 +1006,175 @@
     letter-spacing: 0.5px;
     font-family: inter;
 }
+/* ════════════════════════════════════════════════════════
+   PORTAL MODAL — BASE STYLES
+   The static rules live here. Dynamic accent colours are
+   set as CSS custom properties on #_rv_portal_ by the TS
+   at runtime: --rv-accent, --rv-accent-hov, --rv-icon-bg,
+   --rv-icon-ring, --rv-btn-shadow.
+════════════════════════════════════════════════════════ */
+
+#_rv_portal_ {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, .65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  z-index: 2147483647;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  animation: _rvBd .22s ease both;
+  will-change: opacity;
+}
+
+@keyframes _rvBd {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+#_rv_portal_ * {
+  box-sizing: border-box;
+}
+
+#_rv_card_ {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 32px 80px rgba(15, 23, 42, .28), 0 8px 24px rgba(15, 23, 42, .12);
+  padding: 40px 40px 32px;
+  text-align: center;
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: _rvPop .34s cubic-bezier(.34, 1.28, .64, 1) both;
+  will-change: transform, opacity, box-shadow;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+@keyframes _rvPop {
+  from { opacity: 0; transform: scale(.86) translateY(24px); }
+  to   { opacity: 1; transform: scale(1)   translateY(0); }
+}
+
+._rv_icon_ {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--rv-icon-bg);
+  box-shadow: 0 0 0 10px var(--rv-icon-ring);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  position: relative;
+  will-change: transform, box-shadow;
+}
+
+._rv_icon_ .material-icons {
+  font-size: 36px;
+  color: var(--rv-accent);
+  font-family: 'Material Icons';
+  font-style: normal;
+  line-height: 1;
+  will-change: opacity, transform;
+}
+
+._rv_h2_ {
+  font-size: 18px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 8px;
+}
+
+._rv_p_ {
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.65;
+  margin: 0 0 10px;
+}
+
+._rv_sub_ {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0 0 32px;
+  width: 100%;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+
+  strong {
+    color: #111827;
+    font-weight: 700;
+  }
+}
+
+._rv_acts_ {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+._rv_btn_ {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 11px 16px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  outline: none;
+  flex: 1;
+  max-width: 150px;
+  letter-spacing: .3px;
+  transition: background .18s, box-shadow .18s, transform .14s;
+
+  .material-icons {
+    font-size: 16px;
+    font-family: 'Material Icons';
+    font-style: normal;
+    line-height: 1;
+  }
+
+  &:active { transform: scale(.97); }
+}
+
+#_rv_no_ {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1.5px solid #e2e8f0 !important;
+
+  &:hover { background: #e2e8f0; }
+}
+
+#_rv_yes_ {
+  background: var(--rv-accent);
+  color: #fff;
+  box-shadow: 0 4px 14px var(--rv-btn-shadow);
+
+  &:hover {
+    background: var(--rv-accent-hov);
+    box-shadow: 0 6px 18px var(--rv-btn-shadow);
+    transform: translateY(-1px);
+  }
+}
+
+@media (max-width: 480px) {
+  #_rv_card_  { padding: 28px 20px 24px; }
+  ._rv_acts_  { flex-direction: column; }
+  ._rv_btn_   { max-width: 100%; }
+}

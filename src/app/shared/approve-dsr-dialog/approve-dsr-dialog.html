@@ -1,0 +1,59 @@
+<!-- Confetti canvas (sits behind dialog content) -->
+<canvas #confettiCanvas class="apd-confetti-canvas"></canvas>
+
+<div class="apd-wrap" [class.apd-wrap--shake]="isShaking" [class.apd-wrap--exit]="isExiting">
+
+  <!-- ── Header ──────────────────────────────────────────── -->
+  <div class="apd-header" [class.apd-header--hidden]="approveState === 'done'">
+    <div class="apd-header-icon" [class.apd-header-icon--pulse]="approveState === 'loading'">
+      <mat-icon>how_to_reg</mat-icon>
+    </div>
+    <h2 class="apd-title">Approve DSR Entry</h2>
+    <p class="apd-subtitle">This will mark the DSR as approved and notify the employee.</p>
+  </div>
+
+  <!-- ── Success Overlay ─────────────────────────────────── -->
+  <div class="apd-success-overlay" [class.apd-success-overlay--visible]="approveState === 'done'">
+
+    <!-- Ripple rings behind checkmark -->
+    <div class="apd-ripple-wrap">
+      <span class="apd-ripple apd-ripple--1"></span>
+      <span class="apd-ripple apd-ripple--2"></span>
+      <span class="apd-ripple apd-ripple--3"></span>
+
+      <!-- Animated checkmark SVG -->
+      <div class="apd-success-ring">
+        <svg class="apd-checkmark" viewBox="0 0 52 52">
+          <circle class="apd-checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+          <path   class="apd-checkmark__check"  fill="none" d="M14 27l8 8 16-16"/>
+        </svg>
+      </div>
+    </div>
+
+    <p class="apd-success-text">DSR Approved!</p>
+    <p class="apd-success-sub">Employee will be notified shortly.</p>
+  </div>
+
+  <!-- ── Actions ─────────────────────────────────────────── -->
+  <div class="apd-actions" [class.apd-actions--hidden]="approveState === 'done'">
+    <button
+      class="apd-btn apd-btn--cancel"
+      [disabled]="approveState === 'loading'"
+      (click)="onCancel()">
+      Cancel
+    </button>
+    <button
+      class="apd-btn apd-btn--approve"
+      [class.apd-btn--loading]="approveState === 'loading'"
+      [disabled]="approveState !== 'idle'"
+      (click)="onApprove()">
+      <span class="apd-btn-content" *ngIf="approveState === 'idle'">
+        <mat-icon>check_circle</mat-icon> Approve
+      </span>
+      <span class="apd-dots" *ngIf="approveState === 'loading'">
+        <span></span><span></span><span></span>
+      </span>
+    </button>
+  </div>
+
+</div>
