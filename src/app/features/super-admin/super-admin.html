@@ -1,327 +1,390 @@
-<!-- super-admin.html -->
+<!-- super-admin.html — Dashboard page -->
+<div class="sa-root" [@pageEnter]>
 
-<div class="sa-root">
-
-  <!-- ══════════════════════════════════════════════════════════
-       PAGE HEADER
-  ══════════════════════════════════════════════════════════ -->
-  <!-- <div class="sa-page-header">
+  <!-- ══ PAGE HEADER ════════════════════════════════════════════ -->
+  <div class="sa-page-header">
     <div class="sa-page-header__left">
-      <div class="sa-page-header__icon">
+      <div class="sa-header-icon">
         <mat-icon>admin_panel_settings</mat-icon>
       </div>
       <div>
         <h1 class="sa-page-title">Super Admin Dashboard</h1>
-        <p class="sa-page-sub">Organisation overview — all roles, departments &amp; risks</p>
+        <p class="sa-page-sub">Organisation overview — employees, clients, projects &amp; DSR status</p>
       </div>
     </div>
-    <div class="sa-page-header__right">
-      <button class="sa-btn sa-btn--outline" (click)="exportReport()">
-        <mat-icon>download</mat-icon>Export Report
+    <div class="sa-page-header__actions">
+      <button mat-flat-button class="sa-btn-primary" (click)="goToDetailPage()">
+        Deep Dive View &rarr;
       </button>
     </div>
-  </div> -->
+  </div>
 
-  <!-- ══════════════════════════════════════════════════════════
-       STAT CARDS
-  ══════════════════════════════════════════════════════════ -->
-  <div class="sa-stats-grid">
+  <!-- ══ KPI CARDS ══════════════════════════════════════════════ -->
+  <div class="sa-kpi-grid">
 
-    <div class="sa-stat-card">
-      <div class="sa-stat-card__icon" style="background:#eaecf5;color:#405189">
-        <mat-icon>groups</mat-icon>
+    <div class="sa-kpi-card sa-kpi-card--blue" (click)="goToDetailPage()">
+      <div class="sa-kpi-icon" style="background:#eaecf5">
+        <mat-icon style="color:#405189">groups</mat-icon>
       </div>
-      <div class="sa-stat-card__body">
-        <span class="sa-stat-card__value">{{ orgStats.totalUsers }}</span>
-        <span class="sa-stat-card__label">Total Users</span>
+      <div class="sa-kpi-body">
+        <span class="sa-kpi-value">{{ orgStats.totalUsers }}</span>
+        <span class="sa-kpi-label">Total Employees</span>
       </div>
     </div>
 
-    <div class="sa-stat-card">
-      <div class="sa-stat-card__icon" style="background:#e8f8f5;color:#0ab39c">
-        <mat-icon>online_prediction</mat-icon>
+    <div class="sa-kpi-card sa-kpi-card--teal" (click)="goToDetailPage()">
+      <div class="sa-kpi-icon" style="background:#e8f8f5">
+        <mat-icon style="color:#0ab39c">online_prediction</mat-icon>
       </div>
-      <div class="sa-stat-card__body">
-        <span class="sa-stat-card__value">{{ orgStats.activeToday }}</span>
-        <span class="sa-stat-card__label">Active Today</span>
-      </div>
-    </div>
-
-    <div class="sa-stat-card">
-      <div class="sa-stat-card__icon" style="background:#fffbeb;color:#f59e0b">
-        <mat-icon>pending_actions</mat-icon>
-      </div>
-      <div class="sa-stat-card__body">
-        <span class="sa-stat-card__value">{{ orgStats.pendingDsrs }}</span>
-        <span class="sa-stat-card__label">Pending DSRs</span>
+      <div class="sa-kpi-body">
+        <span class="sa-kpi-value">{{ orgStats.activeToday }}</span>
+        <span class="sa-kpi-label">Active Today</span>
       </div>
     </div>
 
-    <div class="sa-stat-card">
-      <div class="sa-stat-card__icon" style="background:#fff0ee;color:#f06548">
-        <mat-icon>warning_amber</mat-icon>
+    <div class="sa-kpi-card sa-kpi-card--amber" (click)="goToDetailPage()">
+      <div class="sa-kpi-icon" style="background:#fffbeb">
+        <mat-icon style="color:#f59e0b">pending_actions</mat-icon>
       </div>
-      <div class="sa-stat-card__body">
-        <span class="sa-stat-card__value">{{ orgStats.openRisks }}</span>
-        <span class="sa-stat-card__label">Open Risks</span>
-      </div>
-    </div>
-
-    <div class="sa-stat-card">
-      <div class="sa-stat-card__icon" style="background:#f5f3ff;color:#8854d0">
-        <mat-icon>trending_up</mat-icon>
-      </div>
-      <div class="sa-stat-card__body">
-        <span class="sa-stat-card__value">{{ orgStats.avgUtilization }}%</span>
-        <span class="sa-stat-card__label">Avg Utilization</span>
+      <div class="sa-kpi-body">
+        <span class="sa-kpi-value">{{ orgStats.pendingDsrs }}</span>
+        <span class="sa-kpi-label">Pending DSRs</span>
       </div>
     </div>
 
-    <div class="sa-stat-card">
-      <div class="sa-stat-card__icon" style="background:#fef2f2;color:#c62828">
-        <mat-icon>error_outline</mat-icon>
+    <div class="sa-kpi-card sa-kpi-card--red" (click)="goToDetailPage()">
+      <div class="sa-kpi-icon" style="background:#fff0ee">
+        <mat-icon style="color:#f06548">warning_amber</mat-icon>
       </div>
-      <div class="sa-stat-card__body">
-        <span class="sa-stat-card__value">{{ orgStats.highRisks }}</span>
-        <span class="sa-stat-card__label">High Risks</span>
+      <div class="sa-kpi-body">
+        <span class="sa-kpi-value">{{ orgStats.openRisks }}</span>
+        <span class="sa-kpi-label">Open Risks</span>
+      </div>
+    </div>
+
+    <div class="sa-kpi-card sa-kpi-card--purple" (click)="goToDetailPage()">
+      <div class="sa-kpi-icon" style="background:#f5f3ff">
+        <mat-icon style="color:#8854d0">trending_up</mat-icon>
+      </div>
+      <div class="sa-kpi-body">
+        <span class="sa-kpi-value">{{ orgStats.avgUtilization }}%</span>
+        <span class="sa-kpi-label">Avg Utilization</span>
+      </div>
+    </div>
+
+    <div class="sa-kpi-card sa-kpi-card--coral" (click)="goToDetailPage()">
+      <div class="sa-kpi-icon" style="background:#fef2f2">
+        <mat-icon style="color:#c62828">error_outline</mat-icon>
+      </div>
+      <div class="sa-kpi-body">
+        <span class="sa-kpi-value">{{ orgStats.highRisks }}</span>
+        <span class="sa-kpi-label">High Risks</span>
       </div>
     </div>
 
   </div>
 
-  <!-- ══════════════════════════════════════════════════════════
-       MIDDLE SECTION: Department Stats + Risk Panel
-  ══════════════════════════════════════════════════════════ -->
+  <!-- ══ MIDDLE ROW: 3 equal-height columns ═══════════════════ -->
   <div class="sa-mid-grid">
 
-    <!-- Department Stats -->
-    <div class="sa-card sa-dept-card">
+    <!-- ── Department Overview — each row is clickable ────────── -->
+    <div class="sa-card sa-mid-card">
       <div class="sa-card__header">
-        <mat-icon class="sa-card__header-icon" style="color:#405189">corporate_fare</mat-icon>
+        <div class="sa-card__hicon sa-card__hicon--blue">
+          <mat-icon>corporate_fare</mat-icon>
+        </div>
         <span class="sa-card__title">Department Overview</span>
+        <span class="sa-card__hint">Click a department to filter</span>
       </div>
       <mat-divider></mat-divider>
 
       <div class="sa-dept-list">
-        <div class="sa-dept-row" *ngFor="let dept of departmentStats">
-          <div class="sa-dept-icon" [style.background]="dept.bgColor" [style.color]="dept.color">
+        <div class="sa-dept-row sa-dept-row--clickable"
+             *ngFor="let dept of departmentStats"
+             (click)="goToDeptDetail(dept)"
+             matRipple>
+          <div class="sa-dept-dot" [style.background]="dept.bgColor" [style.color]="dept.color">
             <mat-icon>{{ dept.icon }}</mat-icon>
           </div>
           <div class="sa-dept-info">
             <span class="sa-dept-name">{{ dept.name }}</span>
             <div class="sa-dept-meta">
               <span>{{ dept.totalMembers }} members</span>
-              <span class="sa-dept-meta__dot">·</span>
+              <span class="sa-dot">·</span>
               <span>{{ dept.activeToday }} active</span>
-              <span class="sa-dept-meta__dot">·</span>
+              <span class="sa-dot">·</span>
               <span>{{ dept.pendingDsrs }} pending DSRs</span>
             </div>
-            <div class="sa-util-bar-wrap">
-              <div
-                class="sa-util-bar"
-                [class]="getUtilBarClass(dept.avgUtil)"
-                [style.width.%]="dept.avgUtil">
-              </div>
-            </div>
+            <mat-progress-bar
+              mode="determinate"
+              [value]="dept.avgUtil"
+              [ngClass]="getUtilBarClass(dept.avgUtil)"
+              class="sa-util-bar">
+            </mat-progress-bar>
           </div>
-          <div class="sa-dept-util">
-            <span class="sa-dept-util__val">{{ dept.avgUtil }}%</span>
-            <span class="sa-dept-util__lbl">Util</span>
+          <div class="sa-dept-stat">
+            <span class="sa-dept-pct">{{ dept.avgUtil }}%</span>
+            <span class="sa-dept-pct-lbl">Util</span>
           </div>
+          <mat-icon class="sa-row-chevron">chevron_right</mat-icon>
         </div>
       </div>
 
+      <mat-divider></mat-divider>
       <div class="sa-dept-footer">
-        <div class="sa-dept-footer__item">
-          <mat-icon style="color:#0ab39c">manage_accounts</mat-icon>
+        <div class="sa-dept-footer-item">
+          <mat-icon style="color:#0ab39c;font-size:16px;width:16px;height:16px;">manage_accounts</mat-icon>
           <span>{{ orgStats.totalManagers }} Managers</span>
         </div>
-        <div class="sa-dept-footer__item">
-          <mat-icon style="color:#405189">person</mat-icon>
+        <div class="sa-dept-footer-item">
+          <mat-icon style="color:#405189;font-size:16px;width:16px;height:16px;">person</mat-icon>
           <span>{{ orgStats.totalEmployees }} Employees</span>
         </div>
       </div>
     </div>
 
-    <!-- Risk Panel -->
-    <div class="sa-card sa-risk-card">
+    <!-- ── Risk Overview — each risk row is clickable ────────── -->
+    <div class="sa-card sa-mid-card">
       <div class="sa-card__header">
-        <mat-icon class="sa-card__header-icon" style="color:#f06548">report_problem</mat-icon>
+        <div class="sa-card__hicon sa-card__hicon--red">
+          <mat-icon>report_problem</mat-icon>
+        </div>
         <span class="sa-card__title">Risk Overview</span>
-        <span class="sa-risk-count-badge">{{ orgRisks.length }}</span>
+        <span class="sa-risk-badge">{{ orgRisks.length }}</span>
+        <span class="sa-card__hint">Click a risk to view</span>
       </div>
       <mat-divider></mat-divider>
 
       <div class="sa-risk-list">
-        <div class="sa-risk-row" *ngFor="let risk of orgRisks">
-          <div class="sa-risk-impact" [class]="getImpactClass(risk.impact)">
+        <div class="sa-risk-row sa-risk-row--clickable"
+             *ngFor="let risk of orgRisks"
+             (click)="goToRiskDetail(risk)"
+             matRipple>
+          <div class="sa-risk-impact" [ngClass]="getImpactClass(risk.impact)">
             <mat-icon>{{ getImpactIcon(risk.impact) }}</mat-icon>
             <span>{{ risk.impact | titlecase }}</span>
           </div>
           <div class="sa-risk-body">
             <p class="sa-risk-text">{{ risk.text }}</p>
             <div class="sa-risk-meta">
-              <mat-icon style="font-size:13px;width:13px;height:13px;">person_outline</mat-icon>
+              <mat-icon class="sa-risk-meta-icon">person_outline</mat-icon>
               <span>{{ risk.reportedBy }}</span>
-              <span class="sa-dept-meta__dot">·</span>
+              <span class="sa-dot">·</span>
               <span>{{ risk.department }}</span>
-              <span class="sa-dept-meta__dot">·</span>
-              <mat-icon style="font-size:13px;width:13px;height:13px;">calendar_today</mat-icon>
+              <span class="sa-dot">·</span>
+              <mat-icon class="sa-risk-meta-icon">calendar_today</mat-icon>
               <span>{{ risk.date }}</span>
             </div>
           </div>
-          <div class="sa-risk-escalation" *ngIf="risk.escalationRequired"
-               matTooltip="Escalation required">
-            <mat-icon style="color:#f06548">notification_important</mat-icon>
+          <div class="sa-risk-row__right">
+            <mat-icon *ngIf="risk.escalationRequired" class="sa-esc-icon"
+                      matTooltip="Escalation required"
+                      matTooltipPosition="left">notification_important</mat-icon>
+            <mat-icon class="sa-row-chevron">chevron_right</mat-icon>
           </div>
         </div>
 
         <div class="sa-risk-empty" *ngIf="orgRisks.length === 0">
           <mat-icon>check_circle_outline</mat-icon>
-          <span>No open risks — everything looks good!</span>
+          <span>No open risks — all clear!</span>
         </div>
+      </div>
+    </div>
+
+    <!-- ── Employee Assignments — each row clickable ─────────── -->
+    <div class="sa-card sa-mid-card sa-assign-card">
+      <div class="sa-card__header">
+        <div class="sa-card__hicon sa-card__hicon--purple">
+          <mat-icon>link</mat-icon>
+        </div>
+        <span class="sa-card__title">Employee Assignments</span>
+        <span class="sa-card__hint">Click to filter DSRs</span>
+      </div>
+      <mat-divider></mat-divider>
+
+      <div class="sa-assign-list">
+        <div
+          class="sa-assign-row"
+          *ngFor="let user of orgUsers | slice:0:assignmentScrollIndex"
+          (click)="goToDetailPage(user)"
+          matRipple>
+          <div class="sa-assign-avatar" [style.background]="user.avatarColor">
+            {{ user.initials }}
+          </div>
+          <div class="sa-assign-info">
+            <span class="sa-assign-name">{{ user.name }}</span>
+            <span class="sa-assign-dept">{{ user.department }}</span>
+          </div>
+          <div class="sa-assign-tags">
+            <span class="sa-assign-tag sa-assign-tag--client">
+              <mat-icon>business</mat-icon>
+              {{ getUserClient(user) }}
+            </span>
+            <span class="sa-assign-tag sa-assign-tag--project">
+              <mat-icon>folder_open</mat-icon>
+              {{ getUserProject(user) }}
+            </span>
+          </div>
+          <mat-icon class="sa-row-chevron">chevron_right</mat-icon>
+        </div>
+      </div>
+
+      <div class="sa-assign-footer">
+        <button mat-button class="sa-assign-more-btn"
+                *ngIf="assignmentScrollIndex < orgUsers.length"
+                (click)="assignmentScrollIndex = assignmentScrollIndex + 4; $event.stopPropagation()">
+          <mat-icon>expand_more</mat-icon>Show more
+        </button>
+        <button mat-button class="sa-assign-more-btn"
+                *ngIf="assignmentScrollIndex > 4"
+                (click)="assignmentScrollIndex = 4; $event.stopPropagation()">
+          <mat-icon>expand_less</mat-icon>Show less
+        </button>
       </div>
     </div>
 
   </div>
 
-  <!-- ══════════════════════════════════════════════════════════
-       USER TABLE
-  ══════════════════════════════════════════════════════════ -->
+  <!-- ══ EMPLOYEE DIRECTORY TABLE ═══════════════════════════════ -->
   <div class="sa-card sa-table-card">
 
-    <!-- Table header -->
     <div class="sa-table-header">
-      <div class="sa-table-header__left">
-        <mat-icon class="sa-card__header-icon" style="color:#405189">people_outline</mat-icon>
-        <span class="sa-card__title">Emplyoess Data</span>
-        <span class="sa-result-count" *ngIf="hasActiveFilters">
-          {{ filteredCount }} of {{ orgUsers.length }}
+      <div class="sa-table-header-left">
+        <div class="sa-card__hicon sa-card__hicon--blue sa-card__hicon--sm">
+          <mat-icon>people_outline</mat-icon>
+        </div>
+        <span class="sa-card__title">Employee Directory</span>
+        <span class="sa-filter-count">
+          {{ hasActiveFilters ? (filteredCount + ' of ' + orgUsers.length) : (orgUsers.length + ' of ' + orgUsers.length) }}
         </span>
       </div>
     </div>
     <mat-divider></mat-divider>
 
-    <!-- Filters row -->
     <div class="sa-filters">
-      <div class="sa-filter-search">
-        <mat-icon class="sa-filter-search__icon">search</mat-icon>
-        <input
-          class="sa-filter-search__input"
-          placeholder="Search name, email, department…"
-          [(ngModel)]="searchText"
-          (ngModelChange)="applyFilters()"
-        />
-      </div>
+      <mat-form-field appearance="outline" class="sa-field sa-field--search" subscriptSizing="dynamic">
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput placeholder="Search name, email, department…"
+               [(ngModel)]="searchText"
+               (ngModelChange)="applyFilters()">
+        <button mat-icon-button matSuffix *ngIf="searchText"
+                (click)="searchText=''; applyFilters()" matTooltip="Clear">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
 
-      <select class="sa-select" [(ngModel)]="filterRole" (ngModelChange)="applyFilters()">
-        <option value="">All Roles</option>
-        <option value="MANAGER">Manager</option>
-        <option value="EMPLOYEE">Employee</option>
-      </select>
+      <mat-form-field appearance="outline" class="sa-field" subscriptSizing="dynamic">
+        <mat-select [(ngModel)]="filterRole" (ngModelChange)="applyFilters()"
+                    placeholder="All Roles">
+          <mat-option value="">All Roles</mat-option>
+          <mat-option value="MANAGER">Manager</mat-option>
+          <mat-option value="EMPLOYEE">Employee</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-      <select class="sa-select" [(ngModel)]="filterStatus" (ngModelChange)="applyFilters()">
-        <option value="">All Status</option>
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
-      </select>
+      <mat-form-field appearance="outline" class="sa-field" subscriptSizing="dynamic">
+        <mat-select [(ngModel)]="filterStatus" (ngModelChange)="applyFilters()"
+                    placeholder="All Status">
+          <mat-option value="">All Status</mat-option>
+          <mat-option value="active">Active</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-      <select class="sa-select" [(ngModel)]="filterDept" (ngModelChange)="applyFilters()">
-        <option value="">All Departments</option>
-        <option *ngFor="let d of uniqueDepartments" [value]="d">{{ d }}</option>
-      </select>
+      <mat-form-field appearance="outline" class="sa-field" subscriptSizing="dynamic">
+        <mat-select [(ngModel)]="filterDept" (ngModelChange)="applyFilters()"
+                    placeholder="All Departments">
+          <mat-option value="">All Departments</mat-option>
+          <mat-option *ngFor="let d of uniqueDepartments" [value]="d">{{ d }}</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-      <button class="sa-btn sa-btn--ghost" *ngIf="hasActiveFilters" (click)="clearFilters()">
+      <button mat-stroked-button class="sa-clear-btn"
+              *ngIf="hasActiveFilters"
+              (click)="clearFilters()">
         <mat-icon>filter_alt_off</mat-icon>Clear
       </button>
     </div>
 
-    <!-- Table -->
     <div class="sa-table-wrap">
       <table mat-table [dataSource]="dataSource" matSort class="sa-table">
 
-        <!-- User column -->
         <ng-container matColumnDef="user">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>User</th>
-          <td mat-cell *matCellDef="let user">
+          <td mat-cell *matCellDef="let u">
             <div class="sa-user-cell">
-              <div class="sa-avatar" [style.background]="user.avatarColor">
-                {{ user.initials }}
-              </div>
-              <div class="sa-user-cell__info">
-                <span class="sa-user-cell__name">{{ user.name }}</span>
-                <span class="sa-role-badge" [class]="getRoleClass(user.role)">
-                  {{ getRoleLabel(user.role) }}
+              <div class="sa-avatar" [style.background]="u.avatarColor">{{ u.initials }}</div>
+              <div class="sa-user-info">
+                <span class="sa-user-name">{{ u.name }}</span>
+                <span class="sa-role-badge" [ngClass]="getRoleClass(u.role)">
+                  {{ getRoleLabel(u.role) }}
                 </span>
               </div>
             </div>
           </td>
         </ng-container>
 
-        <!-- Email column -->
         <ng-container matColumnDef="email">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
-          <td mat-cell *matCellDef="let user">
-            <span class="sa-email">{{ user.email }}</span>
+          <td mat-cell *matCellDef="let u">
+            <span class="sa-email">{{ u.email }}</span>
           </td>
         </ng-container>
 
-        <!-- Department column -->
         <ng-container matColumnDef="department">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Department</th>
-          <td mat-cell *matCellDef="let user">{{ user.department }}</td>
+          <td mat-cell *matCellDef="let u">{{ u.department }}</td>
         </ng-container>
 
-        <!-- Status column -->
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
-          <td mat-cell *matCellDef="let user">
-            <span class="sa-status-badge" [class]="getStatusClass(user.status)">
-              <span class="sa-status-dot"></span>
-              {{ user.status | titlecase }}
+          <td mat-cell *matCellDef="let u">
+            <span class="sa-status-badge" [ngClass]="getStatusClass(u.status)">
+              <span class="sa-status-dot"></span>{{ u.status | titlecase }}
             </span>
           </td>
         </ng-container>
 
-        <!-- Last Active column -->
         <ng-container matColumnDef="lastActive">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Active</th>
-          <td mat-cell *matCellDef="let user">
-            <span class="sa-last-active" [class.sa-last-active--today]="user.lastActive === 'Today'">
-              {{ user.lastActive }}
+          <td mat-cell *matCellDef="let u">
+            <span class="sa-last-active"
+                  [class.sa-last-active--today]="u.lastActive === 'Today'">
+              {{ u.lastActive }}
             </span>
           </td>
         </ng-container>
 
-        <!-- Timesheets column -->
         <ng-container matColumnDef="timesheets">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>DSRs (Month)</th>
-          <td mat-cell *matCellDef="let user">
-            <span class="sa-timesheets">{{ user.timesheetsThisMonth }}</span>
+          <td mat-cell *matCellDef="let u">
+            <span class="sa-dsr-count">{{ u.timesheetsThisMonth }}</span>
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="userTableColumns; sticky: true"></tr>
-        <tr mat-row *matRowDef="let row; columns: userTableColumns;" class="sa-table-row"></tr>
 
-        <!-- No data row -->
+        <tr mat-header-row *matHeaderRowDef="userTableColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: userTableColumns;"
+            class="sa-table-row"
+            (click)="goToDetailPage(row)">
+        </tr>
         <tr class="mat-row" *matNoDataRow>
           <td class="sa-no-data" [attr.colspan]="userTableColumns.length">
             <mat-icon>search_off</mat-icon>
             <span>No users match the current filters.</span>
           </td>
         </tr>
-
       </table>
     </div>
 
-    <!-- Paginator -->
-    <mat-paginator
-      [pageSizeOptions]="[5, 10, 20]"
-      pageSize="5"
-      showFirstLastButtons>
-    </mat-paginator>
-
+    <mat-divider></mat-divider>
+    <div class="sa-paginator-row">
+      <span class="sa-showing-label">
+        Showing {{ showingFrom }}–{{ showingTo }} of {{ hasActiveFilters ? filteredCount : orgUsers.length }}
+      </span>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" pageSize="5"
+                     showFirstLastButtons aria-label="Select page">
+      </mat-paginator>
+    </div>
   </div>
 
 </div>

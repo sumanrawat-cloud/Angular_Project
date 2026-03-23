@@ -1,0 +1,280 @@
+<!-- manager-profile.html -->
+<div class="mp-root">
+
+  <!-- ══ PAGE HEADER ═══════════════════════════════════════════════ -->
+  <div class="mp-page-header">
+    <div class="mp-header-left">
+      <button mat-icon-button class="mp-back-btn" (click)="goBack()" matTooltip="Back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="mp-header-icon">
+        <mat-icon>manage_accounts</mat-icon>
+      </div>
+      <div>
+        <h1 class="mp-page-title">Manager Profile</h1>
+        <p class="mp-page-sub">Team overview, assignments &amp; DSR management</p>
+      </div>
+    </div>
+    <div class="mp-header-actions">
+      <button mat-stroked-button class="mp-btn-outline mp-btn--edit"
+              [class.mp-btn--hidden]="isEditing"
+              (click)="toggleEdit()">
+        <mat-icon>edit</mat-icon>Edit Profile
+      </button>
+      <div class="mp-edit-actions" [class.mp-edit-actions--visible]="isEditing">
+        <button mat-flat-button class="mp-btn-primary" (click)="saveProfile()">
+          <mat-icon>save</mat-icon>Save Changes
+        </button>
+        <button mat-stroked-button class="mp-btn-outline" (click)="cancelEdit()">
+          <mat-icon>close</mat-icon>Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ HERO CARD ══════════════════════════════════════════════════ -->
+  <div class="mp-hero-card">
+    <div class="mp-hero-bg"></div>
+    <div class="mp-hero-body">
+      <div class="mp-avatar-wrap">
+
+        <!-- Spinner ring shown while reading the file -->
+        <div class="mp-avatar-spinner" *ngIf="avatarUploading"></div>
+
+        <div class="mp-avatar"
+             [class.mp-avatar--uploading]="avatarUploading"
+             [style.background]="avatarImageUrl ? 'transparent' : profile.avatarColor"
+             (click)="triggerAvatarUpload(); $event.stopPropagation()"
+             matTooltip="Click to change photo">
+
+          <!-- Uploaded photo -->
+          <img *ngIf="avatarImageUrl && !avatarUploading"
+               [src]="avatarImageUrl"
+               class="mp-avatar-img"
+               alt="Profile photo">
+
+          <!-- Initials fallback -->
+          <span *ngIf="!avatarImageUrl && !avatarUploading">{{ profile.initials }}</span>
+
+          <!-- Camera overlay on hover -->
+          <div class="mp-avatar-overlay">
+            <mat-icon>photo_camera</mat-icon>
+            <span>Change</span>
+          </div>
+        </div>
+
+        <!-- Hidden file input -->
+        <input #avatarInput type="file" accept="image/*"
+               class="mp-file-input" (change)="onAvatarSelected($event)">
+
+        <!-- Remove photo button -->
+        <button *ngIf="avatarImageUrl"
+                mat-mini-fab class="mp-avatar-remove"
+                matTooltip="Remove photo"
+                (click)="removeAvatar(); $event.stopPropagation()">
+          <mat-icon>close</mat-icon>
+        </button>
+
+        <span class="mp-status-dot mp-status-dot--active"></span>
+      </div>
+      <div class="mp-hero-info">
+        <h2 class="mp-hero-name">{{ profile.name }}</h2>
+        <div class="mp-hero-meta">
+          <span class="mp-role-badge mp-role--manager">
+            <mat-icon>manage_accounts</mat-icon>Manager
+          </span>
+          <span class="mp-hero-dept">
+            <mat-icon>apartment</mat-icon>{{ profile.department }}
+          </span>
+          <span class="mp-hero-joined">
+            <mat-icon>calendar_today</mat-icon>Joined {{ profile.joinedDate }}
+          </span>
+        </div>
+      </div>
+      <div class="mp-hero-stats">
+        <div class="mp-hero-stat">
+          <span class="mp-hero-stat-val">{{ profile.teamSize }}</span>
+          <span class="mp-hero-stat-lbl">Team Size</span>
+        </div>
+        <div class="mp-hero-stat-div"></div>
+        <div class="mp-hero-stat">
+          <span class="mp-hero-stat-val">{{ profile.activeProjects }}</span>
+          <span class="mp-hero-stat-lbl">Active Projects</span>
+        </div>
+        <div class="mp-hero-stat-div"></div>
+        <div class="mp-hero-stat">
+          <span class="mp-hero-stat-val mp-stat-val--amber">{{ profile.pendingApprovals }}</span>
+          <span class="mp-hero-stat-lbl">Pending Approvals</span>
+        </div>
+        <div class="mp-hero-stat-div"></div>
+        <div class="mp-hero-stat">
+          <span class="mp-hero-stat-val mp-stat-val--success">{{ profile.avgUtilization }}%</span>
+          <span class="mp-hero-stat-lbl">Avg Utilization</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MAIN GRID ══════════════════════════════════════════════════ -->
+  <div class="mp-main-grid">
+
+    <!-- Personal Info -->
+    <div class="mp-card mp-info-card">
+      <div class="mp-card__header">
+        <div class="mp-card__hicon mp-card__hicon--blue">
+          <mat-icon>person_outline</mat-icon>
+        </div>
+        <span class="mp-card__title">Personal Information</span>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="mp-info-grid">
+
+        <div class="mp-info-field">
+          <label class="mp-field-label">Full Name</label>
+          <div class="mp-field-val" *ngIf="!isEditing">{{ profile.name }}</div>
+          <input *ngIf="isEditing" class="mp-edit-input" [(ngModel)]="editForm.name">
+        </div>
+
+        <div class="mp-info-field">
+          <label class="mp-field-label">Email Address</label>
+          <div class="mp-field-val">
+            <mat-icon class="mp-field-icon">mail_outline</mat-icon>
+            {{ profile.email }}
+          </div>
+        </div>
+
+        <div class="mp-info-field">
+          <label class="mp-field-label">Phone Number</label>
+          <div class="mp-field-val" *ngIf="!isEditing">{{ profile.phone }}</div>
+          <input *ngIf="isEditing" class="mp-edit-input" [(ngModel)]="editForm.phone">
+        </div>
+
+        <div class="mp-info-field">
+          <label class="mp-field-label">Department</label>
+          <div class="mp-field-val">
+            <mat-icon class="mp-field-icon">apartment</mat-icon>
+            {{ profile.department }}
+          </div>
+        </div>
+
+        <div class="mp-info-field">
+          <label class="mp-field-label">Employee ID</label>
+          <div class="mp-field-val mp-field-val--mono">#{{ profile.id }}</div>
+        </div>
+
+        <div class="mp-info-field">
+          <label class="mp-field-label">Status</label>
+          <span class="mp-status-badge mp-status--active">
+            <span class="mp-status-dot-sm"></span>Active
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Team Overview -->
+    <div class="mp-card mp-team-card">
+      <div class="mp-card__header">
+        <div class="mp-card__hicon mp-card__hicon--teal">
+          <mat-icon>groups</mat-icon>
+        </div>
+        <span class="mp-card__title">My Team</span>
+        <span class="mp-card__badge">{{ teamMembers.length }} members</span>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="mp-team-list">
+        <div class="mp-team-row" *ngFor="let member of teamMembers"
+             [style.--row-color]="member.avatarColor">
+          <div class="mp-team-avatar" [style.background]="member.avatarColor">
+            {{ member.initials }}
+          </div>
+          <div class="mp-team-info">
+            <span class="mp-team-name">{{ member.name }}</span>
+            <span class="mp-team-role">{{ member.project }}</span>
+          </div>
+          <div class="mp-team-right">
+            <span class="mp-team-status"
+                  [class.mp-team-status--today]="member.lastActive === 'Today'">
+              {{ member.lastActive }}
+            </span>
+            <span class="mp-pending-badge" *ngIf="member.pendingDsrs > 0">
+              {{ member.pendingDsrs }} pending
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pending DSR Approvals -->
+    <div class="mp-card mp-approvals-card">
+      <div class="mp-card__header">
+        <div class="mp-card__hicon mp-card__hicon--amber">
+          <mat-icon>pending_actions</mat-icon>
+        </div>
+        <span class="mp-card__title">Pending DSR Approvals</span>
+        <span class="mp-card__badge mp-badge--amber">{{ pendingDsrs.length }}</span>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="mp-approval-list">
+        <div class="mp-approval-row" *ngFor="let dsr of pendingDsrs"
+             [style.--row-color]="dsr.avatarColor">
+          <div class="mp-approval-avatar" [style.background]="dsr.avatarColor">
+            {{ dsr.initials }}
+          </div>
+          <div class="mp-approval-info">
+            <p class="mp-approval-name">{{ dsr.employeeName }}</p>
+            <span class="mp-approval-task">{{ dsr.task }} · {{ dsr.date }}</span>
+          </div>
+          <div class="mp-approval-hours">{{ dsr.hours }}h</div>
+          <div class="mp-approval-actions">
+            <button mat-icon-button class="mp-approve-btn"
+                    matTooltip="Approve" (click)="approveDsr(dsr)">
+              <mat-icon>check_circle</mat-icon>
+            </button>
+            <button mat-icon-button class="mp-reject-btn"
+                    matTooltip="Reject" (click)="rejectDsr(dsr)">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div class="mp-approval-empty" *ngIf="pendingDsrs.length === 0">
+          <mat-icon>check_circle_outline</mat-icon>
+          <span>All DSRs are reviewed — great work!</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project Summary -->
+    <div class="mp-card mp-projects-card">
+      <div class="mp-card__header">
+        <div class="mp-card__hicon mp-card__hicon--purple">
+          <mat-icon>folder_open</mat-icon>
+        </div>
+        <span class="mp-card__title">Project Summary</span>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="mp-project-list">
+        <div class="mp-project-row" *ngFor="let proj of projects"
+             [style.--row-color]="proj.color">
+          <div class="mp-project-dot" [style.background]="proj.color"></div>
+          <div class="mp-project-info">
+            <p class="mp-project-name">{{ proj.name }}</p>
+            <span class="mp-project-client">{{ proj.client }}</span>
+          </div>
+          <div class="mp-project-right">
+            <div class="mp-util-bar-wrap">
+              <div class="mp-util-bar">
+                <div class="mp-util-fill"
+                     [style.width.%]="proj.completion"
+                     [style.background]="proj.color"></div>
+              </div>
+              <span class="mp-util-pct">{{ proj.completion }}%</span>
+            </div>
+            <span class="mp-team-count">{{ proj.memberCount }} members</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

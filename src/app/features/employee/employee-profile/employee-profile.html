@@ -1,0 +1,308 @@
+<!-- employee-profile.html -->
+<div class="ep-root">
+
+  <!-- ══ PAGE HEADER ═══════════════════════════════════════════════ -->
+  <div class="ep-page-header">
+    <div class="ep-header-left">
+      <button mat-icon-button class="ep-back-btn" (click)="goBack()" matTooltip="Back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="ep-header-icon">
+        <mat-icon>person</mat-icon>
+      </div>
+      <div>
+        <h1 class="ep-page-title">My Profile</h1>
+        <p class="ep-page-sub">View and manage your personal information</p>
+      </div>
+    </div>
+    <div class="ep-header-actions">
+      <button mat-stroked-button class="ep-btn-outline ep-btn--edit"
+              [class.ep-btn--hidden]="isEditing"
+              (click)="toggleEdit()">
+        <mat-icon>edit</mat-icon>Edit Profile
+      </button>
+      <div class="ep-edit-actions" [class.ep-edit-actions--visible]="isEditing">
+        <button mat-flat-button class="ep-btn-primary" (click)="saveProfile()">
+          <mat-icon>save</mat-icon>Save Changes
+        </button>
+        <button mat-stroked-button class="ep-btn-outline" (click)="cancelEdit()">
+          <mat-icon>close</mat-icon>Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PROFILE HERO CARD ══════════════════════════════════════════ -->
+  <div class="ep-hero-card">
+    <div class="ep-hero-bg"></div>
+    <div class="ep-hero-body">
+
+      <!-- ── Dynamic avatar uploader ── -->
+      <div class="ep-avatar-wrap">
+
+        <!-- Spinner ring shown while reading the file -->
+        <div class="ep-avatar-spinner" *ngIf="avatarUploading"></div>
+
+        <div class="ep-avatar"
+             [class.ep-avatar--uploading]="avatarUploading"
+             [style.background]="avatarImageUrl ? 'transparent' : profile.avatarColor"
+             (click)="triggerAvatarUpload(); $event.stopPropagation()"
+             matTooltip="Click to change photo">
+
+          <!-- Uploaded photo -->
+          <img *ngIf="avatarImageUrl && !avatarUploading"
+               [src]="avatarImageUrl"
+               class="ep-avatar-img"
+               alt="Profile photo">
+
+          <!-- Initials fallback -->
+          <span *ngIf="!avatarImageUrl && !avatarUploading">{{ profile.initials }}</span>
+
+          <!-- Camera overlay on hover -->
+          <div class="ep-avatar-overlay">
+            <mat-icon>photo_camera</mat-icon>
+            <span>Change</span>
+          </div>
+        </div>
+
+        <!-- Hidden file input -->
+        <input #avatarInput type="file" accept="image/*"
+               class="ep-file-input" (change)="onAvatarSelected($event)">
+
+        <!-- Remove photo button — only when a photo is set -->
+        <button *ngIf="avatarImageUrl"
+                mat-mini-fab class="ep-avatar-remove"
+                matTooltip="Remove photo"
+                (click)="removeAvatar(); $event.stopPropagation()">
+          <mat-icon>close</mat-icon>
+        </button>
+
+        <span class="ep-status-dot"
+              [class.ep-status-dot--active]="profile.status === 'active'"></span>
+      </div>
+
+      <!-- Hero info -->
+      <div class="ep-hero-info">
+        <h2 class="ep-hero-name">{{ profile.name }}</h2>
+        <div class="ep-hero-meta">
+          <span class="ep-role-badge ep-role--employee">
+            <mat-icon>badge</mat-icon>Employee
+          </span>
+          <span class="ep-hero-dept">
+            <mat-icon>apartment</mat-icon>{{ profile.department }}
+          </span>
+          <span class="ep-hero-joined">
+            <mat-icon>calendar_today</mat-icon>Joined {{ profile.joinedDate }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Hero stats -->
+      <div class="ep-hero-stats">
+        <div class="ep-hero-stat">
+          <span class="ep-hero-stat-val">{{ profile.timesheetsThisMonth }}</span>
+          <span class="ep-hero-stat-lbl">Timesheets</span>
+        </div>
+        <div class="ep-hero-stat">
+          <span class="ep-hero-stat-val">{{ profile.totalHours }}h</span>
+          <span class="ep-hero-stat-lbl">Hours Logged</span>
+        </div>
+        <div class="ep-hero-stat">
+          <span class="ep-hero-stat-val ep-hero-stat-val--success">{{ profile.approvedDsrs }}</span>
+          <span class="ep-hero-stat-lbl">Approved DSRs</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ ROW 1 — Personal Info + Current Assignment ═════════════════ -->
+  <div class="ep-row ep-row--two">
+
+    <!-- Personal Information -->
+    <div class="ep-card ep-info-card">
+      <div class="ep-card__header">
+        <div class="ep-card__hicon ep-card__hicon--blue">
+          <mat-icon>person_outline</mat-icon>
+        </div>
+        <span class="ep-card__title">Personal Information</span>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="ep-info-grid">
+
+        <div class="ep-info-field">
+          <label class="ep-field-label">Full Name</label>
+          <div class="ep-field-val" *ngIf="!isEditing">{{ profile.name }}</div>
+          <input *ngIf="isEditing" class="ep-edit-input" [(ngModel)]="editForm.name">
+        </div>
+
+        <div class="ep-info-field">
+          <label class="ep-field-label">Email Address</label>
+          <div class="ep-field-val">
+            <mat-icon class="ep-field-icon">mail_outline</mat-icon>
+            {{ profile.email }}
+          </div>
+        </div>
+
+        <div class="ep-info-field">
+          <label class="ep-field-label">Phone Number</label>
+          <div class="ep-field-val" *ngIf="!isEditing">{{ profile.phone }}</div>
+          <input *ngIf="isEditing" class="ep-edit-input" [(ngModel)]="editForm.phone">
+        </div>
+
+        <div class="ep-info-field">
+          <label class="ep-field-label">Department</label>
+          <div class="ep-field-val">
+            <mat-icon class="ep-field-icon">apartment</mat-icon>
+            {{ profile.department }}
+          </div>
+        </div>
+
+        <div class="ep-info-field">
+          <label class="ep-field-label">Employee ID</label>
+          <div class="ep-field-val ep-field-val--mono">#{{ profile.id }}</div>
+        </div>
+
+        <div class="ep-info-field">
+          <label class="ep-field-label">Status</label>
+          <span class="ep-status-badge ep-status--active" *ngIf="profile.status === 'active'">
+            <span class="ep-status-dot-sm"></span>Active
+          </span>
+          <span class="ep-status-badge ep-status--inactive" *ngIf="profile.status !== 'active'">
+            <span class="ep-status-dot-sm ep-status-dot-sm--inactive"></span>Inactive
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Current Assignment -->
+    <div class="ep-card ep-assign-card">
+      <div class="ep-card__header">
+        <div class="ep-card__hicon ep-card__hicon--purple">
+          <mat-icon>work_outline</mat-icon>
+        </div>
+        <span class="ep-card__title">Current Assignment</span>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="ep-assign-body">
+        <div class="ep-assign-item" style="--item-color: var(--success)">
+          <div class="ep-assign-icon ep-assign-icon--teal">
+            <mat-icon>business</mat-icon>
+          </div>
+          <div class="ep-assign-detail">
+            <label>Client</label>
+            <p>{{ profile.client }}</p>
+          </div>
+        </div>
+        <div class="ep-assign-item" style="--item-color: var(--primary)">
+          <div class="ep-assign-icon ep-assign-icon--blue">
+            <mat-icon>folder_open</mat-icon>
+          </div>
+          <div class="ep-assign-detail">
+            <label>Project</label>
+            <p>{{ profile.project }}</p>
+          </div>
+        </div>
+        <div class="ep-assign-item" style="--item-color: var(--amber)">
+          <div class="ep-assign-icon ep-assign-icon--amber">
+            <mat-icon>person_outline</mat-icon>
+          </div>
+          <div class="ep-assign-detail">
+            <label>Reporting Manager</label>
+            <p>{{ profile.manager }}</p>
+          </div>
+        </div>
+        <div class="ep-assign-item" style="--item-color: var(--purple)">
+          <div class="ep-assign-icon ep-assign-icon--purple">
+            <mat-icon>schedule</mat-icon>
+          </div>
+          <div class="ep-assign-detail">
+            <label>Last Active</label>
+            <p [class.ep-text--success]="profile.lastActive === 'Today'">{{ profile.lastActive }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ ROW 2 — DSR Summary + Recent DSR Activity (same row) ═══════ -->
+  <div class="ep-row ep-row--two">
+
+    <!-- DSR Summary -->
+    <div class="ep-card ep-dsr-card">
+      <div class="ep-card__header">
+        <div class="ep-card__hicon ep-card__hicon--teal">
+          <mat-icon>assessment</mat-icon>
+        </div>
+        <span class="ep-card__title">DSR Summary</span>
+        <span class="ep-card__sub">This Month</span>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="ep-dsr-stats">
+        <div class="ep-dsr-stat ep-dsr-stat--approved">
+          <mat-icon>task_alt</mat-icon>
+          <span class="ep-dsr-val">{{ dsrStats.approved }}</span>
+          <span class="ep-dsr-lbl">Approved</span>
+        </div>
+        <div class="ep-dsr-stat ep-dsr-stat--pending">
+          <mat-icon>pending_actions</mat-icon>
+          <span class="ep-dsr-val">{{ dsrStats.pending }}</span>
+          <span class="ep-dsr-lbl">Pending</span>
+        </div>
+        <div class="ep-dsr-stat ep-dsr-stat--rejected">
+          <mat-icon>cancel</mat-icon>
+          <span class="ep-dsr-val">{{ dsrStats.rejected }}</span>
+          <span class="ep-dsr-lbl">Rejected</span>
+        </div>
+      </div>
+      <div class="ep-dsr-bar-wrap">
+        <div class="ep-dsr-bar">
+          <div class="ep-dsr-bar-fill ep-dsr-bar--approved"
+               [style.width.%]="dsrPercent(dsrStats.approved)"></div>
+          <div class="ep-dsr-bar-fill ep-dsr-bar--pending"
+               [style.width.%]="dsrPercent(dsrStats.pending)"></div>
+          <div class="ep-dsr-bar-fill ep-dsr-bar--rejected"
+               [style.width.%]="dsrPercent(dsrStats.rejected)"></div>
+        </div>
+        <p class="ep-dsr-total">
+          {{ dsrStats.approved + dsrStats.pending + dsrStats.rejected }} total submissions
+        </p>
+      </div>
+    </div>
+
+    <!-- Recent DSR Activity -->
+    <div class="ep-card ep-recent-card">
+      <div class="ep-card__header">
+        <div class="ep-card__hicon ep-card__hicon--blue ep-card__hicon--sm">
+          <mat-icon>history</mat-icon>
+        </div>
+        <span class="ep-card__title">Recent DSR Activity</span>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="ep-recent-list">
+        <div class="ep-recent-row"
+             *ngFor="let dsr of recentDsrs"
+            >
+          <div class="ep-recent-status-dot"
+               [class.ep-dot--approved]="dsr.status === 'approved'"
+               [class.ep-dot--pending]="dsr.status === 'pending'"
+               [class.ep-dot--rejected]="dsr.status === 'rejected'">
+          </div>
+          <div class="ep-recent-info">
+            <p class="ep-recent-task">{{ dsr.task }}</p>
+            <span class="ep-recent-meta">{{ dsr.project }} · {{ dsr.date }}</span>
+          </div>
+          <div class="ep-recent-right">
+            <span class="ep-hours-badge">{{ dsr.hours }}h</span>
+            <span class="ep-dsr-status-badge"
+                  [ngClass]="getDsrClass(dsr.status)">{{ dsr.status | titlecase }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

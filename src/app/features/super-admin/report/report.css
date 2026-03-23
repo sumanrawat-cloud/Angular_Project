@@ -2,40 +2,31 @@
 
 /* ── CSS Variables ───────────────────────────────────────── */
 .rp-page {
-  --primary:      #405189;
-  --primary-light:#eaecf5;
-  --primary-hover:#364474;
-  --success:      #0ab39c;
-  --success-light:#e8f8f5;
-  --warn:         #f06548;
-  --warn-light:   #fff0ee;
-  --amber:        #f7b731;
-  --amber-light:  #fffbeb;
-  --text-dark:    #1a1d2e;
-  --text-mid:     #374151;
-  --text-soft:    #7b8ab8;
-  --text-muted:   #a0aec0;
-  --border:       #e9ebec;
-  --bg-page:      #f3f6f9;
-  --bg-card:      #ffffff;
-  --bg-row-alt:   #fafbff;
-  --shadow-sm:    0 1px 4px rgba(56,65,74,.08);
-  --shadow-md:    0 4px 16px rgba(56,65,74,.12);
-  --radius:       12px;
-  --radius-sm:    8px;
-/* 
-  background: var(--bg-page); */
+  --primary: #405189;
+  --primary-light: #eaecf5;
+  --primary-hover: #364474;
+  --success: #0ab39c;
+  --success-light: #e8f8f5;
+  --warn: #f06548;
+  --warn-light: #fff0ee;
+  --amber: #f7b731;
+  --amber-light: #fffbeb;
+  --text-dark: #1a1d2e;
+  --text-mid: #374151;
+  --text-soft: #7b8ab8;
+  --text-muted: #a0aec0;
+  --border: #e9ebec;
+  --bg-page: #f3f6f9;
+  --bg-card: #ffffff;
+  --bg-row-alt: #fafbff;
+  --shadow-sm: 0 1px 4px rgba(56, 65, 74, .08);
+  --shadow-md: 0 4px 16px rgba(56, 65, 74, .12);
+  --radius: 12px;
+  --radius-sm: 8px;
   min-height: 100vh;
   padding: 24px;
-  /* box-sizing: border-box; */
   font-family: 'Inter';
-  /* animation: rp-fade-in .32s ease both; */
 }
-/* 
-@keyframes rp-fade-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-} */
 
 /* ── Page Header ─────────────────────────────────────────── */
 .rp-header {
@@ -91,7 +82,7 @@
   align-items: center;
 }
 
-/* Buttons */
+/* ── Buttons ─────────────────────────────────────────────── */
 .rp-btn-outline {
   height: 38px !important;
   font-family: 'Inter', sans-serif !important;
@@ -118,7 +109,9 @@
   transition: background .18s !important;
 }
 
-.rp-btn-primary:hover { background: var(--primary-hover) !important; }
+.rp-btn-primary:hover {
+  background: var(--primary-hover) !important;
+}
 
 .rp-btn-outline mat-icon,
 .rp-btn-primary mat-icon {
@@ -135,62 +128,64 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, .07);
   transition: box-shadow .25s ease;
 }
+
 .rp-filter-card:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .08);
 }
 
 .rp-filter-card .mat-mdc-card-content {
-  padding: 20px !important;
+  padding: 14px 20px !important;
 }
 
-/* Single row: ALL items on one line — dropdowns + clear + tabs */
-/* FIX 1 & 2: explicit height + align-items:center keeps all elements on same axis */
+/* ════════════════════════════════════════════════════════════
+   FIX 1 & 2 — Perfect single-row alignment
+   Core problem: Angular Material injects a ~16px subscript
+   zone below every mat-form-field, raising its visual midpoint
+   above the tab group's centre. Strip it completely, set
+   explicit 40px heights everywhere, align-items:center.
+   ════════════════════════════════════════════════════════════ */
 .rp-filter-content {
-  display:         flex !important;
-  align-items:     center !important;
+  display: flex !important;
+  align-items: center !important;
   justify-content: space-between !important;
-  gap:             12px !important;
-  padding:         16px 20px !important;
-  flex-wrap:       nowrap !important;
-  min-height:      64px;           /* prevents height jitter when clear btn fades */
+  gap: 12px !important;
+  padding: 0 !important;
+  flex-wrap: nowrap !important;
+  min-height: 48px;
 }
 
-/* Left group: dropdowns + clear, always inline, never wrap internally */
 .rp-filter-left {
-  display:     flex;
-  align-items: center;             /* same midline as the tab group */
-  gap:         10px;
-  flex-wrap:   nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
   flex-shrink: 0;
 }
 
-/* mat-form-field — fixed compact height to align with toggle tabs */
-.rp-field {
-  min-width: 155px;
-  /* Remove ALL extra space Angular Material adds below the field */
-}
-
-/* FIX 1: strip ALL space Angular Material injects below fields */
-.rp-field .mat-mdc-form-field-subscript-wrapper,
-.rp-field .mat-mdc-form-field-bottom-align::before {
+/* Kill the ghost subscript space entirely */
+.rp-field .mat-mdc-form-field-subscript-wrapper {
   display: none !important;
-  height:  0    !important;
+  height: 0 !important;
 }
 
-.rp-field .mat-mdc-form-field-infix {
-  min-height:     40px !important;
-  padding-top:    6px  !important;
-  padding-bottom: 6px  !important;
+/* Kill the bottom padding Angular adds to the wrapper */
+.rp-field .mat-mdc-text-field-wrapper {
+  padding-bottom: 0 !important;
 }
 
-/* FIX 1: Remove ALL bottom gap the Material form-field host adds */
+/* Kill bottom margin on the host element */
 .rp-filter-left .mat-mdc-form-field {
   margin-bottom: 0 !important;
 }
 
-/* FIX 1: prevent MDC wrapper from adding vertical padding */
-.rp-field .mat-mdc-text-field-wrapper {
-  padding-bottom: 0 !important;
+.rp-field {
+  min-width: 155px;
+}
+
+.rp-field .mat-mdc-form-field-infix {
+  min-height: 40px !important;
+  padding-top: 7px !important;
+  padding-bottom: 7px !important;
 }
 
 .rp-field .mdc-notched-outline__leading,
@@ -212,38 +207,41 @@
   font-size: 13px !important;
 }
 
-/* mat-button-toggle-group */
-/* FIX 1: explicit 40px height + inline-flex so tabs sit on same midline as fields */
+/* Tab group — explicit 40px to match fields */
 .rp-tabs {
-  border:        1.5px solid var(--border) !important;
+  border: 1.5px solid var(--border) !important;
   border-radius: var(--radius-sm) !important;
-  overflow:      hidden;
-  flex-shrink:   0;
-  height:        40px;          /* matches .rp-field height */
-  display:       inline-flex !important;
-  align-self:    center;        /* snap to flex parent midline */
+  overflow: hidden;
+  flex-shrink: 0;
+  height: 40px !important;
+  display: inline-flex !important;
+  align-self: center !important;
+  align-items: center !important;
 }
 
+/* Each toggle fills the 40px container */
 .rp-tabs .mat-button-toggle {
-  font-family:  'Inter';
-  background:   var(--bg-page);
-  border:       none !important;
-  height:       40px !important;
-  display:      inline-flex !important;
-  align-items:  center !important;
+  font-family: 'Inter';
+  background: var(--bg-page);
+  border: none !important;
+  height: 40px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  position: relative !important;
+  transition: background .18s ease !important;
 }
 
 .rp-tabs .mat-button-toggle-label-content {
-  display:     flex !important;
+  display: flex !important;
   align-items: center !important;
-  gap:         5px !important;
-  padding:     0 14px !important;
-  height:      40px !important;    /* FIX 1: explicit height, not line-height */
+  gap: 5px !important;
+  padding: 0 14px !important;
+  height: 40px !important;
   line-height: 40px !important;
-  font-size:   12.5px !important;
+  font-size: 11px !important;
   font-weight: 600 !important;
-  color:       var(--text-soft);
-  transition:  color .15s;
+  color: var(--text-soft);
+  transition: color .15s;
 }
 
 .rp-tabs .mat-button-toggle mat-icon {
@@ -259,39 +257,76 @@
 
 .rp-tabs .mat-button-toggle-checked .mat-button-toggle-label-content {
   color: #fff !important;
+  font-weight: 700 !important;
+  letter-spacing: .2px;
 }
 
-.rp-tab-label { white-space: nowrap; }
+.rp-tab-label {
+  white-space: nowrap;
+}
 
+/* Tab hover */
+.rp-tabs .mat-button-toggle:not(.mat-button-toggle-checked):hover {
+  background: var(--primary-light) !important;
+}
+
+.rp-tabs .mat-button-toggle:not(.mat-button-toggle-checked):hover .mat-button-toggle-label-content {
+  color: var(--primary) !important;
+}
+
+/* Ink underline on active tab */
+.rp-tab-ink {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, .55);
+  border-radius: 3px 3px 0 0;
+  animation: rp-ink-slide .22s cubic-bezier(.4, 0, .2, 1) both;
+}
+
+@keyframes rp-ink-slide {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   FIX 3 — Clear button smooth spring animation
+   Hidden: scale(0.85) + shifted left + invisible
+   Visible: springs to natural size/position in 0.25s
+   ════════════════════════════════════════════════════════════ */
 .rp-btn-clear {
-  height:       40px !important;
-  font-size:    12.5px !important;
-  font-weight:  600 !important;
-  font-family:  'Inter', sans-serif !important;
-  color:        var(--warn) !important;
-  border-color: rgba(240,101,72,.3) !important;
-  flex-shrink:  0;
-  white-space:  nowrap;
-  display:      inline-flex !important;
-  align-items:  center !important;
-  gap:          4px !important;
-  align-self:   center;
-  /* FIX 3: Always in DOM, starts invisible — no layout shift */
-  opacity:         0;
-  pointer-events:  none;
-  transform:       scale(0.85) translateX(-6px);
-  /* FIX 3: Smooth fade + spring-scale entrance (0.25s) */
-  transition:
-    opacity   .25s ease,
-    transform .25s cubic-bezier(0.34, 1.4, 0.64, 1) !important;
+  height: 40px !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  font-family: 'Inter', sans-serif !important;
+  color: var(--warn) !important;
+  border-color: rgba(240, 101, 72, .3) !important;
+  flex-shrink: 0;
+  white-space: nowrap;
+  display: inline-flex !important;
+  align-items: center !important;
+  align-self: center !important;
+  gap: 4px !important;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.85) translateX(-6px);
+  transition: opacity .25s ease, transform .25s cubic-bezier(0.34, 1.4, 0.64, 1) !important;
   will-change: opacity, transform;
 }
 
-/* FIX 3: Visible state — spring pops into its natural position */
 .rp-btn-clear.rp-btn-clear--visible {
-  opacity:        1;
+  opacity: 1;
   pointer-events: auto;
-  transform:      scale(1) translateX(0);
+  transform: scale(1) translateX(0);
 }
 
 .rp-btn-clear:hover {
@@ -312,19 +347,27 @@
   box-shadow: var(--shadow-sm) !important;
   border: 1px solid var(--border) !important;
   transition: transform .22s ease, box-shadow .22s ease !important;
-  animation: rp-card-in .4s cubic-bezier(.34,1.2,.64,1) both;
+  animation: rp-card-in .4s cubic-bezier(.34, 1.2, .64, 1) both;
   animation-delay: var(--delay, 0ms);
   padding: 0 !important;
 }
 
 .rp-kpi-card:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-4px) !important;
+  box-shadow: 0 8px 24px rgba(56, 65, 74, .14) !important;
+  border-color: rgba(64, 81, 137, .2) !important;
 }
 
 @keyframes rp-card-in {
-  from { opacity: 0; transform: translateY(14px) scale(.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .rp-kpi-card .mat-mdc-card-content,
@@ -393,8 +436,13 @@
   height: 12px !important;
 }
 
-.rp-kpi-trend--up   { color: var(--success); }
-.rp-kpi-trend--down { color: var(--warn); }
+.rp-kpi-trend--up {
+  color: var(--success);
+}
+
+.rp-kpi-trend--down {
+  color: var(--warn);
+}
 
 /* ── Charts Grid ─────────────────────────────────────────── */
 .rp-charts-grid {
@@ -411,13 +459,18 @@
   border: 1px solid var(--border) !important;
   overflow: hidden !important;
   padding: 0 !important;
+  transition: box-shadow .22s ease, border-color .22s ease !important;
+}
+
+.rp-card:hover {
+  box-shadow: 0 4px 20px rgba(56, 65, 74, .11) !important;
+  border-color: rgba(64, 81, 137, .15) !important;
 }
 
 .rp-card .mat-mdc-card-content {
   padding: 0 !important;
 }
 
-/* Card header row */
 .rp-card-header {
   display: flex;
   align-items: center;
@@ -475,7 +528,6 @@
   display: block;
 }
 
-/* Legend */
 .rp-legend {
   display: flex;
   align-items: center;
@@ -492,8 +544,13 @@
   display: inline-block;
 }
 
-.rp-ldot--blue  { background: var(--primary); }
-.rp-ldot--amber { background: var(--amber); }
+.rp-ldot--blue {
+  background: var(--primary);
+}
+
+.rp-ldot--amber {
+  background: var(--amber);
+}
 
 /* ── Bar Chart ───────────────────────────────────────────── */
 .rp-chart-body {
@@ -540,12 +597,20 @@
   width: 100%;
   border-radius: 3px 3px 0 0;
   min-height: 3px;
-  transition: height .5s cubic-bezier(.4,0,.2,1), filter .15s;
+  transition: height .5s cubic-bezier(.4, 0, .2, 1), filter .15s ease !important;
 }
 
-.rp-bar:hover { filter: brightness(.88); }
-.rp-bar--blue  { background: var(--primary); }
-.rp-bar--amber { background: var(--amber); }
+.rp-bar:hover {
+  filter: brightness(.88);
+}
+
+.rp-bar--blue {
+  background: var(--primary);
+}
+
+.rp-bar--amber {
+  background: var(--amber);
+}
 
 .rp-bar-lbl {
   font-size: 9.5px;
@@ -554,29 +619,45 @@
   white-space: nowrap;
 }
 
-/* ── Donut Chart ─────────────────────────────────────────── */
-/* FIX 6: explicit column layout — SVG centred, dept rows full width */
+.rp-bar-col:hover .rp-bar--blue {
+  filter: brightness(.82);
+}
+
+.rp-bar-col:hover .rp-bar--amber {
+  filter: brightness(.82);
+}
+
+.rp-bar-col:hover .rp-bar-lbl {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* ════════════════════════════════════════════════════════════
+   FIX 6 — Donut chart: properly centred and balanced
+   Root cause: mat-card-content defaulted to flex row, pushing
+   SVG to the left. Fix: column flex + justify-content:center
+   + explicit auto margins on the SVG element itself.
+   ════════════════════════════════════════════════════════════ */
 .rp-donut-body {
-  display:         flex !important;
-  flex-direction:  column !important;
-  align-items:     center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
   justify-content: center !important;
-  gap:             18px !important;
-  padding:         20px 24px 24px !important;
+  gap: 16px !important;
+  padding: 20px 24px 24px !important;
 }
 
 .rp-donut-svg {
-  width:      136px;
-  height:     136px;
-  display:    block;
-  margin:     0 auto;         /* FIX 6: explicit horizontal centre */
+  width: 136px;
+  height: 136px;
   flex-shrink: 0;
-  overflow:   visible;        /* prevent stroke round-caps from clipping */
-  filter: drop-shadow(0 2px 8px rgba(64,81,137,.10));
+  display: block;
+  margin: 0 auto;
+  overflow: visible;
 }
 
 .rp-donut-arc {
-  transition: stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1);
+  transition: stroke-dashoffset 1.2s cubic-bezier(.4, 0, .2, 1);
 }
 
 .rp-donut-pct {
@@ -593,20 +674,29 @@
 }
 
 .rp-dept-rows {
-  width:          100%;
-  display:        flex;
-  flex-direction: column;
-  gap:            10px;
-  align-self:     stretch; /* FIX 6: stretch to card width inside column flex */
-  padding:        0 4px;
-  box-sizing:     border-box;
+      width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-self: stretch;
+    padding: 0 17px;
+    box-sizing: border-box;
 }
 
 .rp-dept-row {
-  display:               grid;
-  grid-template-columns: 10px 80px 1fr 38px; /* FIX 6: balanced column widths */
-  align-items:           center;
-  gap:                   8px;
+  display: grid;
+  grid-template-columns: 10px 80px 1fr 36px;
+  align-items: center;
+  gap: 8px;
+  transition: transform .15s ease;
+  border-radius: 6px;
+  padding: 3px 4px;
+  margin: 0 -4px;
+}
+
+.rp-dept-row:hover {
+  transform: translateX(3px);
+  background: rgba(64, 81, 137, .04);
 }
 
 .rp-dept-dot {
@@ -627,9 +717,20 @@
   border-radius: 100px !important;
 }
 
-.rp-dept-bar--primary { --mdc-linear-progress-active-indicator-color: var(--primary); --mdc-linear-progress-track-color: #f1f3fa; }
-.rp-dept-bar--success { --mdc-linear-progress-active-indicator-color: var(--success); --mdc-linear-progress-track-color: #f1f3fa; }
-.rp-dept-bar--warn    { --mdc-linear-progress-active-indicator-color: var(--warn);    --mdc-linear-progress-track-color: #f1f3fa; }
+.rp-dept-bar--primary {
+  --mdc-linear-progress-active-indicator-color: var(--primary);
+  --mdc-linear-progress-track-color: #f1f3fa;
+}
+
+.rp-dept-bar--success {
+  --mdc-linear-progress-active-indicator-color: var(--success);
+  --mdc-linear-progress-track-color: #f1f3fa;
+}
+
+.rp-dept-bar--warn {
+  --mdc-linear-progress-active-indicator-color: var(--warn);
+  --mdc-linear-progress-track-color: #f1f3fa;
+}
 
 .rp-dept-pct {
   font-size: 12px;
@@ -640,8 +741,9 @@
 
 /* ── Table Card ──────────────────────────────────────────── */
 .rp-table-card {
-  margin-bottom:  0 !important;
-  scroll-margin-top: 16px;     /* FIX 5: breathing room when scrolled into view */
+  margin-bottom: 0 !important;
+  scroll-margin-top: 16px;
+  /* FIX 5 — space when scrolled into view */
 }
 
 .rp-table-top {
@@ -669,13 +771,14 @@
   margin-left: 8px;
 }
 
-/* Search field */
 .rp-search-field {
   min-width: 280px;
   max-width: 380px;
 }
 
-.rp-search-field .mat-mdc-form-field-subscript-wrapper { display: none !important; }
+.rp-search-field .mat-mdc-form-field-subscript-wrapper {
+  display: none !important;
+}
 
 .rp-search-field .mat-mdc-form-field-infix {
   min-height: 38px !important;
@@ -699,12 +802,20 @@
   border-color: var(--primary) !important;
 }
 
+.rp-search-field.mat-focused .mat-mdc-text-field-wrapper {
+  background: #fff !important;
+  box-shadow: 0 0 0 3px rgba(64, 81, 137, .1) !important;
+}
+
 /* ── Table ───────────────────────────────────────────────── */
-.rp-table-wrap { overflow-x: auto; }
+.rp-table-wrap {
+  overflow-x: auto;
+}
 
-.rp-table { width: 100%; }
+.rp-table {
+  width: 100%;
+}
 
-/* Header cells */
 .rp-table .mat-mdc-header-row {
   background: #f8fafc !important;
 }
@@ -720,7 +831,6 @@
   white-space: nowrap;
 }
 
-/* Data rows — zebra striping */
 .rp-table .mat-mdc-row:nth-child(even) .mat-mdc-cell {
   background: var(--bg-row-alt);
 }
@@ -729,7 +839,6 @@
   background: var(--bg-card);
 }
 
-/* Hover highlight */
 .rp-table .mat-mdc-row:hover .mat-mdc-cell {
   background: #f0f4ff !important;
   transition: background .15s ease;
@@ -743,10 +852,27 @@
   vertical-align: middle !important;
 }
 
-.rp-row { transition: background .15s; }
+.rp-row {
+  position: relative;
+  transition: background .15s ease, transform .15s ease !important;
+}
 
-/* ══ EMPLOYEE COLUMN — matches reference screenshot exactly ══
-   Avatar (circle) + bold name on top + lighter role below     */
+tr.mat-mdc-row.mdc-data-table__row.cdk-row.rp-row {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .07);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+tr.mat-mdc-row.mdc-data-table__row.cdk-row.rp-row:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .08);
+}
+
+.rp-row:hover .mat-mdc-cell {
+  background: #f0f4ff !important;
+  transition: background .15s ease !important;
+}
+
+/* Employee column */
 .rp-emp-cell {
   display: flex;
   align-items: center;
@@ -765,6 +891,12 @@
   justify-content: center;
   flex-shrink: 0;
   letter-spacing: .5px;
+  transition: box-shadow .18s ease, transform .18s ease;
+}
+
+.rp-row:hover .rp-avatar {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--primary);
+  transform: scale(1.08);
 }
 
 .rp-emp-info {
@@ -773,7 +905,6 @@
   gap: 1px;
 }
 
-/* Bold name — matches reference */
 .rp-emp-name {
   font-size: 13px;
   font-weight: 600;
@@ -782,19 +913,18 @@
   white-space: nowrap;
 }
 
-/* Lighter role text below name — matches reference */
 .rp-emp-role {
   font-size: 11.5px;
   font-weight: 500;
-  color: var(--primary);      /* Employee = blue (#405189) */
+  color: var(--primary);
   line-height: 1.2;
 }
 
 .rp-emp-role--manager {
-  color: var(--success);      /* Manager = green (#0ab39c) */
+  color: var(--success);
 }
 
-/* ── Number cells ────────────────────────────────────────── */
+/* Number cells */
 .rp-num {
   font-size: 13px;
   font-weight: 600;
@@ -802,11 +932,19 @@
   font-variant-numeric: tabular-nums;
 }
 
-.rp-num--primary { color: var(--primary); }
-.rp-num--amber   { color: #c9900a; }
-.rp-num--green   { color: var(--success); }
+.rp-num--primary {
+  color: var(--primary);
+}
 
-/* ── Progress bar ────────────────────────────────────────── */
+.rp-num--amber {
+  color: #c9900a;
+}
+
+.rp-num--green {
+  color: var(--success);
+}
+
+/* Progress bar */
 .rp-prog-cell {
   display: flex;
   align-items: center;
@@ -819,9 +957,20 @@
   border-radius: 100px !important;
 }
 
-.rp-prog-high { --mdc-linear-progress-active-indicator-color: var(--primary); --mdc-linear-progress-track-color: #e9ebec; }
-.rp-prog-mid  { --mdc-linear-progress-active-indicator-color: var(--amber);   --mdc-linear-progress-track-color: #e9ebec; }
-.rp-prog-low  { --mdc-linear-progress-active-indicator-color: var(--warn);    --mdc-linear-progress-track-color: #e9ebec; }
+.rp-prog-high {
+  --mdc-linear-progress-active-indicator-color: var(--primary);
+  --mdc-linear-progress-track-color: #e9ebec;
+}
+
+.rp-prog-mid {
+  --mdc-linear-progress-active-indicator-color: var(--amber);
+  --mdc-linear-progress-track-color: #e9ebec;
+}
+
+.rp-prog-low {
+  --mdc-linear-progress-active-indicator-color: var(--warn);
+  --mdc-linear-progress-track-color: #e9ebec;
+}
 
 .rp-prog-pct {
   font-size: 12px;
@@ -831,7 +980,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ── Status badge ────────────────────────────────────────── */
+/* Badges */
 .rp-status-badge {
   display: inline-flex;
   align-items: center;
@@ -841,6 +990,7 @@
   font-size: 11.5px;
   font-weight: 600;
   white-space: nowrap;
+  transition: transform .15s ease;
 }
 
 .rp-status-dot {
@@ -850,12 +1000,24 @@
   flex-shrink: 0;
 }
 
-.rp-status--active  { background: var(--success-light); color: #0d6e5f; }
-.rp-status--active .rp-status-dot  { background: var(--success); }
-.rp-status--inactive { background: #f4f4f6; color: var(--text-soft); }
-.rp-status--inactive .rp-status-dot { background: var(--text-muted); }
+.rp-status--active {
+  background: var(--success-light);
+  color: #0d6e5f;
+}
 
-/* ── Trend badge ─────────────────────────────────────────── */
+.rp-status--active .rp-status-dot {
+  background: var(--success);
+}
+
+.rp-status--inactive {
+  background: #f4f4f6;
+  color: var(--text-soft);
+}
+
+.rp-status--inactive .rp-status-dot {
+  background: var(--text-muted);
+}
+
 .rp-trend-badge {
   display: inline-flex;
   align-items: center;
@@ -864,6 +1026,7 @@
   border-radius: 20px;
   font-size: 11.5px;
   font-weight: 600;
+  transition: transform .15s ease;
 }
 
 .rp-trend-badge mat-icon {
@@ -872,11 +1035,21 @@
   height: 12px !important;
 }
 
-.rp-trend--up     { background: var(--success-light); color: #0d6e5f; }
-.rp-trend--down   { background: var(--warn-light);    color: #c03318; }
-.rp-trend--stable { background: var(--primary-light); color: var(--primary); }
+.rp-trend--up {
+  background: var(--success-light);
+  color: #0d6e5f;
+}
 
-/* ── Impact badge ────────────────────────────────────────── */
+.rp-trend--down {
+  background: var(--warn-light);
+  color: #c03318;
+}
+
+.rp-trend--stable {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
 .rp-impact-badge {
   display: inline-flex;
   align-items: center;
@@ -885,6 +1058,7 @@
   border-radius: 20px;
   font-size: 11.5px;
   font-weight: 700;
+  transition: transform .15s ease;
 }
 
 .rp-impact-badge mat-icon {
@@ -893,11 +1067,27 @@
   height: 13px !important;
 }
 
-.rp-impact--high   { background: var(--warn-light);    color: var(--warn); }
-.rp-impact--medium { background: var(--amber-light);   color: #b37a00; }
-.rp-impact--low    { background: var(--success-light); color: var(--success); }
+.rp-impact--high {
+  background: var(--warn-light);
+  color: var(--warn);
+}
 
-/* ── Risk text / Date ────────────────────────────────────── */
+.rp-impact--medium {
+  background: var(--amber-light);
+  color: #b37a00;
+}
+
+.rp-impact--low {
+  background: var(--success-light);
+  color: var(--success);
+}
+
+.rp-row:hover .rp-status-badge,
+.rp-row:hover .rp-impact-badge,
+.rp-row:hover .rp-trend-badge {
+  transform: scale(1.04);
+}
+
 .rp-risk-text {
   margin: 0;
   font-size: 12.5px;
@@ -911,7 +1101,7 @@
   color: var(--text-soft);
 }
 
-/* ── No data ─────────────────────────────────────────────── */
+/* No data */
 .rp-empty {
   text-align: center !important;
   padding: 40px 20px !important;
@@ -927,7 +1117,7 @@
   margin-right: 6px;
 }
 
-/* ── Paginator ───────────────────────────────────────────── */
+/* Paginator */
 .rp-table-card .mat-mdc-paginator {
   background: #fafbff !important;
   border-top: 1px solid #f1f3fa;
@@ -936,120 +1126,15 @@
   color: var(--text-soft) !important;
 }
 
-/* ── Responsive: Tablet ──────────────────────────────────── */
-@media (max-width: 1100px) {
-  .rp-kpi-grid    { grid-template-columns: repeat(2, 1fr); }
-  .rp-charts-grid { grid-template-columns: 1fr; }
-  .rp-tabs        { margin-left: 0; }
-  /* FIX 6: wider donut card on tablet — more horizontal room */
-  .rp-donut-body  { padding: 20px 32px 24px !important; }
-}
-
-@media (max-width: 900px) {
-  .rp-table-top   { flex-direction: column; align-items: flex-start; }
-  .rp-search-field { min-width: 100%; max-width: 100%; }
-  /* FIX 2: Tablet — filter bar wraps: dropdowns on line 1, tabs on line 2 */
-  .rp-filter-content {
-    flex-wrap:  wrap !important;
-    padding:    14px 16px !important;
-    min-height: unset;
-  }
-  .rp-filter-left { flex-shrink: 1; flex-wrap: wrap; gap: 8px; }
-  .rp-tabs        { flex-shrink: 0; }
-}
-
-/* ── Responsive: Mobile ──────────────────────────────────── */
-@media (max-width: 600px) {
-  .rp-page         { padding: 14px; }
-  .rp-kpi-grid     { grid-template-columns: 1fr 1fr; gap: 12px; }
-  .rp-header       { flex-direction: column; align-items: flex-start; }
-  .rp-filter-content {
-    flex-wrap:  wrap !important;
-    gap:        10px !important;
-    padding:    12px 14px !important;
-  }
-  .rp-filter-left  { flex-wrap: wrap; gap: 8px; width: 100%; }
-  .rp-field        { min-width: 140px; flex: 1; }
-  .rp-tabs         { width: 100%; }
-  .rp-tabs .mat-button-toggle-label-content {
-    padding:   0 10px !important;
-    font-size: 11.5px !important;
-  }
-  .rp-tab-label { display: none; }
-  .rp-kpi-value { font-size: 18px; }
-  .rp-bar-chart { height: 140px; }
-  /* FIX 3: Mobile — always show clear button, skip animation */
-  .rp-btn-clear {
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    transform: none !important;
-  }
-  .rp-donut-body  { padding: 16px !important; }
-}
-
-@media (max-width: 420px) {
-  .rp-kpi-grid { grid-template-columns: 1fr; }
-}
-
-/* ============================================================
-   ENHANCED INTERACTIONS & ANIMATIONS — appended to base CSS
-   All new additions are below this line.
-   ============================================================ */
-
-/* ── 1. TAB SWITCH FEEDBACK ──────────────────────────────────
-
-   Active tab: bold text + animated ink underline at bottom.
-   Non-active: hover lift + color transition.
-   ---------------------------------------------------------- */
-
-/* Scale-up on hover for inactive tabs */
-.rp-tabs .mat-button-toggle:not(.mat-button-toggle-checked):hover {
+.rp-table-card .mat-mdc-paginator-navigation-next:hover,
+.rp-table-card .mat-mdc-paginator-navigation-previous:hover,
+.rp-table-card .mat-mdc-paginator-navigation-first:hover,
+.rp-table-card .mat-mdc-paginator-navigation-last:hover {
   background: var(--primary-light) !important;
-}
-
-.rp-tabs .mat-button-toggle:not(.mat-button-toggle-checked):hover
-  .mat-button-toggle-label-content {
   color: var(--primary) !important;
 }
 
-/* Checked tab: stronger visual — bold + slightly larger text */
-.rp-tabs .mat-button-toggle-checked .mat-button-toggle-label-content {
-  color: #fff !important;
-  font-weight: 700 !important;
-  letter-spacing: .2px;
-}
-
-/* Animated ink underline — slides in from left */
-.rp-tab-ink {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: rgba(255,255,255,.55);
-  border-radius: 3px 3px 0 0;
-  animation: rp-ink-slide .22s cubic-bezier(.4,0,.2,1) both;
-}
-
-@keyframes rp-ink-slide {
-  from { transform: scaleX(0); opacity: 0; }
-  to   { transform: scaleX(1); opacity: 1; }
-}
-
-/* Ensure the toggle button can host the absolute ink */
-.rp-tabs .mat-button-toggle {
-  position: relative !important;
-  transition: background .18s ease !important;
-}
-
-/* FIX #3: Active tab — bolder text for clear visual feedback */
-.rp-tabs .mat-button-toggle-checked .mat-button-toggle-label-content {
-  color: #fff !important;
-  font-weight: 700 !important;
-  letter-spacing: .2px;
-}
-
-/* ── FIX #3: "Showing:" label above table — instant tab-change feedback ── */
+/* ── Showing label ───────────────────────────────────────── */
 .rp-showing-label {
   display: block;
   font-size: 11px;
@@ -1057,7 +1142,7 @@
   color: var(--text-soft);
   margin-bottom: 2px;
   letter-spacing: .2px;
-  animation: rp-fade-in .2s ease both;
+  animation: rp-label-in .2s ease both;
 }
 
 .rp-showing-label strong {
@@ -1065,20 +1150,22 @@
   font-weight: 700;
 }
 
-@keyframes rp-fade-in {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes rp-label-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* ── 2. SKELETON SHIMMER LOADER ──────────────────────────────
-
-   Shown for 260ms while tab content swaps out.
-   Uses a moving gradient sweep to feel alive.
-   ---------------------------------------------------------- */
-
+/* ── Skeleton shimmer ────────────────────────────────────── */
 .rp-skeleton-wrap {
   padding: 8px 0;
-  animation: rp-fade-in .15s ease both;
+  animation: rp-label-in .15s ease both;
 }
 
 .rp-skeleton-row {
@@ -1089,112 +1176,101 @@
   border-bottom: 1px solid #f1f5f9;
 }
 
-.rp-skeleton-row:last-child { border-bottom: none; }
+.rp-skeleton-row:last-child {
+  border-bottom: none;
+}
 
-/* Base shimmer block */
 .rp-skel {
   border-radius: 6px;
-  background: linear-gradient(
-    90deg,
-    #f0f0f5 25%,
-    #e4e6f0 50%,
-    #f0f0f5 75%
-  );
+  background: linear-gradient(90deg, #f0f0f5 25%, #e4e6f0 50%, #f0f0f5 75%);
   background-size: 200% 100%;
   animation: rp-shimmer 1.4s infinite linear;
   flex-shrink: 0;
 }
 
 @keyframes rp-shimmer {
-  from { background-position: 200% 0; }
-  to   { background-position: -200% 0; }
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
 }
 
-.rp-skel--avatar  { width: 34px; height: 34px; border-radius: 50%; }
-.rp-skel--text    { width: 120px; height: 14px; }
-.rp-skel--short   { width: 48px;  height: 14px; }
-.rp-skel--medium  { width: 88px;  height: 8px; border-radius: 100px; }
-.rp-skel--badge   { width: 60px;  height: 20px; border-radius: 20px; }
+.rp-skel--avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+}
 
-/* ── 3. TABLE CONTENT FADE-IN ────────────────────────────────
+.rp-skel--text {
+  width: 120px;
+  height: 14px;
+}
 
-   The table wrapper fades + slides up when skeleton disappears.
-   ---------------------------------------------------------- */
+.rp-skel--short {
+  width: 48px;
+  height: 14px;
+}
 
-/* FIX 4: Table entrance — starts lower, slides up naturally */
+.rp-skel--medium {
+  width: 88px;
+  height: 8px;
+  border-radius: 100px;
+}
+
+.rp-skel--badge {
+  width: 60px;
+  height: 20px;
+  border-radius: 20px;
+}
+
+/* ════════════════════════════════════════════════════════════
+   FIX 4 — Table content fade + slide-up animation
+   Hidden state: opacity 0, 16px below natural position
+   Visible state: slides up with natural ease-out curve
+   Each table-wrap also animates as its own unit
+   ════════════════════════════════════════════════════════════ */
 .rp-table-content {
-  opacity:   0;
+  opacity: 0;
   transform: translateY(16px);
-  transition: none;                /* no transition while skeleton is showing */
+  transition: none;
 }
 
 .rp-table-content--visible {
-  opacity:   1;
+  opacity: 1;
   transform: translateY(0);
-  transition:
-    opacity   .32s ease-out,
-    transform .32s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: opacity .32s ease-out, transform .32s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-/* FIX 4: Each table-wrap also animates for a polished reveal */
 .rp-table-wrap {
   animation: rp-table-enter .3s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
 @keyframes rp-table-enter {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* ── 4. TABLE ROW MICRO-INTERACTIONS ─────────────────────────
-
-   Each row gets a left-border flash on hover for extra depth.
-   ---------------------------------------------------------- */
-
-.rp-row {
-  position: relative;
-  transition: background .15s ease, transform .15s ease !important;
+/* ── Table switching dim ─────────────────────────────────── */
+.rp-table--switching .rp-table-top {
+  opacity: .5;
+  pointer-events: none;
+  transition: opacity .15s ease;
 }
 
-/* .rp-row::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: var(--primary);
-  transform: scaleY(0);
-  transition: transform .18s cubic-bezier(.4,0,.2,1);
-  border-radius: 0 2px 2px 0;
-}
-
-.rp-row:hover::before {
-  transform: scaleY(1);
-} */
-tr.mat-mdc-row.mdc-data-table__row.cdk-row.rp-row:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-}
-
-tr.mat-mdc-row.mdc-data-table__row.cdk-row.rp-row {
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .07);
-    transition: transform .25s ease, box-shadow .25s ease;
-}
-/* Subtle translateX nudge on hover */
-.rp-row:hover .mat-mdc-cell {
-  background: #f0f4ff !important;
-  transition: background .15s ease !important;
-}
-
-/* ── 5. BUTTON MICRO-INTERACTIONS ────────────────────────────
-
-   Press feedback (scale down), hover lift.
-   ---------------------------------------------------------- */
-
+/* ── Button interactions ─────────────────────────────────── */
 .rp-btn-outline,
 .rp-btn-primary {
-  transition: all .18s cubic-bezier(.4,0,.2,1) !important;
+  transition: all .18s cubic-bezier(.4, 0, .2, 1) !important;
 }
 
 .rp-btn-outline:active,
@@ -1204,109 +1280,124 @@ tr.mat-mdc-row.mdc-data-table__row.cdk-row.rp-row {
 
 .rp-btn-primary:hover {
   transform: translateY(-1px) !important;
-  box-shadow: 0 4px 12px rgba(64,81,137,.28) !important;
+  box-shadow: 0 4px 12px rgba(64, 81, 137, .28) !important;
 }
 
-/* ── 6. KPI CARD HOVER — stronger lift + subtle border glow ──*/
-
-.rp-kpi-card:hover {
-  transform: translateY(-4px) !important;
-  box-shadow: 0 8px 24px rgba(56,65,74,.14) !important;
-  border-color: rgba(64,81,137,.2) !important;
-}
-
-/* ── 7. CHART CARD HOVER ─────────────────────────────────────*/
-
-.rp-card {
-  transition: box-shadow .22s ease, border-color .22s ease !important;
-}
-
-.rp-card:hover {
-  box-shadow: 0 4px 20px rgba(56,65,74,.11) !important;
-  border-color: rgba(64,81,137,.15) !important;
-}
-
-/* ── 8. BAR HOVER — individual bar highlight + scale ─────────*/
-
-.rp-bar-col:hover .rp-bar--blue  { filter: brightness(.82); }
-.rp-bar-col:hover .rp-bar--amber { filter: brightness(.82); }
-.rp-bar-col:hover .rp-bar-lbl    { color: var(--primary); font-weight: 600; }
-
-.rp-bar {
-  transition: height .5s cubic-bezier(.4,0,.2,1),
-              filter .15s ease !important;
-}
-
-/* ── 9. AVATAR HOVER RING ────────────────────────────────────*/
-
-.rp-avatar {
-  transition: box-shadow .18s ease, transform .18s ease;
-}
-
-.rp-row:hover .rp-avatar {
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--primary);
-  transform: scale(1.08);
-}
-
-/* ── 10. BADGE HOVER TRANSITIONS ─────────────────────────────*/
-
-.rp-status-badge,
-.rp-impact-badge,
-.rp-trend-badge {
-  transition: opacity .15s ease, transform .15s ease;
-}
-
-.rp-row:hover .rp-status-badge,
-.rp-row:hover .rp-impact-badge,
-.rp-row:hover .rp-trend-badge {
-  transform: scale(1.04);
-}
-
-/* ── 11. SEARCH FIELD FOCUS GLOW ─────────────────────────────*/
-
-.rp-search-field.mat-focused .mat-mdc-text-field-wrapper {
-  background: #fff !important;
-  box-shadow: 0 0 0 3px rgba(64,81,137,.1) !important;
-}
-
-/* ── 12. FILTER CARD HOVER ───────────────────────────────────*/
-
+/* ── Filter card hover ───────────────────────────────────── */
 .rp-filter-card {
   transition: box-shadow .2s ease !important;
 }
 
 .rp-filter-card:hover {
-  box-shadow: 0 3px 12px rgba(56,65,74,.1) !important;
+  box-shadow: 0 3px 12px rgba(56, 65, 74, .1) !important;
 }
 
-/* ── 13. TABLE SWITCHING STATE — dim while skeleton shows ─────*/
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .rp-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
-.rp-table--switching .rp-table-top {
-  opacity: .5;
-  pointer-events: none;
-  transition: opacity .15s ease;
+  .rp-charts-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-/* ── 14. DEPT PROGRESS BAR HOVER ─────────────────────────────*/
+@media (max-width: 900px) {
+  .rp-table-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-.rp-dept-row {
-  transition: transform .15s ease;
-  border-radius: 6px;
-  padding: 2px 4px;
-  margin: 0 -4px;
+  .rp-search-field {
+    min-width: 100%;
+    max-width: 100%;
+  }
+
+  .rp-filter-content {
+    flex-wrap: wrap !important;
+    min-height: unset;
+  }
+
+  .rp-filter-left {
+    flex-shrink: 1;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .rp-tabs {
+    flex-shrink: 0;
+  }
 }
 
-.rp-dept-row:hover {
-  transform: translateX(3px);
-  background: rgba(64,81,137,.04);
+@media (max-width: 600px) {
+  .rp-page {
+    padding: 14px;
+  }
+
+  .rp-kpi-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .rp-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .rp-filter-content {
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+
+  .rp-filter-left {
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .rp-field {
+    min-width: 140px;
+    flex: 1;
+  }
+
+  .rp-tabs {
+    width: 100%;
+    height: auto !important;
+  }
+
+  .rp-tabs .mat-button-toggle {
+    height: auto !important;
+  }
+
+  .rp-tabs .mat-button-toggle-label-content {
+    padding: 0 10px !important;
+    font-size: 11px !important;
+    height: 36px !important;
+    line-height: 36px !important;
+  }
+
+  .rp-tab-label {
+    display: none;
+  }
+
+  .rp-kpi-value {
+    font-size: 18px;
+  }
+
+  .rp-bar-chart {
+    height: 140px;
+  }
+
+  .rp-btn-clear {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: none !important;
+  }
 }
 
-/* ── 15. PAGINATOR HOVER ─────────────────────────────────────*/
-
-.rp-table-card .mat-mdc-paginator-navigation-next:hover,
-.rp-table-card .mat-mdc-paginator-navigation-previous:hover,
-.rp-table-card .mat-mdc-paginator-navigation-first:hover,
-.rp-table-card .mat-mdc-paginator-navigation-last:hover {
-  background: var(--primary-light) !important;
-  color: var(--primary) !important;
+@media (max-width: 420px) {
+  .rp-kpi-grid {
+    grid-template-columns: 1fr;
+  }
 }

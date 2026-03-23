@@ -1,0 +1,324 @@
+<!-- super-admin-detail.html — Detail / Deep-Dive page -->
+<div class="sad-root" [@pageEnter]>
+
+  <!-- Top loading bar — visible during entry transition -->
+  <div class="sad-entry-bar" *ngIf="isEntering"></div>
+
+  <!-- Active filter context banner — shows what was clicked on the dashboard -->
+  <div class="sad-context-banner" *ngIf="activeContextLabel">
+    <mat-icon class="sad-context-icon">filter_list</mat-icon>
+    <span>Showing data for: <strong>{{ activeContextLabel }}</strong></span>
+    <button mat-icon-button class="sad-context-clear" (click)="clearContextFilter()"
+            matTooltip="Remove filter">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- ══ PAGE HEADER ════════════════════════════════════════════ -->
+  <div class="sad-page-header">
+    <div class="sad-header-left">
+      <div class="sad-header-icon">
+        <mat-icon>analytics</mat-icon>
+      </div>
+      <div>
+        <h1 class="sad-page-title">Detail View</h1>
+        <p class="sad-page-sub">Deep-dive DSR tracking — employee, client &amp; project relationships</p>
+      </div>
+    </div>
+    <div class="sad-header-actions">
+      <button mat-stroked-button class="sad-btn-outline" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>Back to Dashboard
+      </button>
+      <button mat-stroked-button class="sad-btn-outline" (click)="exportCSV()">
+        <mat-icon>download</mat-icon>Export CSV
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ DSR SUMMARY CARDS ═════════════════════════════════════= -->
+  <div class="sad-dsr-grid">
+
+    <div class="sad-dsr-card sad-dsr-card--approved">
+      <div class="sad-dsr-icon"><mat-icon>task_alt</mat-icon></div>
+      <div class="sad-dsr-body">
+        <span class="sad-dsr-value">{{ dsrStats.approved }}</span>
+        <span class="sad-dsr-label">Approved DSRs</span>
+      </div>
+    </div>
+
+    <div class="sad-dsr-card sad-dsr-card--pending">
+      <div class="sad-dsr-icon"><mat-icon>pending_actions</mat-icon></div>
+      <div class="sad-dsr-body">
+        <span class="sad-dsr-value">{{ dsrStats.pending }}</span>
+        <span class="sad-dsr-label">Pending DSRs</span>
+      </div>
+    </div>
+
+    <div class="sad-dsr-card sad-dsr-card--rejected">
+      <div class="sad-dsr-icon"><mat-icon>cancel</mat-icon></div>
+      <div class="sad-dsr-body">
+        <span class="sad-dsr-value">{{ dsrStats.rejected }}</span>
+        <span class="sad-dsr-label">Rejected / Cancelled</span>
+      </div>
+    </div>
+
+    <div class="sad-dsr-card sad-dsr-card--hours">
+      <div class="sad-dsr-icon"><mat-icon>schedule</mat-icon></div>
+      <div class="sad-dsr-body">
+        <span class="sad-dsr-value">{{ dsrStats.totalHours }}h</span>
+        <span class="sad-dsr-label">Total Hours Logged</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ CLIENT & PROJECT MAP ═══════════════════════════════════ -->
+  <div class="sad-card sad-rel-card">
+    <div class="sad-card__header">
+      <div class="sad-card__hicon sad-card__hicon--purple">
+        <mat-icon>hub</mat-icon>
+      </div>
+      <span class="sad-card__title">Client &amp; Project Assignment Map</span>
+      <span class="sad-card__subtitle">Who is working on which client and project</span>
+    </div>
+    <mat-divider></mat-divider>
+
+    <div class="sad-rel-grid">
+      <div class="sad-rel-client" *ngFor="let client of clientGroups">
+        <div class="sad-rel-client-header">
+          <mat-icon class="sad-client-icon">business</mat-icon>
+          <span class="sad-client-name">{{ client.name }}</span>
+          <span class="sad-client-count">{{ client.members.length }} people</span>
+        </div>
+        <div class="sad-rel-projects">
+          <div class="sad-rel-project" *ngFor="let proj of client.projects">
+            <div class="sad-proj-label">
+              <mat-icon class="sad-proj-icon">folder_open</mat-icon>
+              <span>{{ proj.name }}</span>
+            </div>
+            <div class="sad-proj-avatars">
+              <div
+                class="sad-mini-avatar"
+                *ngFor="let member of proj.members"
+                [style.background]="member.avatarColor"
+                [matTooltip]="member.name + ' (' + member.role + ')'"
+                matTooltipPosition="above"
+                (click)="filterByEmployee(member.name)">
+                {{ member.initials }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ DSR ACTIVITY LOG ═══════════════════════════════════════ -->
+  <div class="sad-card sad-table-card">
+
+    <div class="sad-table-header">
+      <div class="sad-table-header-left">
+        <div class="sad-card__hicon sad-card__hicon--blue sad-card__hicon--sm">
+          <mat-icon>table_chart</mat-icon>
+        </div>
+        <span class="sad-card__title">DSR Activity Log</span>
+        <span class="sad-filter-count" *ngIf="hasActiveFilters">
+          {{ filteredDsrCount }} / {{ dsrEntries.length }}
+        </span>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+
+    <!-- Filters -->
+    <div class="sad-filters">
+
+      <mat-form-field appearance="outline" class="sad-field sad-field--search" subscriptSizing="dynamic">
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput placeholder="Employee, project, task…"
+               [(ngModel)]="searchText"
+               (ngModelChange)="applyFilters()">
+        <button mat-icon-button matSuffix *ngIf="searchText"
+                (click)="searchText=''; applyFilters()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="sad-field" subscriptSizing="dynamic">
+        <mat-select [(ngModel)]="filterEmployee" (ngModelChange)="applyFilters()"
+                    placeholder="All Employees">
+          <mat-option value="">All Employees</mat-option>
+          <mat-option *ngFor="let e of uniqueEmployees" [value]="e">{{ e }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="sad-field" subscriptSizing="dynamic">
+        <mat-select [(ngModel)]="filterClient" (ngModelChange)="applyFilters()"
+                    placeholder="All Clients">
+          <mat-option value="">All Clients</mat-option>
+          <mat-option *ngFor="let c of uniqueClients" [value]="c">{{ c }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="sad-field" subscriptSizing="dynamic">
+        <mat-select [(ngModel)]="filterProject" (ngModelChange)="applyFilters()"
+                    placeholder="All Projects">
+          <mat-option value="">All Projects</mat-option>
+          <mat-option *ngFor="let p of uniqueProjects" [value]="p">{{ p }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="sad-field" subscriptSizing="dynamic">
+        <mat-select [(ngModel)]="filterStatus" (ngModelChange)="applyFilters()"
+                    placeholder="All Status">
+          <mat-option value="">All Status</mat-option>
+          <mat-option value="approved">Approved</mat-option>
+          <mat-option value="pending">Pending</mat-option>
+          <mat-option value="rejected">Rejected</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-stroked-button class="sad-clear-btn"
+              *ngIf="hasActiveFilters"
+              (click)="clearFilters()">
+        <mat-icon>filter_alt_off</mat-icon>Clear
+      </button>
+    </div>
+
+    <!-- Table -->
+    <div class="sad-table-wrap">
+      <table mat-table
+             [dataSource]="dsrDataSource"
+             multiTemplateDataRows
+             matSort #dsrSort="matSort"
+             class="sad-table">
+
+        <ng-container matColumnDef="employee">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Employee</th>
+          <td mat-cell *matCellDef="let row">
+            <div class="sad-user-cell">
+              <div class="sad-avatar" [style.background]="row.avatarColor">{{ row.initials }}</div>
+              <div class="sad-user-info">
+                <span class="sad-user-name">{{ row.employeeName }}</span>
+                <span class="sad-role-badge"
+                      [ngClass]="row.role === 'MANAGER' ? 'sad-role--manager' : 'sad-role--employee'">
+                  {{ row.role === 'MANAGER' ? 'Manager' : 'Employee' }}
+                </span>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="client">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Client</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="sad-client-badge">{{ row.client }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="project">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Project</th>
+          <td mat-cell *matCellDef="let row">{{ row.project }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="task">
+          <th mat-header-cell *matHeaderCellDef>Task</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="sad-task-text">{{ row.task }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="sad-date">{{ row.date }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="hours">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Hours</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="sad-hours">{{ row.hours }}h</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dsrStatus">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>DSR Status</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="sad-dsr-status-badge" [ngClass]="getDsrStatusClass(row.dsrStatus)">
+              <mat-icon>{{ getDsrStatusIcon(row.dsrStatus) }}</mat-icon>
+              {{ row.dsrStatus | titlecase }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="expand">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-icon-button class="sad-expand-btn"
+                    [matTooltip]="expandedRow === row ? 'Collapse' : 'View details'"
+                    (click)="toggleExpand(row); $event.stopPropagation()">
+              <mat-icon>{{ expandedRow === row ? 'expand_less' : 'expand_more' }}</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="expandedDetail">
+          <td mat-cell *matCellDef="let row"
+              [attr.colspan]="dsrTableColumns.length"
+              class="sad-expanded-cell">
+            <div class="sad-expanded-content"
+                 [@expandDetail]="row === expandedRow ? 'expanded' : 'collapsed'">
+              <div class="sad-expanded-inner" *ngIf="expandedRow === row">
+                <div class="sad-expanded-grid">
+                  <div class="sad-exp-field"><label>Employee</label><p>{{ row.employeeName }}</p></div>
+                  <div class="sad-exp-field"><label>Department</label><p>{{ row.department }}</p></div>
+                  <div class="sad-exp-field"><label>Client</label><p>{{ row.client }}</p></div>
+                  <div class="sad-exp-field"><label>Project</label><p>{{ row.project }}</p></div>
+                  <div class="sad-exp-field"><label>Date</label><p>{{ row.date }}</p></div>
+                  <div class="sad-exp-field"><label>Hours Logged</label><p>{{ row.hours }}h</p></div>
+                  <div class="sad-exp-field">
+                    <label>DSR Status</label>
+                    <p>
+                      <span class="sad-dsr-status-badge" [ngClass]="getDsrStatusClass(row.dsrStatus)">
+                        <mat-icon>{{ getDsrStatusIcon(row.dsrStatus) }}</mat-icon>
+                        {{ row.dsrStatus | titlecase }}
+                      </span>
+                    </p>
+                  </div>
+                  <div class="sad-exp-field"><label>DSR ID</label><p>#{{ row.id }}</p></div>
+                </div>
+                <div class="sad-exp-task-full">
+                  <label>Full Task Description</label>
+                  <p>{{ row.taskFull }}</p>
+                </div>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="dsrTableColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: dsrTableColumns;"
+            class="sad-table-row"
+            [class.sad-row--expanded]="expandedRow === row"
+            (click)="toggleExpand(row)">
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']"
+            class="sad-expanded-row">
+        </tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="sad-no-data" [attr.colspan]="dsrTableColumns.length">
+            <mat-icon>search_off</mat-icon>
+            <span>No DSR records match the current filters.</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <mat-divider></mat-divider>
+    <mat-paginator #dsrPaginator [pageSizeOptions]="[5, 10, 20]" pageSize="10"
+                   showFirstLastButtons aria-label="Select page">
+    </mat-paginator>
+
+  </div>
+
+</div>

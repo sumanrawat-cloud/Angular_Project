@@ -63,13 +63,7 @@ const EMPLOYEE_MENU: MenuGroup[] = [
       //   link:        '/employee/risks',
       //   disabled:    true,
       // },
-      // {
-      //   label:       'History',
-      //   icon:        'history',
-      //   hasChildren: false,
-      //   link:        '/employee/history',
-      //   disabled:    true,
-      // },
+
     ]
   },
   // {
@@ -97,13 +91,7 @@ const MANAGER_MENU: MenuGroup[] = [
         hasChildren: false,
         link:        '/manager',
       },
-      // {
-      //   label:       'My Profile',
-      //   icon:        'person_outline',
-      //   hasChildren: false,
-      //   link:        '/manager/profile',
-      //   disabled:    true,
-      // },
+
     ]
   },
   // {
@@ -157,25 +145,19 @@ const SUPER_ADMIN_MENU: MenuGroup[] = [
         hasChildren: false,
         link:        '/super-admin',
       },
-      {
-        label:       'My Profile',
-        icon:        'person_outline',
-        hasChildren: false,
-        link:        '/super-admin/profile',
-        disabled:    true,
-      },
+
     ]
   },
   {
     title: 'ADMINISTRATION',
     items: [
-      {
-        label:       'Users',
-        icon:        'manage_accounts',
-        hasChildren: false,
-        link:        '/super-admin/users',
-        disabled:    true,
-      },
+      // {
+      //   label:       'Users',
+      //   icon:        'manage_accounts',
+      //   hasChildren: false,
+      //   link:        '/super-admin/users',
+      //   disabled:    true,
+      // },
       // {
       //   label:       'report',
       //   icon:        'bar_chart',
@@ -194,18 +176,18 @@ const SUPER_ADMIN_MENU: MenuGroup[] = [
   },
       
   
-  {
-    title: 'SUPPORT',
-    items: [
-      {
-        label:       'Help & Docs',
-        icon:        'help_outline',
-        hasChildren: false,
-        link:        '/super-admin/help',
-        disabled:    true,
-      },
-    ]
-  },
+  // {
+  //   title: 'SUPPORT',
+  //   items: [
+  //     {
+  //       label:       'Help & Docs',
+  //       icon:        'help_outline',
+  //       hasChildren: false,
+  //       link:        '/super-admin/help',
+  //       disabled:    true,
+  //     },
+  //   ]
+  // },
 ];
 
 // ─── Role → menu map ──────────────────────────────────────────────────────────

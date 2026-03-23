@@ -24,7 +24,7 @@
   <mat-card class="rp-filter-card">
     <mat-card-content class="rp-filter-content">
 
-      <!-- Left group: dropdowns + clear button — all inline, no wrap -->
+      <!-- Left: dropdowns + clear -->
       <div class="rp-filter-left">
 
         <mat-form-field appearance="outline" class="rp-field">
@@ -48,7 +48,7 @@
           </mat-select>
         </mat-form-field>
 
-        <!-- Always in DOM, invisible when no filter active — prevents layout shift -->
+        <!-- Always in DOM — FIX 3: fades + scales in smoothly -->
         <button mat-stroked-button class="rp-btn-clear"
           [class.rp-btn-clear--visible]="filters.department || searchTerm"
           (click)="clearFilters()">
@@ -57,9 +57,9 @@
 
       </div>
 
-      <!-- Right group: 3 tabs pushed to the right -->
-      <mat-button-toggle-group [(ngModel)]="activeTab" (change)="setTab($event.value)" class="rp-tabs"
-        hideSingleSelectionIndicator>
+      <!-- Right: tabs — FIX 1: height matches dropdowns -->
+      <mat-button-toggle-group [(ngModel)]="activeTab" (change)="setTab($event.value)"
+        class="rp-tabs" hideSingleSelectionIndicator>
         <mat-button-toggle value="dsr">
           <mat-icon>assignment</mat-icon>
           <span class="rp-tab-label">DSR Summary</span>
@@ -133,6 +133,7 @@
       </mat-card-content>
     </mat-card>
 
+    <!-- FIX 6: donut card — centred column layout -->
     <mat-card class="rp-card">
       <div class="rp-card-header">
         <div class="rp-card-hicon"><mat-icon>donut_small</mat-icon></div>
@@ -166,8 +167,7 @@
 
   </div>
 
-  <!-- ══ DATA TABLE ════════════════════════════════════════════ -->
-  <!-- FIX 5: id="rp-table-section" is the scroll target used by _scrollToTable() -->
+  <!-- ══ DATA TABLE — id for FIX 5 scroll target ══════════════ -->
   <mat-card id="rp-table-section" class="rp-card rp-table-card" [class.rp-table--switching]="tabSwitching">
 
     <div class="rp-table-top">
@@ -210,9 +210,10 @@
       </div>
     </div>
 
+    <!-- FIX 4: table content fades + slides up when visible -->
     <div class="rp-table-content" [class.rp-table-content--visible]="!tabSwitching">
 
-      <!-- ══ DSR TABLE — matColumnDef prefixed with dsr_ ══ -->
+      <!-- DSR TABLE -->
       <div class="rp-table-wrap" *ngIf="activeTab === 'dsr'">
         <table mat-table [dataSource]="dsrDataSource" matSort #sort1="matSort" class="rp-table">
 
@@ -223,9 +224,7 @@
                 <div class="rp-avatar" [style.background]="r.avatarColor">{{ r.initials }}</div>
                 <div class="rp-emp-info">
                   <span class="rp-emp-name">{{ r.name }}</span>
-                  <span class="rp-emp-role" [class.rp-emp-role--manager]="r.role === 'Manager'">
-                    {{ r.role }}
-                  </span>
+                  <span class="rp-emp-role" [class.rp-emp-role--manager]="r.role === 'Manager'">{{ r.role }}</span>
                 </div>
               </div>
             </td>
@@ -262,8 +261,7 @@
             <td mat-cell *matCellDef="let r">
               <div class="rp-prog-cell">
                 <mat-progress-bar mode="determinate" [value]="r.completion" class="rp-prog"
-                  [ngClass]="getProgClass(r.completion)">
-                </mat-progress-bar>
+                  [ngClass]="getProgClass(r.completion)"></mat-progress-bar>
                 <span class="rp-prog-pct">{{ r.completion }}%</span>
               </div>
             </td>
@@ -289,7 +287,7 @@
         </table>
       </div>
 
-      <!-- ══ UTILIZATION TABLE — matColumnDef prefixed with util_ ══ -->
+      <!-- UTILIZATION TABLE -->
       <div class="rp-table-wrap" *ngIf="activeTab === 'utilization'">
         <table mat-table [dataSource]="utilDataSource" matSort #sort2="matSort" class="rp-table">
 
@@ -300,9 +298,7 @@
                 <div class="rp-avatar" [style.background]="r.avatarColor">{{ r.initials }}</div>
                 <div class="rp-emp-info">
                   <span class="rp-emp-name">{{ r.name }}</span>
-                  <span class="rp-emp-role" [class.rp-emp-role--manager]="r.role === 'Manager'">
-                    {{ r.role }}
-                  </span>
+                  <span class="rp-emp-role" [class.rp-emp-role--manager]="r.role === 'Manager'">{{ r.role }}</span>
                 </div>
               </div>
             </td>
@@ -330,8 +326,7 @@
             <td mat-cell *matCellDef="let r">
               <div class="rp-prog-cell">
                 <mat-progress-bar mode="determinate" [value]="r.utilization" class="rp-prog"
-                  [ngClass]="getProgClass(r.utilization)">
-                </mat-progress-bar>
+                  [ngClass]="getProgClass(r.utilization)"></mat-progress-bar>
                 <span class="rp-prog-pct">{{ r.utilization }}%</span>
               </div>
             </td>
@@ -342,8 +337,7 @@
             <td mat-cell *matCellDef="let r">
               <span class="rp-trend-badge" [class.rp-trend--up]="r.trend === 'up'"
                 [class.rp-trend--down]="r.trend === 'down'" [class.rp-trend--stable]="r.trend === 'stable'">
-                <mat-icon>{{ r.trend === 'up' ? 'arrow_upward' : r.trend === 'down' ? 'arrow_downward' : 'remove'
-                  }}</mat-icon>
+                <mat-icon>{{ r.trend === 'up' ? 'arrow_upward' : r.trend === 'down' ? 'arrow_downward' : 'remove' }}</mat-icon>
                 {{ r.trend === 'up' ? 'Rising' : r.trend === 'down' ? 'Falling' : 'Stable' }}
               </span>
             </td>
@@ -359,7 +353,7 @@
         </table>
       </div>
 
-      <!-- ══ RISK TABLE — matColumnDef prefixed with risk_ ══ -->
+      <!-- RISK TABLE -->
       <div class="rp-table-wrap" *ngIf="activeTab === 'risk'">
         <table mat-table [dataSource]="riskDataSource" matSort #sort3="matSort" class="rp-table">
 
@@ -423,7 +417,7 @@
         </table>
       </div>
 
-    </div><!-- /rp-table-content -->
+    </div>
 
     <mat-divider></mat-divider>
     <mat-paginator [pageSizeOptions]="[5, 10, 20]" pageSize="5" showFirstLastButtons>

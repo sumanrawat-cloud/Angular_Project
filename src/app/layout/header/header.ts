@@ -15,6 +15,13 @@ export interface VNotification {
 
 const VIEW_ROLE_KEY = 'hdr_active_view_role';
 
+/** Maps each login role to its dedicated profile page route */
+const PROFILE_ROUTE_BY_ROLE: Record<string, string> = {
+  EMPLOYEE:    '/employee/employee-profile',
+  MANAGER:     '/manager/manager-profile',
+  super_admin: '/super-admin/admin-profile',
+};
+
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -79,6 +86,14 @@ export class HeaderComponent implements OnInit {
       const saved = localStorage.getItem(VIEW_ROLE_KEY) as 'MANAGER' | 'EMPLOYEE' | null;
       this.activeViewRole = saved ?? 'MANAGER';
     }
+  }
+
+  /** Navigates to the profile page that matches the logged-in user's role. */
+  navigateToProfile(): void {
+    const role = this.auth.getRole();          // e.g. 'EMPLOYEE' | 'MANAGER' | 'super_admin'
+    const route = role ? (PROFILE_ROUTE_BY_ROLE[role] ?? '/') : '/';
+    this.profileOpen = false;
+    this.router.navigate([route]);
   }
 
   switchRole(role: 'MANAGER' | 'EMPLOYEE'): void {

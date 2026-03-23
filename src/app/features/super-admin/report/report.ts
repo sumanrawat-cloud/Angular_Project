@@ -75,21 +75,17 @@ export class Report implements OnInit, AfterViewInit {
   // ── State ───────────────────────────────────────────────
   activeTab    = 'dsr';
   searchTerm   = '';
-  tabSwitching = false;           // drives skeleton + fade animation
+  tabSwitching = false;
   filters      = { dateRange: 'this_month', department: '' };
  
-  // ── Column definitions — PREFIXED to avoid matColumnDef clashes
-  // when all 3 tables are simultaneously in DOM ([hidden] approach)
   dsrColumns  = ['dsr_user', 'dsr_dept', 'dsr_submitted', 'dsr_pending', 'dsr_approved', 'dsr_completion', 'dsr_status'];
   utilColumns = ['util_user', 'util_dept', 'util_billable', 'util_total', 'util_utilization', 'util_trend'];
   riskColumns = ['risk_desc', 'risk_reporter', 'risk_dept', 'risk_impact', 'risk_date', 'risk_status'];
  
-  // ── Data sources ────────────────────────────────────────
   dsrDataSource  = new MatTableDataSource<DsrRow>([]);
   utilDataSource = new MatTableDataSource<UtilRow>([]);
   riskDataSource = new MatTableDataSource<RiskRow>([]);
  
-  // ── KPI cards ───────────────────────────────────────────
   kpiCards = [
     { label: 'Total DSRs Submitted', value: '248', icon: 'assignment_turned_in',
       iconBg: '#eaecf5', iconColor: '#405189', trend: 12, trendLabel: '12%' },
@@ -101,7 +97,6 @@ export class Report implements OnInit, AfterViewInit {
       iconBg: '#fff0ee', iconColor: '#f06548', trend: 0,  trendLabel: ''    },
   ];
  
-  // ── Bar chart ───────────────────────────────────────────
   dsrChartData = [
     { day: 'W1', submitted: 18, pending: 4 },
     { day: 'W2', submitted: 22, pending: 3 },
@@ -117,13 +112,11 @@ export class Report implements OnInit, AfterViewInit {
     return Math.max(...this.dsrChartData.map(d => Math.max(d.submitted, d.pending))) + 4;
   }
  
-  // yTicks: high → low (top → bottom) to match flex-direction: column
   get yTicks(): number[] {
     const m = this.maxDsr;
     return [m, Math.round(m * .75), Math.round(m * .5), Math.round(m * .25), 0];
   }
  
-  // ── Donut ───────────────────────────────────────────────
   avgUtilization = 72;
  
   deptUtil = [
@@ -132,7 +125,6 @@ export class Report implements OnInit, AfterViewInit {
     { name: 'Design',      util: 55, color: '#f06548', key: 'warn'    },
   ];
  
-  // ── Raw data ────────────────────────────────────────────
   private allDsr: DsrRow[] = [
     { name: 'Bharat Kumar',  initials: 'BK', avatarColor: '#405189', role: 'Employee',
       department: 'Engineering', submitted: 18, pending: 2,  approved: 16, completion: 89,  status: 'Active'   },
@@ -192,7 +184,6 @@ export class Report implements OnInit, AfterViewInit {
       department: 'Engineering', impact: 'medium', date: 'Feb 25', status: 'Resolved' },
   ];
  
-  // ── Lifecycle ───────────────────────────────────────────
   constructor(
     private cdr:      ChangeDetectorRef,
     private snackbar: MatSnackBar,
@@ -222,26 +213,20 @@ export class Report implements OnInit, AfterViewInit {
       this._applyFilter('');
       this.tabSwitching = false;
       this.cdr.detectChanges();
-      // Swap paginator to the newly active datasource
       setTimeout(() => {
         this._attachSortPaginator();
-        // FIX 5: Auto-scroll to table section after tab content renders
-        this._scrollToTable();
+        this._scrollToTable();     // FIX 5 — auto scroll
       });
     }, 260);
   }
 
-  // FIX 5: Smooth-scroll to the data table — stays fully visible
+  // FIX 5 — smooth scroll to table section after tab switch
   private _scrollToTable(): void {
-    // Prefer the ID anchor; fall back to the class selector
-    const target: Element | null =
+    const el: Element | null =
       document.getElementById('rp-table-section') ??
       document.querySelector('.rp-table-card');
-    if (!target) return;
-    // Scroll the element into view using native smooth behaviour
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    // Apply a slight negative nudge so the card isn't hidden under the
-    // app toolbar — runs after the scrollIntoView settles (~300 ms)
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     setTimeout(() => window.scrollBy({ top: -16, behavior: 'smooth' }), 320);
   }
  
@@ -281,10 +266,6 @@ export class Report implements OnInit, AfterViewInit {
   }
  
   private _attachSortPaginator(): void {
-    // All 3 tables are always in the DOM ([hidden] not *ngIf),
-    // so all 3 sort references are always available.
-    // Each datasource gets its own sort.
-    // Only the active datasource gets the shared paginator.
     if (this.sort1) this.dsrDataSource.sort  = this.sort1;
     if (this.sort2) this.utilDataSource.sort = this.sort2;
     if (this.sort3) this.riskDataSource.sort = this.sort3;
@@ -299,16 +280,12 @@ export class Report implements OnInit, AfterViewInit {
     }
   }
  
-  // ── Computed ────────────────────────────────────────────
   get filteredCount(): number {
     if (this.activeTab === 'dsr')         return this.dsrDataSource.filteredData.length;
     if (this.activeTab === 'utilization') return this.utilDataSource.filteredData.length;
     return this.riskDataSource.filteredData.length;
   }
  
-  // ── Helpers ─────────────────────────────────────────────
- 
-  /** Returns CSS class for mat-progress-bar based on value */
   getProgClass(val: number): string {
     if (val >= 80) return 'rp-prog-high';
     if (val >= 50) return 'rp-prog-mid';
@@ -321,7 +298,6 @@ export class Report implements OnInit, AfterViewInit {
     return 'info';
   }
  
-  // ── Export ──────────────────────────────────────────────
   exportCSV(): void {
     const headers = ['Name', 'Department', 'Submitted', 'Pending', 'Approved', 'Completion', 'Status'];
     const rows    = this.dsrDataSource.filteredData.map(r =>

@@ -41,6 +41,11 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/employee/my-timesheet/my-timesheet').then(m => m.MyTimesheet),
           },
+          {
+            path: 'employee-profile',
+            loadComponent: () =>
+              import('./features/employee/employee-profile/employee-profile').then(m => m.EmployeeProfile),
+          },
         ],
       },
       {
@@ -59,6 +64,14 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/manager/dsr-review/dsr-review').then(m => m.DsrReview),
           },
+
+           {
+            // DSR Review page — navigated to when View button is clicked
+            // FIX: This route was missing → Angular fell through to { path: '**', redirectTo: 'login' }
+            path: 'manager-profile',
+            loadComponent: () =>
+              import('./features/manager/manager-profile/manager-profile').then(m => m.ManagerProfile),
+          },
           
         ],
       },
@@ -76,9 +89,20 @@ export const routes: Routes = [
               import('./features/super-admin/super-admin').then(m => m.SuperAdmin),
           },
           {
+            path: 'super-admin-detail',   // /super-admin/super-admin-detail  → super admin detail page
+            loadComponent: () =>
+              import('./features/super-admin/super-admin-detail/super-admin-detail').then(m => m.SuperAdminDetail),
+          },
+          {
             path: 'report',   // /super-admin/report  → reports page
             loadComponent: () =>
               import('./features/super-admin/report/report').then(m => m.Report),
+          },
+          
+          {
+            path: 'admin-profile',   // /super-admin/super-admin-detail  → super admin detail page
+            loadComponent: () =>
+              import('./features/super-admin/admin-profile/admin-profile').then(m => m.AdminProfile),
           },
         ],
       },

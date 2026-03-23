@@ -1,0 +1,263 @@
+<!-- admin-profile.html -->
+<div class="sap-root">
+
+  <!-- ══ PAGE HEADER ═══════════════════════════════════════════════ -->
+  <div class="sap-page-header">
+    <div class="sap-header-left">
+      <button mat-icon-button class="sap-back-btn" (click)="goBack()" matTooltip="Back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="sap-header-icon">
+        <mat-icon>admin_panel_settings</mat-icon>
+      </div>
+      <div>
+        <h1 class="sap-page-title">Super Admin Profile</h1>
+        <p class="sap-page-sub">System-wide access · Organisation management</p>
+      </div>
+    </div>
+    <div class="sap-header-actions">
+      <button mat-stroked-button class="sap-btn-outline sap-btn--edit"
+              [class.sap-btn--hidden]="isEditing"
+              (click)="toggleEdit()">
+        <mat-icon>edit</mat-icon>Edit Profile
+      </button>
+      <div class="sap-edit-actions" [class.sap-edit-actions--visible]="isEditing">
+        <button mat-flat-button class="sap-btn-primary" (click)="saveProfile()">
+          <mat-icon>save</mat-icon>Save Changes
+        </button>
+        <button mat-stroked-button class="sap-btn-outline" (click)="cancelEdit()">
+          <mat-icon>close</mat-icon>Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ HERO CARD ══════════════════════════════════════════════════ -->
+  <div class="sap-hero-card">
+    <div class="sap-hero-bg"></div>
+    <div class="sap-hero-body">
+
+      <!-- Avatar uploader -->
+      <div class="sap-avatar-wrap">
+
+        <div class="sap-avatar-spinner" *ngIf="avatarUploading"></div>
+
+        <div class="sap-avatar"
+             [class.sap-avatar--uploading]="avatarUploading"
+             [style.background]="avatarImageUrl ? 'transparent' : profile.avatarColor"
+             (click)="triggerAvatarUpload(); $event.stopPropagation()"
+             matTooltip="Click to change photo">
+
+          <img *ngIf="avatarImageUrl && !avatarUploading"
+               [src]="avatarImageUrl"
+               class="sap-avatar-img"
+               alt="Profile photo">
+
+          <span *ngIf="!avatarImageUrl && !avatarUploading">{{ profile.initials }}</span>
+
+          <div class="sap-avatar-overlay">
+            <mat-icon>photo_camera</mat-icon>
+            <span>Change</span>
+          </div>
+        </div>
+
+        <input #avatarInput type="file" accept="image/*"
+               class="sap-file-input" (change)="onAvatarSelected($event)">
+
+        <button *ngIf="avatarImageUrl"
+                mat-mini-fab class="sap-avatar-remove"
+                matTooltip="Remove photo"
+                (click)="removeAvatar(); $event.stopPropagation()">
+          <mat-icon>close</mat-icon>
+        </button>
+
+        <div class="sap-admin-crown" matTooltip="Super Administrator">
+          <mat-icon>workspace_premium</mat-icon>
+        </div>
+      </div>
+
+      <div class="sap-hero-info">
+        <h2 class="sap-hero-name">{{ profile.name }}</h2>
+        <div class="sap-hero-meta">
+          <span class="sap-role-badge sap-role--admin">
+            <mat-icon>admin_panel_settings</mat-icon>Super Admin
+          </span>
+          <span class="sap-hero-org">
+            <mat-icon>corporate_fare</mat-icon>{{ profile.organisation }}
+          </span>
+          <!-- <span class="sap-hero-joined">
+            <mat-icon>calendar_today</mat-icon>Since {{ profile.since }}
+          </span> -->
+        </div>
+      </div>
+
+      <div class="sap-hero-stats">
+        <div class="sap-hero-stat">
+          <span class="sap-hero-stat-val">{{ orgStats.totalUsers }}</span>
+          <span class="sap-hero-stat-lbl">Total Users</span>
+        </div>
+        <div class="sap-hero-stat-div"></div>
+        <div class="sap-hero-stat">
+          <span class="sap-hero-stat-val sap-stat--teal">{{ orgStats.activeToday }}</span>
+          <span class="sap-hero-stat-lbl">Active Today</span>
+        </div>
+        <div class="sap-hero-stat-div"></div>
+        <div class="sap-hero-stat">
+          <span class="sap-hero-stat-val sap-stat--amber">{{ orgStats.pendingDsrs }}</span>
+          <span class="sap-hero-stat-lbl">Pending DSRs</span>
+        </div>
+        <div class="sap-hero-stat-div"></div>
+        <div class="sap-hero-stat">
+          <span class="sap-hero-stat-val sap-stat--warn">{{ orgStats.openRisks }}</span>
+          <span class="sap-hero-stat-lbl">Open Risks</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TOP ROW: Info + Access ══════════════════════════════════════ -->
+  <div class="sap-top-grid">
+
+    <!-- Personal Information -->
+    <div class="sap-card sap-info-card">
+      <div class="sap-card__header">
+        <div class="sap-card__hicon sap-card__hicon--blue">
+          <mat-icon>person_outline</mat-icon>
+        </div>
+        <span class="sap-card__title">Personal Information</span>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="sap-info-grid">
+
+        <div class="sap-info-field">
+          <label class="sap-field-label">Full Name</label>
+          <div class="sap-field-val" *ngIf="!isEditing">{{ profile.name }}</div>
+          <input *ngIf="isEditing" class="sap-edit-input" [(ngModel)]="editForm.name">
+        </div>
+
+        <div class="sap-info-field">
+          <label class="sap-field-label">Email Address</label>
+          <div class="sap-field-val">
+            <mat-icon class="sap-field-icon">mail_outline</mat-icon>
+            {{ profile.email }}
+          </div>
+        </div>
+
+        <div class="sap-info-field">
+          <label class="sap-field-label">Phone Number</label>
+          <div class="sap-field-val" *ngIf="!isEditing">{{ profile.phone }}</div>
+          <input *ngIf="isEditing" class="sap-edit-input" [(ngModel)]="editForm.phone">
+        </div>
+
+        <div class="sap-info-field">
+          <label class="sap-field-label">Organisation</label>
+          <div class="sap-field-val">
+            <mat-icon class="sap-field-icon">corporate_fare</mat-icon>
+            {{ profile.organisation }}
+          </div>
+        </div>
+
+        <div class="sap-info-field">
+          <label class="sap-field-label">Admin ID</label>
+          <div class="sap-field-val sap-field-val--mono">#{{ profile.id }}</div>
+        </div>
+
+        <div class="sap-info-field">
+          <label class="sap-field-label">Access Level</label>
+          <span class="sap-access-badge">
+            <mat-icon>lock_open</mat-icon>Full Access
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- System Access / Permissions -->
+    <div class="sap-card sap-access-card">
+      <div class="sap-card__header">
+        <div class="sap-card__hicon sap-card__hicon--warn">
+          <mat-icon>security</mat-icon>
+        </div>
+        <span class="sap-card__title">System Permissions</span>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="sap-permission-list">
+        <div class="sap-perm-row" *ngFor="let perm of permissions">
+          <div class="sap-perm-icon" [class]="'sap-perm-icon--' + perm.color">
+            <mat-icon>{{ perm.icon }}</mat-icon>
+          </div>
+          <div class="sap-perm-info">
+            <p class="sap-perm-name">{{ perm.name }}</p>
+            <span class="sap-perm-desc">{{ perm.desc }}</span>
+          </div>
+          <span class="sap-perm-status sap-perm--granted">
+            <mat-icon>check_circle</mat-icon>Granted
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ DEPARTMENT OVERVIEW ═════════════════════════════════════════ -->
+  <div class="sap-bottom-grid">
+
+    <div class="sap-card sap-dept-card">
+      <div class="sap-card__header">
+        <div class="sap-card__hicon sap-card__hicon--purple">
+          <mat-icon>domain</mat-icon>
+        </div>
+        <span class="sap-card__title">Department Overview</span>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="sap-dept-list">
+        <div class="sap-dept-row" *ngFor="let dept of departments"
+             [style.--dept-color]="dept.color">
+          <div class="sap-dept-dot" [style.background]="dept.color + '20'">
+            <mat-icon [style.color]="dept.color">{{ dept.icon }}</mat-icon>
+          </div>
+          <div class="sap-dept-info">
+            <span class="sap-dept-name">{{ dept.name }}</span>
+            <span class="sap-dept-meta">{{ dept.totalMembers }} members · {{ dept.activeToday }} active today</span>
+          </div>
+          <div class="sap-dept-util">
+            <div class="sap-util-bar">
+              <div class="sap-util-fill" [style.background]="dept.color" [style.width.%]="dept.avgUtil"></div>
+            </div>
+            <span class="sap-util-pct">{{ dept.avgUtil }}%</span>
+          </div>
+          <div class="sap-dept-dsrs">
+            <span class="sap-dsr-count" *ngIf="dept.pendingDsrs > 0" [matTooltip]="dept.pendingDsrs + ' pending DSRs'">
+              {{ dept.pendingDsrs }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="sap-card sap-activity-card">
+      <div class="sap-card__header">
+        <div class="sap-card__hicon sap-card__hicon--blue sap-card__hicon--sm">
+          <mat-icon>history</mat-icon>
+        </div>
+        <span class="sap-card__title">Recent Admin Activity</span>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="sap-activity-list">
+        <div class="sap-activity-row" *ngFor="let act of recentActivity"
+             [style.--act-color]="getActColor(act.color)">
+          <div class="sap-activity-icon" [class]="'sap-act-icon--' + act.color">
+            <mat-icon>{{ act.icon }}</mat-icon>
+          </div>
+          <div class="sap-activity-info">
+            <p class="sap-activity-text">{{ act.text }}</p>
+            <span class="sap-activity-time">{{ act.time }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
